@@ -1,3 +1,10 @@
+/**
+ *  TODO: SHOULD BE ABLE TO PUT THIS BACK AND HANDLE THE REGISTER
+ *  CALLBACK WITH ONLY THE
+ *    onRequestStart
+ *  FUNCTION
+ */
+
 import { APL, AuthData } from "@saleor/app-sdk/APL";
 import { Request } from "retes";
 import { toNextHandler } from "retes/adapter";
