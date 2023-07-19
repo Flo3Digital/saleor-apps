@@ -31,7 +31,7 @@ switch (process.env.APL) {
     apl = new UpstashAPL();
     break;
   case "redis":
-    console.log("Using Redis Upstash APL");
+    console.log("Using Redis Upstash APL - (same but with Redis Upstash npm package)");
     // Require `UPSTASH_URL` and `UPSTASH_TOKEN` environment variables
     apl = new RedisAPL();
     break;
