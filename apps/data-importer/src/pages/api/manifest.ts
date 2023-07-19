@@ -28,7 +28,7 @@ export default createManifestHandler({
       homepageUrl: "https://github.com/saleor/apps",
       id: "saleor.app.data-importer",
       name: "Data Importer",
-      permissions: ["MANAGE_USERS"],
+      permissions: ["MANAGE_USERS", "MANAGE_PRODUCTS", "MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES"],
       supportUrl: "https://github.com/saleor/apps/discussions",
       tokenTargetUrl: `${apiBaseURL}/api/register`,
       version: packageJson.version,
