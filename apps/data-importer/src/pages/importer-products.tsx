@@ -2,12 +2,11 @@ import { NextPage } from "next";
 import React, { ComponentProps } from "react";
 import { Container, Divider } from "@material-ui/core";
 import { Button, makeStyles, PageTab, PageTabs, SaleorTheme } from "@saleor/macaw-ui";
-import { CustomersImporterView } from "../modules/customers/customers-importer-nuvo/customers-importer-view";
 import { ProductsImporterView } from "../modules/products/products-importer-nuvo/products-importer-view";
 import { GraphQLProvider } from "../providers/GraphQLProvider";
 import { actions, useAppBridge } from "@saleor/app-sdk/app-bridge";
 
-type Tab = "customers";
+type Tab = "products";
 
 const useStyles = makeStyles((theme: SaleorTheme) => ({
   wrapper: {
@@ -16,7 +15,7 @@ const useStyles = makeStyles((theme: SaleorTheme) => ({
 }));
 
 const ImporterPage: NextPage = () => {
-  const [activeTab, setActiveTab] = React.useState<Tab>("customers");
+  const [activeTab, setActiveTab] = React.useState<Tab>("products");
   const styles = useStyles();
 
   const { appBridge } = useAppBridge();
@@ -43,11 +42,7 @@ const ImporterPage: NextPage = () => {
           <PageTab value="products" label="Products" />
         </PageTabs>
         <Divider />
-        {activeTab === "customers" ? (
-          <CustomersImporterView />
-        ) : activeTab === "products" ? (
-          <ProductsImporterView />
-        ) : null}
+        {activeTab === "products" && <ProductsImporterView />}
       </Container>
     </div>
   );
