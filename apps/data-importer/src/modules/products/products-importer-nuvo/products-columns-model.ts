@@ -8,28 +8,28 @@ const productColumns: ColumnAPI[] = [
     columnType: "string",
   },
   {
-    label: "Product description",
+    label: "Product Description",
     key: "productCreate.description",
     columnType: "string",
   },
   {
-    label: "Product price",
+    label: "Product Price",
     key: "productCreate.price",
     columnType: "string",
   },
   {
-    label: "Product vintage",
+    label: "Product Vintage",
     key: "productCreate.vintage",
     columnType: "string",
   },
   {
-    label: "Product type",
+    label: "Product Type",
     key: "productCreate.type",
     columnType: "string",
   },
   {
-    label: "Product Category",
-    key: "productCreate.category",
+    label: "Product Size",
+    key: "productCreate.size",
     columnType: "string",
   },
 ];
