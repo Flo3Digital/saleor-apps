@@ -56,10 +56,7 @@ export const ProductImportingRow = (props: Props) => {
     mutate({
       input: {
         ...props.importedModel.productCreate,
-        // todo map address
-        defaultShippingAddress: null,
-        defaultBillingAddress: null,
-        isActive: false,
+        productType: props.importedModel.productCreate.type,
       },
     });
   }, [props.importedModel, mutate]);
@@ -76,8 +73,8 @@ export const ProductImportingRow = (props: Props) => {
   }, [props.doImport, mutate, mutationResult, triggerMutation]);
 
   const renderStatus = () => {
-    if (mutationResult.data?.productCreate?.user?.id) {
-      return <ImportedStatus id={mutationResult.data?.productCreate?.user?.id} />;
+    if (mutationResult.data?.productCreate?.product?.id) {
+      return <ImportedStatus id={mutationResult.data?.productCreate?.product?.id} />;
     }
 
     if (mutationResult.data?.productCreate?.errors) {
