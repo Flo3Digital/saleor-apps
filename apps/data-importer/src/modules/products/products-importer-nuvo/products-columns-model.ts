@@ -41,11 +41,12 @@ export const getProductsModelColumns = () => allColumns;
 export const getResultModelSchema = () =>
   z.object({
     productCreate: z.object({
-      name: z.string().nullish(),
+      name: z.string(),
       description: z.string().nullish(),
       price: z.string(),
       vintage: z.string().nullish(),
       category: z.string().nullish(),
+      type: z.string(),
     }),
   });
 
