@@ -4,7 +4,7 @@ import { ProductImportingRow } from "./products-importing-row";
 import React, { useState } from "react";
 import { ProductColumnSchema } from "../products-importer-nuvo/products-columns-model";
 
-export const ProductImportingResults = ({
+export const ProductsImportingResults = ({
   importedLines,
 }: {
   importedLines: ProductColumnSchema[];
