@@ -34,14 +34,7 @@ const productColumns: ColumnAPI[] = [
   },
 ];
 
-// TODO - enable address columns when mapped
-const allColumns: ColumnAPI[] = [
-  ...productColumns,
-  /*
-   * ...generateAddressColumns("Default Billing Address", "defaultBillingAddress"),
-   * ...generateAddressColumns("Default Shipping Address", "defaultShippingAddress"),
-   */
-];
+const allColumns: ColumnAPI[] = [...productColumns];
 
 export const getProductsModelColumns = () => allColumns;
 

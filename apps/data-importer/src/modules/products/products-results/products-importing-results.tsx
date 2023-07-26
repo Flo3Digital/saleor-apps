@@ -40,7 +40,7 @@ export const ProductsImportingResults = ({
           {importedLines.map((row) => (
             <ProductImportingRow
               doImport={importingStarted}
-              key={row.productCreate.email}
+              key={row.productCreate.name}
               importedModel={row}
             />
           ))}
