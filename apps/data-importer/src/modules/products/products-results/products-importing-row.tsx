@@ -1,6 +1,6 @@
-import { Box, TableCell, TableRow, Typography } from "@material-ui/core";
+import { Box, TableCell, TableRow } from "@material-ui/core";
 import { Done, Error, HourglassEmpty } from "@material-ui/icons";
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useProductCreateMutation } from "../../../../generated/graphql";
 import { ProductColumnSchema } from "../products-importer-nuvo/products-columns-model";
 import { actions, useAppBridge } from "@saleor/app-sdk/app-bridge";
@@ -93,7 +93,7 @@ export const ProductImportingRow = (props: Props) => {
 
   return (
     <TableRow>
-      <TableCell>{props.importedModel.productCreate.email}</TableCell>
+      <TableCell>{props.importedModel.productCreate.name}</TableCell>
       <TableCell>{renderStatus()}</TableCell>
     </TableRow>
   );
