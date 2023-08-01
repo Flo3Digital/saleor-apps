@@ -18,18 +18,38 @@ const productColumns: ColumnAPI[] = [
     columnType: "string",
   },
   {
-    label: "Product Vintage",
-    key: "productCreate.vintage",
-    columnType: "string",
-  },
-  {
     label: "Product Type",
     key: "productCreate.type",
     columnType: "string",
   },
   {
+    label: "Product Brand",
+    key: "productCreate.attribute.brand.plainText",
+    columnType: "string",
+  },
+  {
+    label: "Product Vintage",
+    key: "productCreate.attribute.vintage.plainText",
+    columnType: "string",
+  },
+  {
     label: "Product Size",
-    key: "productCreate.size",
+    key: "productCreate.attribute.size.dropdown.value",
+    columnType: "string",
+  },
+  {
+    label: "Product Country",
+    key: "productCreate.attribute.country.dropdown.value",
+    columnType: "string",
+  },
+  {
+    label: "Product Attribute Type",
+    key: "productCreate.attribute.type.dropdown.value",
+    columnType: "string",
+  },
+  {
+    label: "Product Attribute Region",
+    key: "productCreate.attribute.region.dropdown.value",
     columnType: "string",
   },
 ];
@@ -47,6 +67,59 @@ export const getResultModelSchema = () =>
       vintage: z.string().nullish(),
       category: z.string().nullish(),
       type: z.string(),
+      attribute: z.object({
+        vintage: z
+          .object({
+            id: "QXR0cmlidXRlOjU=",
+            plainText: z.string().nullish(),
+          })
+          .nullish(),
+
+        brand: z
+          .object({
+            id: "QXR0cmlidXRlOjY=",
+            plainText: z.string().nullish(),
+          })
+          .nullish(),
+
+        size: z
+          .object({
+            id: "QXR0cmlidXRlOjQ=",
+            dropdown: z.object({
+              value: z.string().nullish().optional(),
+            }),
+          })
+          .nullish()
+          .optional(),
+
+        country: z
+          .object({
+            id: "QXR0cmlidXRlOjI=",
+            dropdown: z.object({
+              value: z.string().nullish().optional(),
+            }),
+          })
+          .nullish()
+          .optional(),
+
+        type: z
+          .object({
+            id: "QXR0cmlidXRlOjE=",
+            dropdown: z.object({
+              value: z.string().nullish(),
+            }),
+          })
+          .nullish(),
+
+        region: z
+          .object({
+            id: "QXR0cmlidXRlOjg=",
+            dropdown: z.object({
+              value: z.string().nullish(),
+            }),
+          })
+          .nullish(),
+      }),
     }),
   });
 
