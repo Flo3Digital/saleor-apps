@@ -73,7 +73,7 @@ const getNuvoSettings = (theme: SaleorTheme): SettingsAPI => {
     columns,
     enableExamples: false,
     developerMode: process.env.NEXT_PUBLIC_NUVO_PROD_MODE !== "true",
-    identifier: "customers",
+    identifier: "products",
     modal: false,
     style: {
       sheetSelect: {
