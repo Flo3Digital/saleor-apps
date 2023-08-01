@@ -70,21 +70,21 @@ export const getResultModelSchema = () =>
       attribute: z.object({
         vintage: z
           .object({
-            id: "QXR0cmlidXRlOjU=",
+            id: z.string("QXR0cmlidXRlOjU="),
             plainText: z.string().nullish(),
           })
           .nullish(),
 
         brand: z
           .object({
-            id: "QXR0cmlidXRlOjY=",
+            id: z.string("QXR0cmlidXRlOjY="),
             plainText: z.string().nullish(),
           })
           .nullish(),
 
         size: z
           .object({
-            id: "QXR0cmlidXRlOjQ=",
+            id: z.string("QXR0cmlidXRlOjQ="),
             dropdown: z.object({
               value: z.string().nullish().optional(),
             }),
@@ -94,7 +94,7 @@ export const getResultModelSchema = () =>
 
         country: z
           .object({
-            id: "QXR0cmlidXRlOjI=",
+            id: z.string("QXR0cmlidXRlOjI="),
             dropdown: z.object({
               value: z.string().nullish().optional(),
             }),
@@ -104,7 +104,7 @@ export const getResultModelSchema = () =>
 
         type: z
           .object({
-            id: "QXR0cmlidXRlOjE=",
+            id: z.string("QXR0cmlidXRlOjE="),
             dropdown: z.object({
               value: z.string().nullish(),
             }),
@@ -113,7 +113,7 @@ export const getResultModelSchema = () =>
 
         region: z
           .object({
-            id: "QXR0cmlidXRlOjg=",
+            id: z.string("QXR0cmlidXRlOjg="),
             dropdown: z.object({
               value: z.string().nullish(),
             }),
