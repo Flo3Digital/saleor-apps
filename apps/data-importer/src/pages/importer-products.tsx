@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import React, { ComponentProps } from "react";
 import { Container, Divider } from "@material-ui/core";
 import { Button, makeStyles, PageTab, PageTabs, SaleorTheme } from "@saleor/macaw-ui";
-import { ProductsImporterView } from "../modules/products - old/products-importer-nuvo/products-importer-view";
+import { ProductsImporterView } from "../modules/products/products-importer-nuvo/products-importer-view";
 import { GraphQLProvider } from "../providers/GraphQLProvider";
 import { actions, useAppBridge } from "@saleor/app-sdk/app-bridge";
 
