@@ -85,7 +85,7 @@ export const getResultModelSchema = () =>
         country: z.object({
           id: z.string().nullish(),
           dropdown: z.object({
-            value: z.string().nullish().optional(),
+            value: z.string().nullish(),
           }),
         }),
         type: z.object({
