@@ -68,57 +68,38 @@ export const getResultModelSchema = () =>
       category: z.string().nullish(),
       type: z.string(),
       attribute: z.object({
-        vintage: z
-          .object({
-            id: z.string("QXR0cmlidXRlOjU="),
-            plainText: z.string().nullish(),
-          })
-          .nullish(),
-
-        brand: z
-          .object({
-            id: z.string("QXR0cmlidXRlOjY="),
-            plainText: z.string().nullish(),
-          })
-          .nullish(),
-
-        size: z
-          .object({
-            id: z.string("QXR0cmlidXRlOjQ="),
-            dropdown: z.object({
-              value: z.string().nullish().optional(),
-            }),
-          })
-          .nullish()
-          .optional(),
-
-        country: z
-          .object({
-            id: z.string("QXR0cmlidXRlOjI="),
-            dropdown: z.object({
-              value: z.string().nullish().optional(),
-            }),
-          })
-          .nullish()
-          .optional(),
-
-        type: z
-          .object({
-            id: z.string("QXR0cmlidXRlOjE="),
-            dropdown: z.object({
-              value: z.string().nullish(),
-            }),
-          })
-          .nullish(),
-
-        region: z
-          .object({
-            id: z.string("QXR0cmlidXRlOjg="),
-            dropdown: z.object({
-              value: z.string().nullish(),
-            }),
-          })
-          .nullish(),
+        vintage: z.object({
+          id: z.string().nullish(),
+          plainText: z.string().nullish(),
+        }),
+        brand: z.object({
+          id: z.string().nullish(),
+          plainText: z.string().nullish(),
+        }),
+        size: z.object({
+          id: z.string().nullish(),
+          dropdown: z.object({
+            value: z.string().nullish(),
+          }),
+        }),
+        country: z.object({
+          id: z.string().nullish(),
+          dropdown: z.object({
+            value: z.string().nullish().optional(),
+          }),
+        }),
+        type: z.object({
+          id: z.string().nullish(),
+          dropdown: z.object({
+            value: z.string().nullish(),
+          }),
+        }),
+        region: z.object({
+          id: z.string().nullish(),
+          dropdown: z.object({
+            value: z.string().nullish(),
+          }),
+        }),
       }),
     }),
   });
