@@ -56,6 +56,14 @@ const PendingStatus = () => (
   </Box>
 );
 
+/**
+ *
+ *
+ * This is the main function that is called when importing a product.
+ *
+ * @param props
+ * @returns
+ */
 export const ProductImportingRow = (props: Props) => {
   const [mutationResult, mutate] = useProductCreateMutation();
   const [ProductUpdateMutationResult, ProductUpdateMutate] = useProductUpdateMutation();
@@ -65,6 +73,9 @@ export const ProductImportingRow = (props: Props) => {
   const [channelListingMutationResult, channelListingMutation] =
     useProductChannelListingUpdateMutation();
 
+  /**
+   * Callback function to trigger the mutation and create/update the product
+   */
   const triggerMutation = useCallback(async () => {
     // Switch this to GraphQL Type for Attributes
     const attributes: (
@@ -118,7 +129,6 @@ export const ProductImportingRow = (props: Props) => {
     /**
      * Grab the Product ID from the External Reference
      */
-
     let productId = queryProductResult.data?.product?.id;
 
     /**
@@ -165,7 +175,7 @@ export const ProductImportingRow = (props: Props) => {
         ],
       },
     });
-    /** 
+    /**
      *ADD Variants for pricing and inventory
      * - ProductVariantCreateMutation
      * - Product Variant Channel Update Mutation
