@@ -151,12 +151,12 @@ export const ProductImportingRow = (props: Props) => {
       const productCreateMutation = {
         input: {
           ...props.importedModel.productCreate.general,
-          attributes: [...attributes],
+          attributes: attributes,
           productType: props.importedModel.productCreate.general.productType,
         },
       };
 
-      console.log("Mutating: ", productCreateMutation);
+      console.log("Mutating New Product: ", productCreateMutation);
       const productCreateResult = await mutate(productCreateMutation);
 
       productId = productCreateResult?.data?.productCreate?.product?.id;
