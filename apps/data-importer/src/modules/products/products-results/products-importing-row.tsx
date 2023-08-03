@@ -53,6 +53,7 @@ const PendingStatus = () => (
 export const ProductImportingRow = (props: Props) => {
   const [mutationResult, mutate] = useProductCreateMutation();
   const triggerMutation = useCallback(() => {
+    // Switch this to GraphQL Type for Attributes
     const attributes: (
       | { id: string; plainText: string }
       | { id: string; dropdown: { value: string } }
@@ -144,7 +145,7 @@ export const ProductImportingRow = (props: Props) => {
 
   return (
     <TableRow>
-      <TableCell>{props.importedModel.productCreate.name}</TableCell>
+      <TableCell>{props.importedModel.productCreate.general.name}</TableCell>
       <TableCell>{renderStatus()}</TableCell>
     </TableRow>
   );
