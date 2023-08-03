@@ -71,7 +71,6 @@ export const ProductImportingRow = (props: Props) => {
     if (props.importedModel.productCreate.attribute.region) {
       props.importedModel.productCreate.attribute.region.id = "QXR0cmlidXRlOjg=";
     }
-    props.importedModel.productCreate.type = "UHJvZHVjdFR5cGU6Mg==";
     mutate({
       input: {
         ...props.importedModel.productCreate,

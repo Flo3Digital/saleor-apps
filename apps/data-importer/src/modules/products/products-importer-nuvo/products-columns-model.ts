@@ -8,6 +8,11 @@ const productColumns: ColumnAPI[] = [
     columnType: "string",
   },
   {
+    label: "Product Type",
+    key: "productCreate.type",
+    columnType: "string",
+  },
+  {
     label: "Product Description",
     key: "productCreate.description",
     columnType: "string",
