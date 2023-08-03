@@ -101,7 +101,7 @@ export const ProductImportingRow = (props: Props) => {
       input: {
         ...props.importedModel.productCreate.general,
         attributes: [...attributes],
-        productType: props.importedModel.productCreate.general.type,
+        productType: props.importedModel.productCreate.general.productType,
       },
     });
 
