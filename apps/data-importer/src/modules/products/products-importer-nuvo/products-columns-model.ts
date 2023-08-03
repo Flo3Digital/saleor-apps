@@ -4,67 +4,67 @@ import { z } from "zod";
 const productColumns: ColumnAPI[] = [
   {
     label: "Product Name",
-    key: "productCreate.name",
+    key: "productCreate.general.name",
     columnType: "string",
   },
   {
     label: "Product Type",
-    key: "productCreate.type",
+    key: "productCreate.general.type",
     columnType: "string",
   },
   {
     label: "Product Description",
-    key: "productCreate.description",
+    key: "productCreate.general.description",
     columnType: "string",
   },
   {
     label: "Product External Reference",
-    key: "productCreate.externalReference",
+    key: "productCreate.general.externalReference",
     columnType: "string",
   },
   {
-    label: "Product External Reference",
+    label: "Product Stock Level",
     key: "productVariantCreate.stockLevel",
     columnType: "string",
   },
   {
     label: "Product Price",
-    key: "productCreate.price",
+    key: "productCreate.general.price",
     columnType: "string",
   },
   {
     label: "Product Type",
-    key: "productCreate.type",
+    key: "productCreate.general.type",
     columnType: "string",
   },
   {
     label: "Product Brand",
-    key: "productCreate.attribute.brand.plainText",
+    key: "productCreate.attributes.brand",
     columnType: "string",
   },
   {
     label: "Product Vintage",
-    key: "productCreate.attribute.vintage.plainText",
+    key: "productCreate.attributes.vintage",
     columnType: "string",
   },
   {
     label: "Product Size",
-    key: "productCreate.attribute.size.dropdown.value",
+    key: "productCreate.attributes.size",
     columnType: "string",
   },
   {
     label: "Product Country",
-    key: "productCreate.attribute.country.dropdown.value",
+    key: "productCreate.attributes.country",
     columnType: "string",
   },
   {
     label: "Product Attribute Type",
-    key: "productCreate.attribute.type.dropdown.value",
+    key: "productCreate.attributes.type",
     columnType: "string",
   },
   {
     label: "Product Attribute Region",
-    key: "productCreate.attribute.region.dropdown.value",
+    key: "productCreate.attributes.region",
     columnType: "string",
   },
 ];
@@ -76,57 +76,21 @@ export const getProductsModelColumns = () => allColumns;
 export const getResultModelSchema = () =>
   z.object({
     productCreate: z.object({
-      name: z.string(),
-      description: z.string().nullish(),
-      price: z.string(),
-      vintage: z.string().nullish(),
-      category: z.string().nullish(),
-      type: z.string(),
-      attribute: z.object({
-        vintage: z
-          .object({
-            id: z.string().nullish(),
-            plainText: z.string().nullish(),
-          })
-          .nullish(),
-        brand: z
-          .object({
-            id: z.string().nullish(),
-            plainText: z.string().nullish(),
-          })
-          .nullish(),
-        size: z
-          .object({
-            id: z.string().nullish(),
-            dropdown: z.object({
-              value: z.string().nullish(),
-            }),
-          })
-          .nullish(),
-        country: z
-          .object({
-            id: z.string().nullish(),
-            dropdown: z.object({
-              value: z.string().nullish(),
-            }),
-          })
-          .nullish(),
-        type: z
-          .object({
-            id: z.string().nullish(),
-            dropdown: z.object({
-              value: z.string().nullish(),
-            }),
-          })
-          .nullish(),
-        region: z
-          .object({
-            id: z.string().nullish(),
-            dropdown: z.object({
-              value: z.string().nullish(),
-            }),
-          })
-          .nullish(),
+      general: z.object({
+        name: z.string(),
+        description: z.string().nullish(),
+        price: z.string(),
+        vintage: z.string().nullish(),
+        category: z.string().nullish(),
+        type: z.string(),
+      }),
+      attributes: z.object({
+        vintage: z.string().nullish(),
+        brand: z.string().nullish(),
+        size: z.string().nullish(),
+        country: z.string().nullish(),
+        type: z.string().nullish(),
+        region: z.string().nullish(),
       }),
     }),
     productVariantCreate: z.object({

@@ -53,28 +53,54 @@ const PendingStatus = () => (
 export const ProductImportingRow = (props: Props) => {
   const [mutationResult, mutate] = useProductCreateMutation();
   const triggerMutation = useCallback(() => {
-    if (props.importedModel.productCreate.attribute.vintage) {
-      props.importedModel.productCreate.attribute.vintage.id = "QXR0cmlidXRlOjU=";
-    }
-    if (props.importedModel.productCreate.attribute.brand) {
-      props.importedModel.productCreate.attribute.brand.id = "QXR0cmlidXRlOjY=";
-    }
-    if (props.importedModel.productCreate.attribute.size) {
-      props.importedModel.productCreate.attribute.size.id = "QXR0cmlidXRlOjQ=";
-    }
-    if (props.importedModel.productCreate.attribute.country) {
-      props.importedModel.productCreate.attribute.country.id = "QXR0cmlidXRlOjI=";
-    }
-    if (props.importedModel.productCreate.attribute.type) {
-      props.importedModel.productCreate.attribute.type.id = "QXR0cmlidXRlOjE=";
-    }
-    if (props.importedModel.productCreate.attribute.region) {
-      props.importedModel.productCreate.attribute.region.id = "QXR0cmlidXRlOjg=";
+    const attributes: (
+      | { id: string; plainText: string }
+      | { id: string; dropdown: { value: string } }
+    )[] = [];
+
+    if (props.importedModel.productCreate.attributes) {
+      if (props.importedModel.productCreate.attributes.vintage) {
+        attributes.push({
+          id: "QXR0cmlidXRlOjU=",
+          plainText: props.importedModel.productCreate.attributes.vintage,
+        });
+      }
+      if (props.importedModel.productCreate.attributes.brand) {
+        attributes.push({
+          id: "QXR0cmlidXRlOjY=",
+          plainText: props.importedModel.productCreate.attributes.brand,
+        });
+      }
+      if (props.importedModel.productCreate.attributes.size) {
+        attributes.push({
+          id: "QXR0cmlidXRlOjQ=",
+          dropdown: { value: props.importedModel.productCreate.attributes.size },
+        });
+      }
+      if (props.importedModel.productCreate.attributes.country) {
+        attributes.push({
+          id: "QXR0cmlidXRlOjI=",
+          dropdown: { value: props.importedModel.productCreate.attributes.country },
+        });
+      }
+      if (props.importedModel.productCreate.attributes.type) {
+        attributes.push({
+          id: "QXR0cmlidXRlOjE=",
+          dropdown: { value: props.importedModel.productCreate.attributes.type },
+        });
+      }
+      if (props.importedModel.productCreate.attributes.region) {
+        attributes.push({
+          id: "QXR0cmlidXRlOjg=",
+          dropdown: { value: props.importedModel.productCreate.attributes.region },
+        });
+      }
     }
     mutate({
       input: {
-        ...props.importedModel.productCreate,
-        productType: props.importedModel.productCreate.type,
+        ...props.importedModel.productCreate.general,
+        ...attributes,
+        productType: props.importedModel.productCreate.general.type,
       },
     });
 
