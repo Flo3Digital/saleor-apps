@@ -97,13 +97,18 @@ export const ProductImportingRow = (props: Props) => {
         });
       }
     }
-    mutate({
+
+    console.log("attributes", attributes);
+    const productCreateMutation = {
       input: {
         ...props.importedModel.productCreate.general,
         attributes: [...attributes],
         productType: props.importedModel.productCreate.general.productType,
       },
-    });
+    };
+
+    console.log("productCreateMutation", productCreateMutation);
+    mutate(productCreateMutation);
 
     /*
      * Add additional Mutations here for (can find these in documentation that I sent to Karim):
