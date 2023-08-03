@@ -53,12 +53,24 @@ const PendingStatus = () => (
 export const ProductImportingRow = (props: Props) => {
   const [mutationResult, mutate] = useProductCreateMutation();
   const triggerMutation = useCallback(() => {
-    props.importedModel.productCreate.attribute.vintage.id = "QXR0cmlidXRlOjU=";
-    props.importedModel.productCreate.attribute.brand.id = "QXR0cmlidXRlOjY=";
-    props.importedModel.productCreate.attribute.size.id = "QXR0cmlidXRlOjQ=";
-    props.importedModel.productCreate.attribute.country.id = "QXR0cmlidXRlOjI=";
-    props.importedModel.productCreate.attribute.type.id = "QXR0cmlidXRlOjE=";
-    props.importedModel.productCreate.attribute.region.id = "QXR0cmlidXRlOjg=";
+    if (props.importedModel.productCreate.attribute.vintage) {
+      props.importedModel.productCreate.attribute.vintage.id = "QXR0cmlidXRlOjU=";
+    }
+    if (props.importedModel.productCreate.attribute.brand) {
+      props.importedModel.productCreate.attribute.brand.id = "QXR0cmlidXRlOjY=";
+    }
+    if (props.importedModel.productCreate.attribute.size) {
+      props.importedModel.productCreate.attribute.size.id = "QXR0cmlidXRlOjQ=";
+    }
+    if (props.importedModel.productCreate.attribute.country) {
+      props.importedModel.productCreate.attribute.country.id = "QXR0cmlidXRlOjI=";
+    }
+    if (props.importedModel.productCreate.attribute.type) {
+      props.importedModel.productCreate.attribute.type.id = "QXR0cmlidXRlOjE=";
+    }
+    if (props.importedModel.productCreate.attribute.region) {
+      props.importedModel.productCreate.attribute.region.id = "QXR0cmlidXRlOjg=";
+    }
     mutate({
       input: {
         ...props.importedModel.productCreate,

@@ -68,38 +68,50 @@ export const getResultModelSchema = () =>
       category: z.string().nullish(),
       type: z.string(),
       attribute: z.object({
-        vintage: z.object({
-          id: z.string().nullish(),
-          plainText: z.string().nullish(),
-        }),
-        brand: z.object({
-          id: z.string().nullish(),
-          plainText: z.string().nullish(),
-        }),
-        size: z.object({
-          id: z.string().nullish(),
-          dropdown: z.object({
-            value: z.string().nullish(),
-          }),
-        }),
-        country: z.object({
-          id: z.string().nullish(),
-          dropdown: z.object({
-            value: z.string().nullish(),
-          }),
-        }),
-        type: z.object({
-          id: z.string().nullish(),
-          dropdown: z.object({
-            value: z.string().nullish(),
-          }),
-        }),
-        region: z.object({
-          id: z.string().nullish(),
-          dropdown: z.object({
-            value: z.string().nullish(),
-          }),
-        }),
+        vintage: z
+          .object({
+            id: z.string().nullish(),
+            plainText: z.string().nullish(),
+          })
+          .nullish(),
+        brand: z
+          .object({
+            id: z.string().nullish(),
+            plainText: z.string().nullish(),
+          })
+          .nullish(),
+        size: z
+          .object({
+            id: z.string().nullish(),
+            dropdown: z.object({
+              value: z.string().nullish(),
+            }),
+          })
+          .nullish(),
+        country: z
+          .object({
+            id: z.string().nullish(),
+            dropdown: z.object({
+              value: z.string().nullish(),
+            }),
+          })
+          .nullish(),
+        type: z
+          .object({
+            id: z.string().nullish(),
+            dropdown: z.object({
+              value: z.string().nullish(),
+            }),
+          })
+          .nullish(),
+        region: z
+          .object({
+            id: z.string().nullish(),
+            dropdown: z.object({
+              value: z.string().nullish(),
+            }),
+          })
+          .nullish(),
       }),
     }),
   });
