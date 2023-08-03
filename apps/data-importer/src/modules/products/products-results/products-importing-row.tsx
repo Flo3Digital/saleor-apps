@@ -78,6 +78,13 @@ export const ProductImportingRow = (props: Props) => {
         productType: props.importedModel.productCreate.type,
       },
     });
+
+    /*
+     * Add additional Mutations here for (can find these in documentation that I sent to Karim):
+     * - ProductVariantCreateMutation
+     * - Product Channel Update Mutation
+     * - Product Variant Channel Update Mutation
+     */
   }, [props.importedModel, mutate]);
 
   useEffect(() => {

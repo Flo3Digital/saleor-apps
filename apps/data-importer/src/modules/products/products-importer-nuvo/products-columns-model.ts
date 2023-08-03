@@ -13,6 +13,16 @@ const productColumns: ColumnAPI[] = [
     columnType: "string",
   },
   {
+    label: "Product External Reference",
+    key: "productCreate.externalReference",
+    columnType: "string",
+  },
+  {
+    label: "Product External Reference",
+    key: "productVariantCreate.stockLevel",
+    columnType: "string",
+  },
+  {
     label: "Product Price",
     key: "productCreate.price",
     columnType: "string",
@@ -113,6 +123,9 @@ export const getResultModelSchema = () =>
           })
           .nullish(),
       }),
+    }),
+    productVariantCreate: z.object({
+      stockLevel: z.string().nullish(),
     }),
   });
 
