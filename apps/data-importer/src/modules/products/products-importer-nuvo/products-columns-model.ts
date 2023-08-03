@@ -8,33 +8,18 @@ const productColumns: ColumnAPI[] = [
     columnType: "string",
   },
   {
-    label: "Product Type",
-    key: "productCreate.general.type",
-    columnType: "string",
-  },
-  {
     label: "Product Description",
     key: "productCreate.general.description",
     columnType: "string",
   },
   {
+    label: "Product Type",
+    key: "productCreate.general.productType",
+    columnType: "string",
+  },
+  {
     label: "Product External Reference",
     key: "productCreate.general.externalReference",
-    columnType: "string",
-  },
-  {
-    label: "Product Stock Level",
-    key: "productVariantCreate.stockLevel",
-    columnType: "string",
-  },
-  {
-    label: "Product Price",
-    key: "productCreate.general.price",
-    columnType: "string",
-  },
-  {
-    label: "Product Type",
-    key: "productCreate.general.type",
     columnType: "string",
   },
   {
@@ -67,6 +52,16 @@ const productColumns: ColumnAPI[] = [
     key: "productCreate.attributes.region",
     columnType: "string",
   },
+  {
+    label: "Product Stock Level",
+    key: "productVariantCreate.stockLevel",
+    columnType: "string",
+  },
+  {
+    label: "Product Price",
+    key: "productVariantCreate.price",
+    columnType: "string",
+  },
 ];
 
 const allColumns: ColumnAPI[] = [...productColumns];
@@ -79,10 +74,9 @@ export const getResultModelSchema = () =>
       general: z.object({
         name: z.string(),
         description: z.string().nullish(),
-        price: z.string(),
         vintage: z.string().nullish(),
         category: z.string().nullish(),
-        type: z.string(),
+        productType: z.string(),
       }),
       attributes: z.object({
         vintage: z.string().nullish(),
@@ -95,6 +89,7 @@ export const getResultModelSchema = () =>
     }),
     productVariantCreate: z.object({
       stockLevel: z.string().nullish(),
+      price: z.string(),
     }),
   });
 
