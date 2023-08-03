@@ -5,6 +5,7 @@ import { useProductCreateMutation } from "../../../../generated/graphql";
 import { ProductColumnSchema } from "../products-importer-nuvo/products-columns-model";
 import { actions, useAppBridge } from "@saleor/app-sdk/app-bridge";
 import { Button } from "@saleor/macaw-ui";
+import * as Sentry from "@sentry/nextjs";
 
 type Props = {
   importedModel: ProductColumnSchema;
@@ -98,11 +99,11 @@ export const ProductImportingRow = (props: Props) => {
       }
     }
 
-    console.log("attributes", attributes);
+    Sentry.captureMessage("Attributes");
     const productCreateMutation = {
       input: {
         ...props.importedModel.productCreate.general,
-        // attributes: [...attributes],
+        attributes: [...attributes],
         productType: props.importedModel.productCreate.general.productType,
       },
     };
