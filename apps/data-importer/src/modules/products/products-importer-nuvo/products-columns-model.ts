@@ -77,6 +77,7 @@ export const getResultModelSchema = () =>
         vintage: z.string().nullish(),
         category: z.string().nullish(),
         productType: z.string(),
+        externalReference: z.string(),
       }),
       attributes: z.object({
         vintage: z.string().nullish(),

@@ -1,7 +1,12 @@
 import { Box, TableCell, TableRow } from "@material-ui/core";
 import { Done, Error, HourglassEmpty } from "@material-ui/icons";
 import React, { useCallback, useEffect } from "react";
-import { useProductCreateMutation } from "../../../../generated/graphql";
+import {
+  useProductCreateMutation,
+  useProductUpdateMutation,
+  useProductGetByExternalReferenceQuery,
+  useProductChannelListingUpdateMutation,
+} from "../../../../generated/graphql";
 import { ProductColumnSchema } from "../products-importer-nuvo/products-columns-model";
 import { actions, useAppBridge } from "@saleor/app-sdk/app-bridge";
 import { Button } from "@saleor/macaw-ui";
@@ -53,7 +58,14 @@ const PendingStatus = () => (
 
 export const ProductImportingRow = (props: Props) => {
   const [mutationResult, mutate] = useProductCreateMutation();
-  const triggerMutation = useCallback(() => {
+  const [ProductUpdateMutationResult, ProductUpdateMutate] = useProductUpdateMutation();
+  const [queryProductResult, queryProduct] = useProductGetByExternalReferenceQuery({
+    variables: { externalReference: props.importedModel.productCreate.general.externalReference },
+  });
+  const [channelListingMutationResult, channelListingMutation] =
+    useProductChannelListingUpdateMutation();
+
+  const triggerMutation = useCallback(async () => {
     // Switch this to GraphQL Type for Attributes
     const attributes: (
       | { id: string; plainText: string }
@@ -101,22 +113,61 @@ export const ProductImportingRow = (props: Props) => {
        */
     }
 
-    Sentry.captureMessage("Attributes");
-    const productCreateMutation = {
+    Sentry.captureMessage("Product Data");
+
+    /**
+     * Grab the Product ID from the External Reference
+     */
+
+    let productId = queryProductResult.data?.product?.id;
+
+    /**
+     * If the Product ID exists, then we need to update the product instead of creating it
+     */
+    if (productId) {
+      const productUpdateMutation = {
+        id: productId,
+        input: {
+          ...props.importedModel.productCreate.general,
+          attributes: [...attributes],
+          productType: props.importedModel.productCreate.general.productType,
+        },
+      };
+
+      console.log("Product already exists - updating", productUpdateMutation);
+      ProductUpdateMutate(productUpdateMutation);
+    } else {
+      console.log("No Product ID found");
+      const productCreateMutation = {
+        input: {
+          ...props.importedModel.productCreate.general,
+          attributes: [...attributes],
+          productType: props.importedModel.productCreate.general.productType,
+        },
+      };
+
+      console.log("Mutating: ", productCreateMutation);
+      const productCreateResult = await mutate(productCreateMutation);
+
+      productId = productCreateResult?.data?.productCreate?.product?.id;
+    }
+
+    channelListingMutation({
+      id: String(productId),
       input: {
-        ...props.importedModel.productCreate.general,
-        attributes: [...attributes],
-        productType: props.importedModel.productCreate.general.productType,
+        updateChannels: [
+          {
+            channelId: "Q2hhbm5lbDoy",
+            isAvailableForPurchase: true,
+            isPublished: true,
+            visibleInListings: true,
+          },
+        ],
       },
-    };
-
-    console.log("productCreateMutation", productCreateMutation);
-    mutate(productCreateMutation);
-
-    /*
-     * Add additional Mutations here for (can find these in documentation that I sent to Karim):
+    });
+    /** 
+     *ADD Variants for pricing and inventory
      * - ProductVariantCreateMutation
-     * - Product Channel Update Mutation
      * - Product Variant Channel Update Mutation
      */
   }, [props.importedModel, mutate]);

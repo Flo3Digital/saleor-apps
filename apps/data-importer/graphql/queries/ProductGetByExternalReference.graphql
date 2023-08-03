@@ -1,0 +1,23 @@
+query ProductGetByExternalReference($externalReference: String!) {
+  product(externalReference: $externalReference) {
+    id
+    name
+    description
+    pricing {
+      priceRangeUndiscounted {
+        start {
+          gross {
+            amount
+            currency
+          }
+        }
+        stop {
+          gross {
+            amount
+            currency
+          }
+        }
+      }
+    }
+  }
+}

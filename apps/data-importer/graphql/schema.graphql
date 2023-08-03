@@ -409,6 +409,11 @@ type Query {
     slug: String
 
     """
+    External Reference of the product.
+    """
+    externalReference: String
+
+    """
     Slug of a channel for which the data should be returned.
     """
     channel: String
