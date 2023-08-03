@@ -162,19 +162,22 @@ export const ProductImportingRow = (props: Props) => {
       productId = productCreateResult?.data?.productCreate?.product?.id;
     }
 
-    channelListingMutation({
-      id: String(productId),
-      input: {
-        updateChannels: [
-          {
-            channelId: "Q2hhbm5lbDoy",
-            isAvailableForPurchase: true,
-            isPublished: true,
-            visibleInListings: true,
-          },
-        ],
-      },
-    });
+    if (productId) {
+      channelListingMutation({
+        id: String(productId),
+        input: {
+          updateChannels: [
+            {
+              channelId: "Q2hhbm5lbDoy",
+              isAvailableForPurchase: true,
+              isPublished: true,
+              visibleInListings: true,
+            },
+          ],
+        },
+      });
+    }
+
     /**
      *ADD Variants for pricing and inventory
      * - ProductVariantCreateMutation
