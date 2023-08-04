@@ -1,5 +1,5 @@
-query ProductGetByExternalReference($externalReference: String!) {
-  product(externalReference: $externalReference) {
+query ProductGetByExternalReference($externalReference: String!, $channel: String!) {
+  product(externalReference: $externalReference, channel: $channel) {
     id
     name
     description

@@ -68,7 +68,10 @@ export const ProductImportingRow = (props: Props) => {
   const [mutationResult, mutate] = useProductCreateMutation();
   const [ProductUpdateMutationResult, ProductUpdateMutate] = useProductUpdateMutation();
   const [queryProductResult, queryProduct] = useProductGetByExternalReferenceQuery({
-    variables: { externalReference: props.importedModel.productCreate.general.externalReference },
+    variables: {
+      externalReference: props.importedModel.productCreate.general.externalReference,
+      channel: "hong-kong",
+    },
   });
   const [channelListingMutationResult, channelListingMutation] =
     useProductChannelListingUpdateMutation();
@@ -96,32 +99,34 @@ export const ProductImportingRow = (props: Props) => {
           plainText: props.importedModel.productCreate.attributes.brand,
         });
       }
-      /*
-       * if (props.importedModel.productCreate.attributes.size) {
-       *   attributes.push({
-       *     id: "QXR0cmlidXRlOjQ=",
-       *     dropdown: { value: props.importedModel.productCreate.attributes.size },
-       *   });
-       * }
-       * if (props.importedModel.productCreate.attributes.country) {
-       *   attributes.push({
-       *     id: "QXR0cmlidXRlOjI=",
-       *     dropdown: { value: props.importedModel.productCreate.attributes.country },
-       *   });
-       * }
-       * if (props.importedModel.productCreate.attributes.type) {
-       *   attributes.push({
-       *     id: "QXR0cmlidXRlOjE=",
-       *     dropdown: { value: props.importedModel.productCreate.attributes.type },
-       *   });
-       * }
-       * if (props.importedModel.productCreate.attributes.region) {
-       *   attributes.push({
-       *     id: "QXR0cmlidXRlOjg=",
-       *     dropdown: { value: props.importedModel.productCreate.attributes.region },
-       *   });
-       * }
-       */
+      if (props.importedModel.productCreate.attributes.size) {
+        attributes.push({
+          id: "QXR0cmlidXRlOjQ=",
+          dropdown: { value: props.importedModel.productCreate.attributes.size },
+        });
+      }
+      if (props.importedModel.productCreate.attributes.country) {
+        attributes.push({
+          id: "QXR0cmlidXRlOjI=",
+          dropdown: { value: props.importedModel.productCreate.attributes.country },
+        });
+      }
+      if (props.importedModel.productCreate.attributes.type) {
+        attributes.push({
+          id: "QXR0cmlidXRlOjE=",
+          dropdown: { value: props.importedModel.productCreate.attributes.type },
+        });
+      }
+      if (props.importedModel.productCreate.attributes.region) {
+        attributes.push({
+          id: "QXR0cmlidXRlOjg=",
+          dropdown: { value: props.importedModel.productCreate.attributes.region },
+        });
+      }
+    }
+
+    if (!props.importedModel.productCreate.general.category) {
+      props.importedModel.productCreate.general.category = "wine";
     }
 
     Sentry.captureMessage("Product Data");

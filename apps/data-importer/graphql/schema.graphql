@@ -428,6 +428,11 @@ type Query {
     """
     filter: ProductFilterInput
 
+      """
+    Filtering options for products.
+    """
+    search: String
+
     """
     Sort products.
     """
