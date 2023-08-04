@@ -223,19 +223,24 @@ export const ProductImportingRow = (props: Props) => {
           },
         });
 
-        productVariantCreateResult.then((result) => {
-          Sentry.captureMessage("Variant Channel Listing");
-          console.log("Creating Variant Channel Listing");
-          variantChannelListingMutation({
-            id: String(result.data?.productVariantCreate?.productVariant?.id),
-            input: [
-              {
-                price: props.importedModel.productVariantCreate.price,
-                channelId: "Q2hhbm5lbDoy",
-              },
-            ],
+        productVariantCreateResult
+          .then((result) => {
+            Sentry.captureMessage("Variant Channel Listing");
+            console.log("Creating Variant Channel Listing");
+            variantChannelListingMutation({
+              id: String(result.data?.productVariantCreate?.productVariant?.id),
+              input: [
+                {
+                  price: props.importedModel.productVariantCreate.price,
+                  channelId: "Q2hhbm5lbDoy",
+                },
+              ],
+            });
+          })
+          .catch((error) => {
+            Sentry.captureMessage("Variant Channel Listing Error");
+            console.log("Variant Channel Listing Error", error);
           });
-        });
       }
     });
   }, [props.importedModel, mutate]);
