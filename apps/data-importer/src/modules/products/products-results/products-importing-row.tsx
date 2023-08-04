@@ -3,6 +3,8 @@ import { Done, Error, HourglassEmpty } from "@material-ui/icons";
 import React, { useCallback, useEffect } from "react";
 import {
   useProductCreateMutation,
+  useProductVariantCreateMutation,
+  useProductVariantChannelListingUpdateMutation,
   useProductUpdateMutation,
   useProductGetByExternalReferenceQuery,
   useProductChannelListingUpdateMutation,
@@ -66,6 +68,7 @@ const PendingStatus = () => (
  */
 export const ProductImportingRow = (props: Props) => {
   const [mutationResult, mutate] = useProductCreateMutation();
+  const [mutationVariantResult, mutateVariant] = useProductVariantCreateMutation();
   const [ProductUpdateMutationResult, ProductUpdateMutate] = useProductUpdateMutation();
   const [queryProductResult, queryProduct] = useProductGetByExternalReferenceQuery({
     variables: {
@@ -75,6 +78,8 @@ export const ProductImportingRow = (props: Props) => {
   });
   const [channelListingMutationResult, channelListingMutation] =
     useProductChannelListingUpdateMutation();
+  const [variantChannelListingMutationResult, variantChannelListingMutation] =
+    useProductVariantChannelListingUpdateMutation();
 
   /**
    * Callback function to trigger the mutation and create/update the product
@@ -180,6 +185,30 @@ export const ProductImportingRow = (props: Props) => {
             },
           ],
         },
+      });
+      const productVariantCreateResult = await mutateVariant({
+        input: {
+          attributes: [{}],
+          product: productId,
+          sku: props.importedModel.productCreate.general.externalReference,
+          trackInventory: true,
+          stocks: [
+            {
+              warehouse: "V2FyZWhvdXNlOjc1Y2MyNjg5LWE3YWItNGEyYS05NGI3LTUyNGUwOTczNWI1YQ==",
+              quantity: Number(props.importedModel.productVariantCreate.stockLevel),
+            },
+          ],
+        },
+      });
+
+      variantChannelListingMutation({
+        id: String(productVariantCreateResult.data?.productVariantCreate?.productVariant?.id),
+        input: [
+          {
+            price: props.importedModel.productVariantCreate.price,
+            channelId: "Q2hhbm5lbDoy",
+          },
+        ],
       });
     }
 
