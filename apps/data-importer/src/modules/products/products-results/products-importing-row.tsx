@@ -90,7 +90,7 @@ export const ProductImportingRow = (props: Props) => {
   /**
    * Callback function to trigger the mutation and create/update the product
    */
-  const triggerMutation = useCallback(async () => {
+  const triggerMutation = useCallback(() => {
     // Switch this to GraphQL Type for Attributes
     const attributes: (
       | { id: string; plainText: string }
