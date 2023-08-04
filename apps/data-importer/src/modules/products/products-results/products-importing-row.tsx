@@ -192,6 +192,8 @@ export const ProductImportingRow = (props: Props) => {
      */
     productMutation.then((result) => {
       Sentry.captureMessage("Product Channel Listing");
+      console.log("Creating Product Channel Listing");
+      console.log("Product ID", result.data?.productCreate?.product?.id);
       if (result.data?.productCreate?.product?.id) {
         channelListingMutation({
           id: String(result.data?.productCreate?.product?.id),
