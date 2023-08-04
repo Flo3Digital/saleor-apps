@@ -173,7 +173,7 @@ export const ProductImportingRow = (props: Props) => {
     }
 
     if (productId) {
-      channelListingMutation({
+      const channelListed = await channelListingMutation({
         id: String(productId),
         input: {
           updateChannels: [
@@ -186,6 +186,8 @@ export const ProductImportingRow = (props: Props) => {
           ],
         },
       });
+
+      console.log("Creating Variant");
       const productVariantCreateResult = await mutateVariant({
         input: {
           attributes: [{}],
@@ -201,6 +203,8 @@ export const ProductImportingRow = (props: Props) => {
         },
       });
 
+      Sentry.captureMessage("Variant Channel Listing");
+      console.log("Creating Variant Channel Listing");
       variantChannelListingMutation({
         id: String(productVariantCreateResult.data?.productVariantCreate?.productVariant?.id),
         input: [
@@ -211,15 +215,6 @@ export const ProductImportingRow = (props: Props) => {
         ],
       });
     }
-
-    /**
-     *
-     *   ADD Variants for pricing and inventory
-     *
-     * - ProductVariantCreateMutation
-     * - Product Variant Channel Update Mutation
-     *
-     */
   }, [props.importedModel, mutate]);
 
   useEffect(() => {
