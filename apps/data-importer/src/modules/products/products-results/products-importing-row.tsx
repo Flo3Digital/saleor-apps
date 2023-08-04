@@ -142,31 +142,6 @@ export const ProductImportingRow = (props: Props) => {
       props.importedModel.productCreate.general.category = "Q2F0ZWdvcnk6Mg==";
     }
 
-    /**
-     * TODO: PUT THIS BACK LATER:: If the Product ID exists, then we need to update the product instead of creating it
-     */
-    // if (productId) {
-
-    /*
-     *   const productUpdateMutation = {
-     *     id: productId,
-     *     input: {
-     *       ...props.importedModel.productCreate.general,
-     *       attributes: [...attributes],
-     *       productType: props.importedModel.productCreate.general.productType,
-     *     },
-     *   };
-     */
-
-    /*
-     *   console.log("Product already exists - updating", productUpdateMutation);
-     *   ProductUpdateMutate(productUpdateMutation);
-     */
-
-    // } else {
-
-    // }
-
     const productInput = {
       ...props.importedModel.productCreate.general,
       attributes: attributes,
