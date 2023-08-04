@@ -210,14 +210,16 @@ export const ProductImportingRow = (props: Props) => {
         });
         const productVariantCreateResult = mutateVariant({
           input: {
-            attributes: [{}],
+            attributes: [],
             product: result.data?.productCreate?.product?.id,
             sku: props.importedModel.productCreate.general.externalReference,
             trackInventory: true,
             stocks: [
               {
                 warehouse: "V2FyZWhvdXNlOjc1Y2MyNjg5LWE3YWItNGEyYS05NGI3LTUyNGUwOTczNWI1YQ==",
-                quantity: Number(props.importedModel.productVariantCreate.stockLevel),
+                quantity: Number(props.importedModel.productVariantCreate.stockLevel)
+                  ? Number(props.importedModel.productVariantCreate.stockLevel)
+                  : 0,
               },
             ],
           },
@@ -239,7 +241,7 @@ export const ProductImportingRow = (props: Props) => {
           })
           .catch((error) => {
             Sentry.captureMessage("Variant Channel Listing Error");
-            console.log("Variant Channel Listing Error", error);
+            throw error;
           });
       }
     });
