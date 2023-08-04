@@ -67,6 +67,12 @@ const PendingStatus = () => (
  * @returns
  */
 export const ProductImportingRow = (props: Props) => {
+  /**
+   *
+   * Mutations
+   *
+   *
+   */
   const [mutationResult, mutate] = useProductCreateMutation();
   const [mutationVariantResult, mutateVariant] = useProductVariantCreateMutation();
   const [ProductUpdateMutationResult, ProductUpdateMutate] = useProductUpdateMutation();
@@ -91,6 +97,9 @@ export const ProductImportingRow = (props: Props) => {
       | { id: string; dropdown: { value: string } }
     )[] = [];
 
+    /**
+     * Set the attributes for the product
+     */
     if (props.importedModel.productCreate.attributes) {
       if (props.importedModel.productCreate.attributes.vintage) {
         attributes.push({
@@ -129,92 +138,104 @@ export const ProductImportingRow = (props: Props) => {
         });
       }
     }
-
     if (!props.importedModel.productCreate.general.category) {
       props.importedModel.productCreate.general.category = "Q2F0ZWdvcnk6Mg==";
     }
 
-    Sentry.captureMessage("Product Data");
-
     /**
-     * Grab the Product ID from the External Reference
+     * TODO: PUT THIS BACK LATER:: If the Product ID exists, then we need to update the product instead of creating it
      */
-    let productId = queryProductResult.data?.product?.id;
+    // if (productId) {
 
-    /**
-     * If the Product ID exists, then we need to update the product instead of creating it
+    /*
+     *   const productUpdateMutation = {
+     *     id: productId,
+     *     input: {
+     *       ...props.importedModel.productCreate.general,
+     *       attributes: [...attributes],
+     *       productType: props.importedModel.productCreate.general.productType,
+     *     },
+     *   };
      */
-    if (productId) {
-      const productUpdateMutation = {
-        id: productId,
-        input: {
-          ...props.importedModel.productCreate.general,
-          attributes: [...attributes],
-          productType: props.importedModel.productCreate.general.productType,
-        },
-      };
 
-      console.log("Product already exists - updating", productUpdateMutation);
-      ProductUpdateMutate(productUpdateMutation);
+    /*
+     *   console.log("Product already exists - updating", productUpdateMutation);
+     *   ProductUpdateMutate(productUpdateMutation);
+     */
+
+    // } else {
+
+    // }
+
+    const productInput = {
+      ...props.importedModel.productCreate.general,
+      attributes: attributes,
+      productType: props.importedModel.productCreate.general.productType,
+    };
+
+    Sentry.captureMessage("Product ID");
+    console.log(queryProductResult.data?.product?.id);
+
+    let productMutation: Promise<any>;
+
+    if (queryProductResult.data?.product?.id) {
+      productMutation = ProductUpdateMutate({
+        id: queryProductResult.data?.product?.id,
+        input: productInput,
+      });
     } else {
-      console.log("No Product ID found");
-      const productCreateMutation = {
-        input: {
-          ...props.importedModel.productCreate.general,
-          attributes: attributes,
-          productType: props.importedModel.productCreate.general.productType,
-        },
-      };
-
-      console.log("Mutating New Product: ", productCreateMutation);
-      const productCreateResult = await mutate(productCreateMutation);
-
-      productId = productCreateResult?.data?.productCreate?.product?.id;
+      productMutation = mutate({ input: productInput });
     }
 
-    if (productId) {
-      const channelListed = await channelListingMutation({
-        id: String(productId),
-        input: {
-          updateChannels: [
-            {
-              channelId: "Q2hhbm5lbDoy",
-              isAvailableForPurchase: true,
-              isPublished: true,
-              visibleInListings: true,
-            },
-          ],
-        },
-      });
-
-      console.log("Creating Variant");
-      const productVariantCreateResult = await mutateVariant({
-        input: {
-          attributes: [{}],
-          product: productId,
-          sku: props.importedModel.productCreate.general.externalReference,
-          trackInventory: true,
-          stocks: [
-            {
-              warehouse: "V2FyZWhvdXNlOjc1Y2MyNjg5LWE3YWItNGEyYS05NGI3LTUyNGUwOTczNWI1YQ==",
-              quantity: Number(props.importedModel.productVariantCreate.stockLevel),
-            },
-          ],
-        },
-      });
-
-      Sentry.captureMessage("Variant Channel Listing");
-      console.log("Creating Variant Channel Listing");
-      variantChannelListingMutation({
-        id: String(productVariantCreateResult.data?.productVariantCreate?.productVariant?.id),
-        input: [
-          {
-            price: props.importedModel.productVariantCreate.price,
-            channelId: "Q2hhbm5lbDoy",
+    /**
+     * If the product is created, then we need to create the channel listing and variant
+     */
+    productMutation.then((result) => {
+      Sentry.captureMessage("Product Channel Listing");
+      if (result.data?.productCreate?.product?.id) {
+        channelListingMutation({
+          id: String(result.data?.productCreate?.product?.id),
+          input: {
+            updateChannels: [
+              {
+                channelId: "Q2hhbm5lbDoy",
+                isAvailableForPurchase: true,
+                isPublished: true,
+                visibleInListings: true,
+              },
+            ],
           },
-        ],
-      });
-    }
+        });
+        const productVariantCreateResult = mutateVariant({
+          input: {
+            attributes: [{}],
+            product: result.data?.productCreate?.product?.id,
+            sku: props.importedModel.productCreate.general.externalReference,
+            trackInventory: true,
+            stocks: [
+              {
+                warehouse: "V2FyZWhvdXNlOjc1Y2MyNjg5LWE3YWItNGEyYS05NGI3LTUyNGUwOTczNWI1YQ==",
+                quantity: Number(props.importedModel.productVariantCreate.stockLevel),
+              },
+            ],
+          },
+        });
+
+        productVariantCreateResult.then((result) => {
+          Sentry.captureMessage("Variant Channel Listing");
+          console.log("Creating Variant Channel Listing");
+          variantChannelListingMutation({
+            id: String(result.data?.productVariantCreate?.productVariant?.id),
+            input: [
+              {
+                price: props.importedModel.productVariantCreate.price,
+                channelId: "Q2hhbm5lbDoy",
+              },
+            ],
+          });
+        });
+      }
+    });
   }, [props.importedModel, mutate]);
 
   useEffect(() => {
