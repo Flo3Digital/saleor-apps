@@ -126,7 +126,7 @@ export const ProductImportingRow = (props: Props) => {
     }
 
     if (!props.importedModel.productCreate.general.category) {
-      props.importedModel.productCreate.general.category = "wine";
+      props.importedModel.productCreate.general.category = "Q2F0ZWdvcnk6Mg==";
     }
 
     Sentry.captureMessage("Product Data");
@@ -184,9 +184,12 @@ export const ProductImportingRow = (props: Props) => {
     }
 
     /**
-     *ADD Variants for pricing and inventory
+     *
+     *   ADD Variants for pricing and inventory
+     *
      * - ProductVariantCreateMutation
      * - Product Variant Channel Update Mutation
+     *
      */
   }, [props.importedModel, mutate]);
 
