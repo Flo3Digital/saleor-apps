@@ -8,9 +8,11 @@ import {
   useProductUpdateMutation,
   useProductGetByExternalReferenceQuery,
   useProductChannelListingUpdateMutation,
+  ProductGetByExternalReferenceDocument,
 } from "../../../../generated/graphql";
 import { ProductColumnSchema } from "../products-importer-nuvo/products-columns-model";
 import { actions, useAppBridge } from "@saleor/app-sdk/app-bridge";
+import { GraphQLClient } from "../../../lib/graphql-client";
 import { Button } from "@saleor/macaw-ui";
 import * as Sentry from "@sentry/nextjs";
 
@@ -71,7 +73,6 @@ export const ProductImportingRow = (props: Props) => {
    *
    * Mutations
    *
-   *
    */
   const [mutationResult, mutate] = useProductCreateMutation();
   const [mutationVariantResult, mutateVariant] = useProductVariantCreateMutation();
@@ -85,11 +86,12 @@ export const ProductImportingRow = (props: Props) => {
     useProductChannelListingUpdateMutation();
   const [variantChannelListingMutationResult, variantChannelListingMutation] =
     useProductVariantChannelListingUpdateMutation();
+  const client = GraphQLClient();
 
   /**
    * Callback function to trigger the mutation and create/update the product
    */
-  const triggerMutation = useCallback(() => {
+  const triggerMutation = useCallback(async () => {
     // Switch this to GraphQL Type for Attributes
     const attributes: (
       | { id: string; plainText: string }
@@ -147,14 +149,20 @@ export const ProductImportingRow = (props: Props) => {
       productType: props.importedModel.productCreate.general.productType,
     };
 
-    Sentry.captureMessage("Product ID");
-    console.log(queryProductResult.data?.product?.id);
-
     let productMutation: Promise<any>;
 
-    if (queryProductResult.data?.product?.id) {
+    let result = await client
+      .query(ProductGetByExternalReferenceDocument, {
+        externalReference: props.importedModel.productCreate.general.externalReference,
+      })
+      .toPromise();
+    const product = result?.data?.product;
+
+    console.log("Result", result);
+    console.log("Product", product);
+    if (product?.id) {
       productMutation = ProductUpdateMutate({
-        id: queryProductResult.data?.product?.id,
+        id: product.id,
         input: productInput,
       });
     } else {
@@ -169,6 +177,8 @@ export const ProductImportingRow = (props: Props) => {
       console.log("Creating Product Channel Listing");
       console.log("Product ID", result.data?.productCreate?.product?.id);
       if (result.data?.productCreate?.product?.id) {
+        console.log("So, we have a product ID...");
+
         channelListingMutation({
           id: String(result.data?.productCreate?.product?.id),
           input: {
