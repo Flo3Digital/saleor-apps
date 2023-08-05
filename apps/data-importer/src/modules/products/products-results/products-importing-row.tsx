@@ -79,7 +79,6 @@ export const ProductImportingRow = (props: Props) => {
   const [queryProductResult, queryProduct] = useProductGetByExternalReferenceQuery({
     variables: {
       externalReference: props.importedModel.productCreate.general.externalReference,
-      channel: "hong-kong",
     },
   });
   const [channelListingMutationResult, channelListingMutation] =
