@@ -208,7 +208,11 @@ export const ProductImportingRow = (props: Props) => {
               id: String(result.data?.productVariantCreate?.productVariant?.id),
               input: [
                 {
-                  price: props.importedModel.productVariantCreate.price,
+                  price: Number(
+                    Number(props.importedModel.productVariantCreate.price)
+                      ? Number(props.importedModel.productVariantCreate.price)
+                      : 0
+                  ),
                   channelId: "Q2hhbm5lbDoy",
                 },
               ],
