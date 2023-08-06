@@ -1,0 +1,6 @@
+query ProductVariantBySku($sku: String!, $channel: String) {
+  productVariant(sku: $sku, channel: $channel) {
+    ...ProductVariantDetailsFragment
+  }
+}
+

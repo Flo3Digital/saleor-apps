@@ -1,12 +1,19 @@
-mutation ProductChannelListingUpdate($input: ProductChannelListingUpdateInput!, $id: ID!) {
-productChannelListingUpdate(input: $input, id: $id) {
+mutation ProductChannelListingUpdate(
+  $productId: ID!
+  $productChannelListingUpdateInput: ProductChannelListingUpdateInput!
+) {
+  productChannelListingUpdate(id: $productId, input: $productChannelListingUpdateInput) {
     product {
       id
+      name
+      channel
     }
     errors {
-      code
-      message
       field
+      message
+    }
+    productChannelListingErrors {
+      message
     }
   }
 }

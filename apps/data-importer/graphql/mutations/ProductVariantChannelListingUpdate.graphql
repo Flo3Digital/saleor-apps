@@ -1,5 +1,5 @@
-mutation ProductVariantChannelListingUpdate($id: ID!, $input: [ProductVariantChannelListingAddInput!]!) {
-  productVariantChannelListingUpdate(input: $input, id: $id) {
+mutation ProductVariantChannelListingUpdate($productVariantId: ID!, $input: [ProductVariantChannelListingAddInput!]!) {
+  productVariantChannelListingUpdate(input: $input, id: $productVariantId) {
     variant {
       id
     }

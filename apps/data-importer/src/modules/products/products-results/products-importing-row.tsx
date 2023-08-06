@@ -1,15 +1,16 @@
 import { Box, TableCell, TableRow } from "@material-ui/core";
 import { Done, Error, HourglassEmpty } from "@material-ui/icons";
 import React, { useCallback, useEffect } from "react";
+import { useProductCreateMutation } from "../../../../generated/graphql";
 import {
-  useProductCreateMutation,
-  useProductVariantCreateMutation,
-  useProductVariantChannelListingUpdateMutation,
-  useProductUpdateMutation,
-  useProductGetByExternalReferenceQuery,
-  useProductChannelListingUpdateMutation,
-  ProductGetByExternalReferenceDocument,
-} from "../../../../generated/graphql";
+  getProductByExternalReference,
+  createProduct,
+  updateProduct,
+  createProductVariant,
+  updateProductVariant,
+  setChannelOnProduct,
+  setChannelOnProductVariant,
+} from "../../../models/Product";
 import { ProductColumnSchema } from "../products-importer-nuvo/products-columns-model";
 import { actions, useAppBridge } from "@saleor/app-sdk/app-bridge";
 import { GraphQLClient } from "../../../lib/graphql-client";
@@ -75,17 +76,15 @@ export const ProductImportingRow = (props: Props) => {
    *
    */
   const [mutationResult, mutate] = useProductCreateMutation();
-  const [mutationVariantResult, mutateVariant] = useProductVariantCreateMutation();
-  const [ProductUpdateMutationResult, ProductUpdateMutate] = useProductUpdateMutation();
-  const [queryProductResult, queryProduct] = useProductGetByExternalReferenceQuery({
-    variables: {
-      externalReference: props.importedModel.productCreate.general.externalReference,
-    },
-  });
-  const [channelListingMutationResult, channelListingMutation] =
-    useProductChannelListingUpdateMutation();
-  const [variantChannelListingMutationResult, variantChannelListingMutation] =
-    useProductVariantChannelListingUpdateMutation();
+  // const [ProductUpdateMutationResult, ProductUpdateMutate] = useProductUpdateMutation();
+
+  /*
+   * const [mutationVariantResult, mutateVariant] = useProductVariantCreateMutation();
+   * const [channelListingMutationResult, channelListingMutation] =
+   *   useProductChannelListingUpdateMutation();
+   * const [variantChannelListingMutationResult, variantChannelListingMutation] =
+   *   useProductVariantChannelListingUpdateMutation();
+   */
   const client = GraphQLClient();
 
   /**
@@ -149,53 +148,38 @@ export const ProductImportingRow = (props: Props) => {
       productType: props.importedModel.productCreate.general.productType,
     };
 
-    let productMutation: Promise<any>;
+    let product = await getProductByExternalReference(
+      props.importedModel.productCreate.general.externalReference,
+      client
+    );
 
-    let result = await client
-      .query(ProductGetByExternalReferenceDocument, {
-        externalReference: props.importedModel.productCreate.general.externalReference,
-      })
-      .toPromise();
-    const product = result?.data?.product;
-
-    console.log("Result", result);
-    console.log("Product", product);
-    if (product?.id) {
-      productMutation = ProductUpdateMutate({
-        id: product.id,
-        input: productInput,
-      });
+    if (!product?.id) {
+      // create the product if we didn't find it
+      try {
+        product = await createProduct(productInput, client);
+        setChannelOnProduct("Q2hhbm5lbDoy", product, true, true, true, client);
+      } catch (error) {
+        Sentry.captureException(error);
+        process.exit();
+      }
     } else {
-      productMutation = mutate({ input: productInput });
+      // else update it
+      try {
+        product = await updateProduct(product.id, productInput, client);
+        setChannelOnProduct("Q2hhbm5lbDoy", product, true, true, true, client);
+      } catch (error) {
+        Sentry.captureException(error);
+        process.exit();
+      }
     }
 
-    /**
-     * If the product is created, then we need to create the channel listing and variant
-     */
-    productMutation.then((result) => {
-      Sentry.captureMessage("Product Channel Listing");
-      console.log("Creating Product Channel Listing");
-      console.log("Product ID", result.data?.productCreate?.product?.id);
-      if (result.data?.productCreate?.product?.id) {
-        console.log("So, we have a product ID...");
-
-        channelListingMutation({
-          id: String(result.data?.productCreate?.product?.id),
-          input: {
-            updateChannels: [
-              {
-                channelId: "Q2hhbm5lbDoy",
-                isAvailableForPurchase: true,
-                isPublished: true,
-                visibleInListings: true,
-              },
-            ],
-          },
-        });
-        const productVariantCreateResult = mutateVariant({
-          input: {
+    // If we managed to create or find the product then set the channel on it and create the variant
+    if (product?.id) {
+      try {
+        let productVariant = await createProductVariant(
+          {
             attributes: [],
-            product: result.data?.productCreate?.product?.id,
+            product: product.id,
             sku: props.importedModel.productCreate.general.externalReference,
             trackInventory: true,
             stocks: [
@@ -207,32 +191,24 @@ export const ProductImportingRow = (props: Props) => {
               },
             ],
           },
-        });
+          client
+        );
 
-        productVariantCreateResult
-          .then((result) => {
-            Sentry.captureMessage("Variant Channel Listing");
-            console.log("Creating Variant Channel Listing");
-            variantChannelListingMutation({
-              id: String(result.data?.productVariantCreate?.productVariant?.id),
-              input: [
-                {
-                  price: Number(
-                    Number(props.importedModel.productVariantCreate.price)
-                      ? Number(props.importedModel.productVariantCreate.price)
-                      : 0
-                  ),
-                  channelId: "Q2hhbm5lbDoy",
-                },
-              ],
-            });
-          })
-          .catch((error) => {
-            Sentry.captureMessage("Variant Channel Listing Error");
-            throw error;
-          });
+        setChannelOnProductVariant(
+          "Q2hhbm5lbDoy",
+          productVariant,
+          Number(
+            Number(props.importedModel.productVariantCreate.price)
+              ? Number(props.importedModel.productVariantCreate.price)
+              : 0
+          ),
+          client
+        );
+      } catch (error) {
+        Sentry.captureException(error);
+        process.exit();
       }
-    });
+    }
   }, [props.importedModel, mutate]);
 
   useEffect(() => {

@@ -1,0 +1,11 @@
+mutation updateProduct($id: ID!, $productInput: ProductInput!) {
+  productUpdate(id: $id, input: $productInput) {
+    product {
+      ...ProductDetailsFragment
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

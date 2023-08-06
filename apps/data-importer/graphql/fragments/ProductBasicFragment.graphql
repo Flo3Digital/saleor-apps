@@ -1,0 +1,5 @@
+fragment ProductBasicFragment on Product {
+  id
+  name
+  slug
+}

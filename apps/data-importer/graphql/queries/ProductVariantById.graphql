@@ -1,0 +1,6 @@
+query ProductVariantById($id: ID!, $channel: String) {
+  productVariant(id: $id, channel: $channel) {
+    ...ProductVariantDetailsFragment
+  }
+}
+

@@ -1,0 +1,27 @@
+fragment ProductVariantDetailsFragment on ProductVariant {
+  id
+  sku
+  name
+  quantityAvailable
+  attributes {
+    ...SelectedAttributeDetailsFragment
+  }
+  media {
+    ...ProductMediaFragment
+  }
+  product {
+    ...ProductDetailsForVariantFragment
+  }
+  stocks {
+    quantity
+    quantityAllocated
+    quantityReserved
+  }
+  pricing {
+    price {
+      gross {
+        ...PriceFragment
+      }
+    }
+  }
+}

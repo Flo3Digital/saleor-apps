@@ -1,0 +1,49 @@
+fragment ProductDetailsForVariantFragment on Product {
+  id
+  name
+  slug
+  description
+  seoDescription
+  seoTitle
+  isAvailableForPurchase
+  chargeTaxes
+  created 
+  productType {
+    id
+    name
+    hasVariants
+    isShippingRequired
+    taxType {
+      description
+      taxCode
+    }
+  }
+  updatedAt
+  metadata {
+    key
+    value
+  }
+  privateMetadata {
+    key
+    value
+  }
+ 
+  pricing {
+    priceRange {
+      start {
+        gross {
+          ...PriceFragment
+        }
+      }
+    }
+  }
+  media {
+    ...ProductMediaFragment
+  }
+  thumbnail {
+    ...ImageFragment
+  }
+  category {
+    name
+  }
+}

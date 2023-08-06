@@ -1,0 +1,12 @@
+mutation createProductVariant($input: ProductVariantCreateInput!) {
+  productVariantCreate(input: $input) {
+    productVariant {
+      ...ProductVariantDetailsFragment
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}

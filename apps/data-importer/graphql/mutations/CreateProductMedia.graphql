@@ -1,0 +1,11 @@
+mutation CreateProductMedia($productId: ID!, $image: Upload) {
+  productMediaCreate(input: { product: $productId, image: $image }) {
+    errors {
+      code
+      message
+    }
+    media {
+      ...ProductMediaFragment
+    }
+  }
+}

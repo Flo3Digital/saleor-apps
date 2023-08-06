@@ -1,0 +1,5 @@
+query ProductByExternalReference($externalReference: String!) {
+  product(externalReference: $externalReference) {
+    ...ProductDetailsFragment
+  }
+}
