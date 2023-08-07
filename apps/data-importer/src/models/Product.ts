@@ -10,7 +10,6 @@ import {
   ProductByExternalReferenceDocument,
   UpdateProductDocument,
   ProductVariantInput,
-  ProductDetailsForVariantFragmentFragment,
   ProductBasicFragmentFragment,
   ProductVariantCreateInput,
   ProductChannelListingUpdateDocument,
@@ -18,11 +17,7 @@ import {
 } from "./../../generated/graphql";
 import { Client } from "urql";
 
-type ProductResponse =
-  | ProductDetailsFragmentFragment
-  | ProductDetailsForVariantFragmentFragment
-  | ProductBasicFragmentFragment
-  | null;
+type ProductResponse = ProductDetailsFragmentFragment | null;
 type ProductVariantResponse = ProductVariantDetailsFragmentFragment | null;
 
 /**

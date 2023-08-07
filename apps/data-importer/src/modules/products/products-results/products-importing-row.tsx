@@ -156,8 +156,8 @@ export const ProductImportingRow = (props: Props) => {
     if (!product?.id) {
       // create the product if we didn't find it
       try {
-        (productInput.productType = props.importedModel.productCreate.general.productType),
-          (product = await createProduct(productInput, client));
+        productInput.productType = props.importedModel.productCreate.general.productType;
+        product = await createProduct(productInput, client);
         setChannelOnProduct("Q2hhbm5lbDoy", product, true, true, true, client);
       } catch (error) {
         Sentry.captureException(error);
@@ -173,7 +173,7 @@ export const ProductImportingRow = (props: Props) => {
     }
 
     // If we managed to create or find the product then set the channel on it and create the variant
-    if (product?.id) {
+    if (product?.id && product?.variants && product?.variants?.length < 1) {
       try {
         let productVariant = await createProductVariant(
           {
@@ -194,7 +194,7 @@ export const ProductImportingRow = (props: Props) => {
         );
 
         if (productVariant) {
-          setChannelOnProduct("Q2hhbm5lbDoy", productVariant?.product, true, true, true, client);
+          setChannelOnProduct("Q2hhbm5lbDoy", product, true, true, true, client);
           setChannelOnProductVariant(
             "Q2hhbm5lbDoy",
             productVariant,
