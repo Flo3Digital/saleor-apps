@@ -214,6 +214,7 @@ export const ProductImportingRow = (props: Props) => {
           ),
           client
         );
+        processing = false;
         processed = true;
       } catch (error) {
         Sentry.captureException(error);
@@ -239,6 +240,7 @@ export const ProductImportingRow = (props: Props) => {
           ),
           client
         );
+        processing = false;
         processed = true;
       } catch (error) {
         Sentry.captureException(error);
@@ -251,15 +253,15 @@ export const ProductImportingRow = (props: Props) => {
     if (props.doImport) {
       triggerMutation();
     }
-  }, [props.doImport, triggerMutation]);
+  }, [props.doImport, processing, processed, triggerMutation]);
 
   const renderStatus = () => {
-    if (processed) {
-      return <ImportedStatus id="Done" />;
-    } else if (processing) {
+    if (processing) {
       return <PendingStatus />;
     }
-    return <PendingStatus />;
+    if (processed) {
+      return <ImportedStatus id="Done" />;
+    }
   };
 
   return (
