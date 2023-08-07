@@ -1,7 +1,7 @@
 import { Box, TableCell, TableRow } from "@material-ui/core";
 import { Done, Error, HourglassEmpty } from "@material-ui/icons";
 import React, { useCallback, useEffect } from "react";
-import { useProductCreateMutation, AttributeValueInput } from "../../../../generated/graphql";
+import { AttributeValueInput } from "../../../../generated/graphql";
 import {
   getProductByExternalReference,
   createProduct,
