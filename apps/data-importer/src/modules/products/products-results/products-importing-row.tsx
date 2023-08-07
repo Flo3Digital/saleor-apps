@@ -1,7 +1,10 @@
 import { Box, TableCell, TableRow } from "@material-ui/core";
 import { Done, Error, HourglassEmpty } from "@material-ui/icons";
 import React, { useCallback, useEffect } from "react";
-import { AttributeValueInput } from "../../../../generated/graphql";
+import {
+  AttributeValueInput,
+  ProductVariantDetailsFragmentFragment,
+} from "../../../../generated/graphql";
 import {
   getProductByExternalReference,
   createProduct,
@@ -21,6 +24,9 @@ type Props = {
   importedModel: ProductColumnSchema;
   doImport: boolean;
 };
+
+type ProductResponse = ProductDetailsFragmentFragment | null;
+type ProductVariantResponse = ProductVariantDetailsFragmentFragment | null;
 
 const ImportedStatus = ({ id }: { id: string }) => {
   const { appBridge } = useAppBridge();
@@ -129,11 +135,6 @@ export const ProductImportingRow = (props: Props) => {
       props.importedModel.productCreate.general.category = "Q2F0ZWdvcnk6Mg==";
     }
 
-    const productInput = {
-      ...props.importedModel.productCreate.general,
-      attributes: attributes,
-    };
-
     let product = await getProductByExternalReference(
       props.importedModel.productCreate.general.externalReference,
       client
@@ -142,8 +143,16 @@ export const ProductImportingRow = (props: Props) => {
     if (!product?.id) {
       // create the product if we didn't find it
       try {
-        productInput.productType = props.importedModel.productCreate.general.productType;
-        product = await createProduct(productInput, client);
+        const productCreateInput = {
+          name: props.importedModel.productCreate.general.name,
+          description: props.importedModel.productCreate.general.description,
+          category: props.importedModel.productCreate.general.category,
+          productType: props.importedModel.productCreate.general.productType,
+          externalReference: props.importedModel.productCreate.general.externalReference,
+          attributes: attributes,
+        };
+
+        product = await createProduct(productCreateInput, client);
         setChannelOnProduct("Q2hhbm5lbDoy", product, true, true, true, client);
       } catch (error) {
         Sentry.captureException(error);
@@ -151,17 +160,26 @@ export const ProductImportingRow = (props: Props) => {
     } else {
       // else update it
       try {
-        product = await updateProduct(product.id, productInput, client);
+        const productUpdateInput = {
+          name: props.importedModel.productCreate.general.name,
+          description: props.importedModel.productCreate.general.description,
+          category: props.importedModel.productCreate.general.category,
+          attributes: attributes,
+        };
+
+        product = await updateProduct(product.id, productUpdateInput, client);
         setChannelOnProduct("Q2hhbm5lbDoy", product, true, true, true, client);
       } catch (error) {
         Sentry.captureException(error);
       }
     }
 
+    let productVariant: ProductVariantResponse;
     // If we managed to create or find the product then set the channel on it and create the variant
+
     if (product?.id && !product?.variants) {
       try {
-        let productVariant = await createProductVariant(
+        productVariant = await createProductVariant(
           {
             attributes: [],
             product: product.id,
@@ -179,18 +197,40 @@ export const ProductImportingRow = (props: Props) => {
           client
         );
 
-        if (productVariant) {
-          setChannelOnProductVariant(
-            "Q2hhbm5lbDoy",
-            productVariant,
-            Number(
-              Number(props.importedModel.productVariantCreate.price)
-                ? Number(props.importedModel.productVariantCreate.price)
-                : 0
-            ),
-            client
-          );
-        }
+        setChannelOnProductVariant(
+          "Q2hhbm5lbDoy",
+          productVariant,
+          Number(
+            Number(props.importedModel.productVariantCreate.price)
+              ? Number(props.importedModel.productVariantCreate.price)
+              : 0
+          ),
+          client
+        );
+      } catch (error) {
+        Sentry.captureException(error);
+      }
+    } else if (product?.id && product?.variants) {
+      try {
+        productVariant = await updateProductVariant(
+          product.variants[0].id,
+          {
+            attributes: [],
+            trackInventory: true,
+          },
+          client
+        );
+
+        setChannelOnProductVariant(
+          "Q2hhbm5lbDoy",
+          productVariant,
+          Number(
+            Number(props.importedModel.productVariantCreate.price)
+              ? Number(props.importedModel.productVariantCreate.price)
+              : 0
+          ),
+          client
+        );
       } catch (error) {
         Sentry.captureException(error);
       }

@@ -74,7 +74,6 @@ export const getResultModelSchema = () =>
       general: z.object({
         name: z.string(),
         description: z.string().nullish(),
-        vintage: z.string().nullish(),
         category: z.string().nullish(),
         productType: z.string(),
         externalReference: z.string(),
