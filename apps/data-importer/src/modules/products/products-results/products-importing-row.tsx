@@ -146,7 +146,6 @@ export const ProductImportingRow = (props: Props) => {
     const productInput = {
       ...props.importedModel.productCreate.general,
       attributes: attributes,
-      productType: props.importedModel.productCreate.general.productType,
     };
 
     let product = await getProductByExternalReference(
@@ -157,7 +156,8 @@ export const ProductImportingRow = (props: Props) => {
     if (!product?.id) {
       // create the product if we didn't find it
       try {
-        product = await createProduct(productInput, client);
+        (productInput.productType = props.importedModel.productCreate.general.productType),
+          (product = await createProduct(productInput, client));
         setChannelOnProduct("Q2hhbm5lbDoy", product, true, true, true, client);
       } catch (error) {
         Sentry.captureException(error);
