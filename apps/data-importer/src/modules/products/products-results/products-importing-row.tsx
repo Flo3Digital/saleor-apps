@@ -173,7 +173,7 @@ export const ProductImportingRow = (props: Props) => {
     }
 
     // If we managed to create or find the product then set the channel on it and create the variant
-    if (product?.id && product?.variants && product?.variants?.length < 1) {
+    if (product?.id && !product?.variants && product?.variants?.length > 0) {
       try {
         let productVariant = await createProductVariant(
           {
@@ -194,7 +194,6 @@ export const ProductImportingRow = (props: Props) => {
         );
 
         if (productVariant) {
-          setChannelOnProduct("Q2hhbm5lbDoy", product, true, true, true, client);
           setChannelOnProductVariant(
             "Q2hhbm5lbDoy",
             productVariant,
