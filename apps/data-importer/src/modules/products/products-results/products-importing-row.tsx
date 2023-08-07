@@ -1,7 +1,7 @@
 import { Box, TableCell, TableRow } from "@material-ui/core";
 import { Done, Error, HourglassEmpty } from "@material-ui/icons";
 import React, { useCallback, useEffect } from "react";
-import { useProductCreateMutation } from "../../../../generated/graphql";
+import { useProductCreateMutation, AttributeValueInput } from "../../../../generated/graphql";
 import {
   getProductByExternalReference,
   createProduct,
@@ -92,19 +92,18 @@ export const ProductImportingRow = (props: Props) => {
    */
   const triggerMutation = useCallback(async () => {
     // Switch this to GraphQL Type for Attributes
-    const attributes: (
-      | { id: string; plainText: string }
-      | { id: string; dropdown: { value: string } }
-    )[] = [];
+    const attributes: AttributeValueInput[] = [];
 
     /**
      * Set the attributes for the product
+     *
+     * TODO: MAKE ANOTHER LIBRARY FUNCTION THAT GETS ALL ATTRIBUTES FROM THE GRAPHQL API AND THEN MAPS THESE VALUES TO THE CORRECT ID
      */
     if (props.importedModel.productCreate.attributes) {
       if (props.importedModel.productCreate.attributes.vintage) {
         attributes.push({
           id: "QXR0cmlidXRlOjU=",
-          plainText: props.importedModel.productCreate.attributes.vintage,
+          numeric: props.importedModel.productCreate.attributes.vintage,
         });
       }
       if (props.importedModel.productCreate.attributes.brand) {
@@ -113,30 +112,32 @@ export const ProductImportingRow = (props: Props) => {
           plainText: props.importedModel.productCreate.attributes.brand,
         });
       }
-      if (props.importedModel.productCreate.attributes.size) {
-        attributes.push({
-          id: "QXR0cmlidXRlOjQ=",
-          dropdown: { value: props.importedModel.productCreate.attributes.size },
-        });
-      }
-      if (props.importedModel.productCreate.attributes.country) {
-        attributes.push({
-          id: "QXR0cmlidXRlOjI=",
-          dropdown: { value: props.importedModel.productCreate.attributes.country },
-        });
-      }
-      if (props.importedModel.productCreate.attributes.type) {
-        attributes.push({
-          id: "QXR0cmlidXRlOjE=",
-          dropdown: { value: props.importedModel.productCreate.attributes.type },
-        });
-      }
-      if (props.importedModel.productCreate.attributes.region) {
-        attributes.push({
-          id: "QXR0cmlidXRlOjg=",
-          dropdown: { value: props.importedModel.productCreate.attributes.region },
-        });
-      }
+      /*
+       * if (props.importedModel.productCreate.attributes.size) {
+       *   attributes.push({
+       *     id: "QXR0cmlidXRlOjQ=",
+       *     dropdown: { value: props.importedModel.productCreate.attributes.size },
+       *   });
+       * }
+       * if (props.importedModel.productCreate.attributes.country) {
+       *   attributes.push({
+       *     id: "QXR0cmlidXRlOjI=",
+       *     dropdown: { value: props.importedModel.productCreate.attributes.country },
+       *   });
+       * }
+       * if (props.importedModel.productCreate.attributes.type) {
+       *   attributes.push({
+       *     id: "QXR0cmlidXRlOjE=",
+       *     dropdown: { value: props.importedModel.productCreate.attributes.type },
+       *   });
+       * }
+       * if (props.importedModel.productCreate.attributes.region) {
+       *   attributes.push({
+       *     id: "QXR0cmlidXRlOjg=",
+       *     dropdown: { value: props.importedModel.productCreate.attributes.region },
+       *   });
+       * }
+       */
     }
     if (!props.importedModel.productCreate.general.category) {
       props.importedModel.productCreate.general.category = "Q2F0ZWdvcnk6Mg==";
@@ -160,7 +161,6 @@ export const ProductImportingRow = (props: Props) => {
         setChannelOnProduct("Q2hhbm5lbDoy", product, true, true, true, client);
       } catch (error) {
         Sentry.captureException(error);
-        process.exit();
       }
     } else {
       // else update it
@@ -169,7 +169,6 @@ export const ProductImportingRow = (props: Props) => {
         setChannelOnProduct("Q2hhbm5lbDoy", product, true, true, true, client);
       } catch (error) {
         Sentry.captureException(error);
-        process.exit();
       }
     }
 
@@ -194,19 +193,21 @@ export const ProductImportingRow = (props: Props) => {
           client
         );
 
-        setChannelOnProductVariant(
-          "Q2hhbm5lbDoy",
-          productVariant,
-          Number(
-            Number(props.importedModel.productVariantCreate.price)
-              ? Number(props.importedModel.productVariantCreate.price)
-              : 0
-          ),
-          client
-        );
+        if (productVariant) {
+          setChannelOnProduct("Q2hhbm5lbDoy", productVariant?.product, true, true, true, client);
+          setChannelOnProductVariant(
+            "Q2hhbm5lbDoy",
+            productVariant,
+            Number(
+              Number(props.importedModel.productVariantCreate.price)
+                ? Number(props.importedModel.productVariantCreate.price)
+                : 0
+            ),
+            client
+          );
+        }
       } catch (error) {
         Sentry.captureException(error);
-        process.exit();
       }
     }
   }, [props.importedModel, mutate]);

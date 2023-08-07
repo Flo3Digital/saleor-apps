@@ -428,7 +428,7 @@ type Query {
     """
     filter: ProductFilterInput
 
-      """
+    """
     Filtering options for products.
     """
     search: String
@@ -4909,9 +4909,7 @@ type Product implements Node & ObjectWithMetadata {
   List of images for the product.
   """
   images: [ProductImage!]
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use the `media` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use the `media` field instead.")
 
   """
   List of collections for the product. Requires the following permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS.
@@ -5510,6 +5508,11 @@ type AttributeValue implements Node {
   file: File
 
   """
+  Rich text format. For reference see https://editorjs.io/
+  """
+  plainText: String
+
+  """
   Represents the text of the attribute value, includes formatting.
 
   Rich text format. For reference see https://editorjs.io/
@@ -6076,9 +6079,7 @@ type ProductVariant implements Node & ObjectWithMetadata {
   List of images for the product variant.
   """
   images: [ProductImage!]
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use the `media` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use the `media` field instead.")
 
   """
   List of media for the product variant.
@@ -9145,8 +9146,7 @@ type ShippingMethod implements Node & ObjectWithMetadata {
   """
   Type of the shipping method.
   """
-  type: ShippingMethodTypeEnum
-    @deprecated(reason: "This field will be removed in Saleor 4.0.")
+  type: ShippingMethodTypeEnum @deprecated(reason: "This field will be removed in Saleor 4.0.")
 
   """
   Shipping method name.
@@ -9173,14 +9173,12 @@ type ShippingMethod implements Node & ObjectWithMetadata {
   """
   Maximum order weight for this shipping method.
   """
-  maximumOrderWeight: Weight
-    @deprecated(reason: "This field will be removed in Saleor 4.0.")
+  maximumOrderWeight: Weight @deprecated(reason: "This field will be removed in Saleor 4.0.")
 
   """
   Minimum order weight for this shipping method.
   """
-  minimumOrderWeight: Weight
-    @deprecated(reason: "This field will be removed in Saleor 4.0.")
+  minimumOrderWeight: Weight @deprecated(reason: "This field will be removed in Saleor 4.0.")
 
   """
   Returns translated shipping method fields for the given language code.
@@ -9361,9 +9359,7 @@ type User implements Node & ObjectWithMetadata {
     """
     channel: String
   ): [UUID!]
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `checkoutIds` instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `checkoutIds` instead.")
 
   """
   Returns the checkout ID's assigned to this user.
@@ -9552,9 +9548,7 @@ type Checkout implements Node & ObjectWithMetadata {
   Shipping methods that can be used with this checkout.
   """
   availableShippingMethods: [ShippingMethod!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `shippingMethods` instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `shippingMethods` instead.")
 
   """
   Shipping methods that can be used with this checkout.
@@ -9616,9 +9610,7 @@ type Checkout implements Node & ObjectWithMetadata {
   The shipping method related with checkout.
   """
   shippingMethod: ShippingMethod
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `deliveryMethod` instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `deliveryMethod` instead.")
 
   """
   The delivery method selected for this checkout.
@@ -9834,23 +9826,18 @@ type GiftCard implements Node & ObjectWithMetadata {
   The customer who bought a gift card.
   """
   user: User
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `createdBy` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `createdBy` field instead.")
 
   """
   End date of gift card.
   """
   endDate: DateTime
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `expiryDate` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `expiryDate` field instead.")
 
   """
   Start date of gift card.
   """
-  startDate: DateTime
-    @deprecated(reason: "This field will be removed in Saleor 4.0.")
+  startDate: DateTime @deprecated(reason: "This field will be removed in Saleor 4.0.")
 }
 
 """
@@ -10336,9 +10323,7 @@ type Order implements Node & ObjectWithMetadata {
   Shipping methods that can be used with this order.
   """
   availableShippingMethods: [ShippingMethod!]
-    @deprecated(
-      reason: "Use `shippingMethods`, this field will be removed in 4.0"
-    )
+    @deprecated(reason: "Use `shippingMethods`, this field will be removed in 4.0")
 
   """
   Shipping methods related to this order.
@@ -10435,19 +10420,14 @@ type Order implements Node & ObjectWithMetadata {
   Shipping method for this order.
   """
   shippingMethod: ShippingMethod
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `deliveryMethod` instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `deliveryMethod` instead.")
 
   """
   Total price of shipping.
   """
   shippingPrice: TaxedMoney!
   shippingTaxRate: Float!
-  token: String!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `id` instead."
-    )
+  token: String! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `id` instead.")
   voucher: Voucher
 
   """
@@ -15028,8 +15008,7 @@ type Mutation {
     List of order lines IDs to delete.
     """
     ids: [ID!]!
-  ): DraftOrderLinesBulkDelete
-    @deprecated(reason: "This field will be removed in Saleor 4.0.")
+  ): DraftOrderLinesBulkDelete @deprecated(reason: "This field will be removed in Saleor 4.0.")
 
   """
   Updates a draft order.
@@ -17750,9 +17729,7 @@ Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
 """
 type WebhookCreate {
   webhookErrors: [WebhookError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [WebhookError!]!
   webhook: Webhook
 }
@@ -17845,9 +17822,7 @@ Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
 """
 type WebhookDelete {
   webhookErrors: [WebhookError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [WebhookError!]!
   webhook: Webhook
 }
@@ -17859,9 +17834,7 @@ Requires one of the following permissions: MANAGE_APPS.
 """
 type WebhookUpdate {
   webhookErrors: [WebhookError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [WebhookError!]!
   webhook: Webhook
 }
@@ -17939,9 +17912,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type WarehouseCreate {
   warehouseErrors: [WarehouseError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [WarehouseError!]!
   warehouse: Warehouse
 }
@@ -18009,9 +17980,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type WarehouseUpdate {
   warehouseErrors: [WarehouseError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [WarehouseError!]!
   warehouse: Warehouse
 }
@@ -18063,9 +18032,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type WarehouseDelete {
   warehouseErrors: [WarehouseError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [WarehouseError!]!
   warehouse: Warehouse
 }
@@ -18077,9 +18044,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type WarehouseShippingZoneAssign {
   warehouseErrors: [WarehouseError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [WarehouseError!]!
   warehouse: Warehouse
 }
@@ -18091,9 +18056,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type WarehouseShippingZoneUnassign {
   warehouseErrors: [WarehouseError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [WarehouseError!]!
   warehouse: Warehouse
 }
@@ -18105,9 +18068,7 @@ Requires one of the following permissions: MANAGE_SETTINGS.
 """
 type StaffNotificationRecipientCreate {
   shopErrors: [ShopError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShopError!]!
   staffNotificationRecipient: StaffNotificationRecipient
 }
@@ -18166,9 +18127,7 @@ Requires one of the following permissions: MANAGE_SETTINGS.
 """
 type StaffNotificationRecipientUpdate {
   shopErrors: [ShopError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShopError!]!
   staffNotificationRecipient: StaffNotificationRecipient
 }
@@ -18180,9 +18139,7 @@ Requires one of the following permissions: MANAGE_SETTINGS.
 """
 type StaffNotificationRecipientDelete {
   shopErrors: [ShopError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShopError!]!
   staffNotificationRecipient: StaffNotificationRecipient
 }
@@ -18198,9 +18155,7 @@ type ShopDomainUpdate {
   """
   shop: Shop
   shopErrors: [ShopError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShopError!]!
 }
 
@@ -18227,9 +18182,7 @@ type ShopSettingsUpdate {
   """
   shop: Shop
   shopErrors: [ShopError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShopError!]!
 }
 
@@ -18348,9 +18301,7 @@ type ShopFetchTaxRates {
   """
   shop: Shop
   shopErrors: [ShopError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShopError!]!
 }
 
@@ -18365,9 +18316,7 @@ type ShopSettingsTranslate {
   """
   shop: Shop
   translationErrors: [TranslationError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [TranslationError!]!
 }
 
@@ -18414,9 +18363,7 @@ type ShopAddressUpdate {
   """
   shop: Shop
   shopErrors: [ShopError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShopError!]!
 }
 
@@ -18431,9 +18378,7 @@ type OrderSettingsUpdate {
   """
   orderSettings: OrderSettings
   orderSettingsErrors: [OrderSettingsError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderSettingsError!]!
 }
 
@@ -18547,9 +18492,7 @@ type ShippingMethodChannelListingUpdate {
   """
   shippingMethod: ShippingMethodType
   shippingErrors: [ShippingError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShippingError!]!
 }
 
@@ -18640,9 +18583,7 @@ type ShippingPriceCreate {
   shippingZone: ShippingZone
   shippingMethod: ShippingMethodType
   shippingErrors: [ShippingError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShippingError!]!
 }
 
@@ -18733,9 +18674,7 @@ type ShippingPriceDelete {
   """
   shippingZone: ShippingZone
   shippingErrors: [ShippingError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShippingError!]!
 }
 
@@ -18750,9 +18689,7 @@ type ShippingPriceBulkDelete {
   """
   count: Int!
   shippingErrors: [ShippingError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShippingError!]!
 }
 
@@ -18768,9 +18705,7 @@ type ShippingPriceUpdate {
   shippingZone: ShippingZone
   shippingMethod: ShippingMethodType
   shippingErrors: [ShippingError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShippingError!]!
 }
 
@@ -18781,9 +18716,7 @@ Requires one of the following permissions: MANAGE_TRANSLATIONS.
 """
 type ShippingPriceTranslate {
   translationErrors: [TranslationError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [TranslationError!]!
   shippingMethod: ShippingMethodType
 }
@@ -18810,9 +18743,7 @@ type ShippingPriceExcludeProducts {
   """
   shippingMethod: ShippingMethodType
   shippingErrors: [ShippingError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShippingError!]!
 }
 
@@ -18834,9 +18765,7 @@ type ShippingPriceRemoveProductFromExclude {
   """
   shippingMethod: ShippingMethodType
   shippingErrors: [ShippingError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShippingError!]!
 }
 
@@ -18847,9 +18776,7 @@ Requires one of the following permissions: MANAGE_SHIPPING.
 """
 type ShippingZoneCreate {
   shippingErrors: [ShippingError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShippingError!]!
   shippingZone: ShippingZone
 }
@@ -18893,9 +18820,7 @@ Requires one of the following permissions: MANAGE_SHIPPING.
 """
 type ShippingZoneDelete {
   shippingErrors: [ShippingError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShippingError!]!
   shippingZone: ShippingZone
 }
@@ -18911,9 +18836,7 @@ type ShippingZoneBulkDelete {
   """
   count: Int!
   shippingErrors: [ShippingError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShippingError!]!
 }
 
@@ -18924,9 +18847,7 @@ Requires one of the following permissions: MANAGE_SHIPPING.
 """
 type ShippingZoneUpdate {
   shippingErrors: [ShippingError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ShippingError!]!
   shippingZone: ShippingZone
 }
@@ -18984,9 +18905,7 @@ type ProductAttributeAssign {
   """
   productType: ProductType
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -19079,9 +18998,7 @@ type ProductAttributeAssignmentUpdate {
   """
   productType: ProductType
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -19110,9 +19027,7 @@ type ProductAttributeUnassign {
   """
   productType: ProductType
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -19123,9 +19038,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type CategoryCreate {
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
   category: Category
 }
@@ -19188,9 +19101,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type CategoryDelete {
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
   category: Category
 }
@@ -19206,9 +19117,7 @@ type CategoryBulkDelete {
   """
   count: Int!
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -19219,9 +19128,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type CategoryUpdate {
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
   category: Category
 }
@@ -19233,9 +19140,7 @@ Requires one of the following permissions: MANAGE_TRANSLATIONS.
 """
 type CategoryTranslate {
   translationErrors: [TranslationError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [TranslationError!]!
   category: Category
 }
@@ -19264,9 +19169,7 @@ type CollectionAddProducts {
   """
   collection: Collection
   collectionErrors: [CollectionError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CollectionError!]!
 }
 
@@ -19312,9 +19215,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type CollectionCreate {
   collectionErrors: [CollectionError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CollectionError!]!
   collection: Collection
 }
@@ -19377,9 +19278,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type CollectionDelete {
   collectionErrors: [CollectionError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CollectionError!]!
   collection: Collection
 }
@@ -19395,9 +19294,7 @@ type CollectionReorderProducts {
   """
   collection: Collection
   collectionErrors: [CollectionError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CollectionError!]!
 }
 
@@ -19424,9 +19321,7 @@ type CollectionBulkDelete {
   """
   count: Int!
   collectionErrors: [CollectionError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CollectionError!]!
 }
 
@@ -19441,9 +19336,7 @@ type CollectionRemoveProducts {
   """
   collection: Collection
   collectionErrors: [CollectionError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CollectionError!]!
 }
 
@@ -19454,9 +19347,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type CollectionUpdate {
   collectionErrors: [CollectionError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CollectionError!]!
   collection: Collection
 }
@@ -19514,9 +19405,7 @@ Requires one of the following permissions: MANAGE_TRANSLATIONS.
 """
 type CollectionTranslate {
   translationErrors: [TranslationError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [TranslationError!]!
   collection: Collection
 }
@@ -19532,9 +19421,7 @@ type CollectionChannelListingUpdate {
   """
   collection: Collection
   collectionChannelListingErrors: [CollectionChannelListingError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CollectionChannelListingError!]!
 }
 
@@ -19615,9 +19502,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type ProductCreate {
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
   product: Product
 }
@@ -19731,6 +19616,16 @@ input AttributeValueInput {
   Represents the date/time value of the attribute value.
   """
   dateTime: DateTime
+
+  """
+  Represents a Numeric attribute value.
+  """
+  numeric: String
+
+  """
+  Rich text format. For reference see https://editorjs.io/
+  """
+  plainText: String
 }
 
 """
@@ -19740,9 +19635,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type ProductDelete {
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
   product: Product
 }
@@ -19758,9 +19651,7 @@ type ProductBulkDelete {
   """
   count: Int!
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -19771,9 +19662,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type ProductUpdate {
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
   product: Product
 }
@@ -19844,9 +19733,7 @@ Requires one of the following permissions: MANAGE_TRANSLATIONS.
 """
 type ProductTranslate {
   translationErrors: [TranslationError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [TranslationError!]!
   product: Product
 }
@@ -19862,9 +19749,7 @@ type ProductChannelListingUpdate {
   """
   product: Product
   productChannelListingErrors: [ProductChannelListingError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductChannelListingError!]!
 }
 
@@ -19986,9 +19871,7 @@ type ProductMediaCreate {
   product: Product
   media: ProductMedia
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20022,9 +19905,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 type ProductVariantReorder {
   product: Product
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20049,9 +19930,7 @@ type ProductMediaDelete {
   product: Product
   media: ProductMedia
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20066,9 +19945,7 @@ type ProductMediaBulkDelete {
   """
   count: Int!
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20081,9 +19958,7 @@ type ProductMediaReorder {
   product: Product
   media: [ProductMedia!]
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20096,9 +19971,7 @@ type ProductMediaUpdate {
   product: Product
   media: ProductMedia
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20116,9 +19989,7 @@ Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES.
 """
 type ProductTypeCreate {
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
   productType: ProductType
 }
@@ -20182,9 +20053,7 @@ Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES.
 """
 type ProductTypeDelete {
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
   productType: ProductType
 }
@@ -20200,9 +20069,7 @@ type ProductTypeBulkDelete {
   """
   count: Int!
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20213,9 +20080,7 @@ Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES.
 """
 type ProductTypeUpdate {
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
   productType: ProductType
 }
@@ -20231,9 +20096,7 @@ type ProductTypeReorderAttributes {
   """
   productType: ProductType
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20248,9 +20111,7 @@ type ProductReorderAttributeValues {
   """
   product: Product
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20263,9 +20124,7 @@ type DigitalContentCreate {
   variant: ProductVariant
   content: DigitalContent
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20304,9 +20163,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 type DigitalContentDelete {
   variant: ProductVariant
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20319,9 +20176,7 @@ type DigitalContentUpdate {
   variant: ProductVariant
   content: DigitalContent
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20354,9 +20209,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type DigitalContentUrlCreate {
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
   digitalContentUrl: DigitalContentUrl
 }
@@ -20375,9 +20228,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type ProductVariantCreate {
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
   productVariant: ProductVariant
 }
@@ -20463,9 +20314,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type ProductVariantDelete {
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
   productVariant: ProductVariant
 }
@@ -20486,9 +20335,7 @@ type ProductVariantBulkCreate {
   """
   productVariants: [ProductVariant!]!
   bulkProductErrors: [BulkProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [BulkProductError!]!
 }
 
@@ -20638,9 +20485,7 @@ type ProductVariantBulkDelete {
   """
   count: Int!
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20655,9 +20500,7 @@ type ProductVariantStocksCreate {
   """
   productVariant: ProductVariant
   bulkStockErrors: [BulkStockError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [BulkStockError!]!
 }
 
@@ -20704,9 +20547,7 @@ type ProductVariantStocksDelete {
   """
   productVariant: ProductVariant
   stockErrors: [StockError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [StockError!]!
 }
 
@@ -20750,9 +20591,7 @@ type ProductVariantStocksUpdate {
   """
   productVariant: ProductVariant
   bulkStockErrors: [BulkStockError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [BulkStockError!]!
 }
 
@@ -20763,9 +20602,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 """
 type ProductVariantUpdate {
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
   productVariant: ProductVariant
 }
@@ -20818,9 +20655,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 type ProductVariantSetDefault {
   product: Product
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20831,9 +20666,7 @@ Requires one of the following permissions: MANAGE_TRANSLATIONS.
 """
 type ProductVariantTranslate {
   translationErrors: [TranslationError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [TranslationError!]!
   productVariant: ProductVariant
 }
@@ -20853,9 +20686,7 @@ type ProductVariantChannelListingUpdate {
   """
   variant: ProductVariant
   productChannelListingErrors: [ProductChannelListingError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductChannelListingError!]!
 }
 
@@ -20870,9 +20701,7 @@ type ProductVariantReorderAttributeValues {
   """
   productVariant: ProductVariant
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20902,9 +20731,7 @@ type VariantMediaAssign {
   productVariant: ProductVariant
   media: ProductMedia
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20917,9 +20744,7 @@ type VariantMediaUnassign {
   productVariant: ProductVariant
   media: ProductMedia
   productErrors: [ProductError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ProductError!]!
 }
 
@@ -20934,9 +20759,7 @@ type PaymentCapture {
   """
   payment: Payment
   paymentErrors: [PaymentError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PaymentError!]!
 }
 
@@ -20996,9 +20819,7 @@ type PaymentRefund {
   """
   payment: Payment
   paymentErrors: [PaymentError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PaymentError!]!
 }
 
@@ -21013,9 +20834,7 @@ type PaymentVoid {
   """
   payment: Payment
   paymentErrors: [PaymentError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PaymentError!]!
 }
 
@@ -21025,9 +20844,7 @@ Initializes payment process when it is required by gateway.
 type PaymentInitialize {
   initializedPayment: PaymentInitialized
   paymentErrors: [PaymentError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PaymentError!]!
 }
 
@@ -21060,9 +20877,7 @@ type PaymentCheckBalance {
   """
   data: JSONString
   paymentErrors: [PaymentError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PaymentError!]!
 }
 
@@ -21378,9 +21193,7 @@ Requires one of the following permissions: MANAGE_PAGES.
 """
 type PageCreate {
   pageErrors: [PageError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PageError!]!
   page: Page
 }
@@ -21485,9 +21298,7 @@ Requires one of the following permissions: MANAGE_PAGES.
 """
 type PageDelete {
   pageErrors: [PageError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PageError!]!
   page: Page
 }
@@ -21503,9 +21314,7 @@ type PageBulkDelete {
   """
   count: Int!
   pageErrors: [PageError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PageError!]!
 }
 
@@ -21520,9 +21329,7 @@ type PageBulkPublish {
   """
   count: Int!
   pageErrors: [PageError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PageError!]!
 }
 
@@ -21533,9 +21340,7 @@ Requires one of the following permissions: MANAGE_PAGES.
 """
 type PageUpdate {
   pageErrors: [PageError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PageError!]!
   page: Page
 }
@@ -21595,9 +21400,7 @@ Requires one of the following permissions: MANAGE_TRANSLATIONS.
 """
 type PageTranslate {
   translationErrors: [TranslationError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [TranslationError!]!
   page: PageTranslatableContent
 }
@@ -21622,9 +21425,7 @@ Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES.
 """
 type PageTypeCreate {
   pageErrors: [PageError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PageError!]!
   pageType: PageType
 }
@@ -21653,9 +21454,7 @@ Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES.
 """
 type PageTypeUpdate {
   pageErrors: [PageError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PageError!]!
   pageType: PageType
 }
@@ -21689,9 +21488,7 @@ Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES.
 """
 type PageTypeDelete {
   pageErrors: [PageError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PageError!]!
   pageType: PageType
 }
@@ -21707,9 +21504,7 @@ type PageTypeBulkDelete {
   """
   count: Int!
   pageErrors: [PageError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PageError!]!
 }
 
@@ -21724,9 +21519,7 @@ type PageAttributeAssign {
   """
   pageType: PageType
   pageErrors: [PageError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PageError!]!
 }
 
@@ -21741,9 +21534,7 @@ type PageAttributeUnassign {
   """
   pageType: PageType
   pageErrors: [PageError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PageError!]!
 }
 
@@ -21758,9 +21549,7 @@ type PageTypeReorderAttributes {
   """
   pageType: PageType
   pageErrors: [PageError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PageError!]!
 }
 
@@ -21775,9 +21564,7 @@ type PageReorderAttributeValues {
   """
   page: Page
   pageErrors: [PageError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PageError!]!
 }
 
@@ -21792,9 +21579,7 @@ type DraftOrderComplete {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -21805,9 +21590,7 @@ Requires one of the following permissions: MANAGE_ORDERS.
 """
 type DraftOrderCreate {
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
   order: Order
 }
@@ -21888,9 +21671,7 @@ Requires one of the following permissions: MANAGE_ORDERS.
 """
 type DraftOrderDelete {
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
   order: Order
 }
@@ -21906,9 +21687,7 @@ type DraftOrderBulkDelete {
   """
   count: Int!
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -21923,9 +21702,7 @@ type DraftOrderLinesBulkDelete {
   """
   count: Int!
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -21936,9 +21713,7 @@ Requires one of the following permissions: MANAGE_ORDERS.
 """
 type DraftOrderUpdate {
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
   order: Order
 }
@@ -22011,9 +21786,7 @@ type OrderAddNote {
   """
   event: OrderEvent
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22035,9 +21808,7 @@ type OrderCancel {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22052,9 +21823,7 @@ type OrderCapture {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22066,9 +21835,7 @@ Requires one of the following permissions: MANAGE_ORDERS.
 type OrderConfirm {
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22088,9 +21855,7 @@ type OrderFulfill {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22151,9 +21916,7 @@ type FulfillmentCancel {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22182,9 +21945,7 @@ type FulfillmentApprove {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22204,9 +21965,7 @@ type FulfillmentUpdateTracking {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22238,9 +21997,7 @@ type FulfillmentRefundProducts {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22316,9 +22073,7 @@ type FulfillmentReturnProducts {
   """
   replaceOrder: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22399,9 +22154,7 @@ type OrderLinesCreate {
   """
   orderLines: [OrderLine!]
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22421,9 +22174,7 @@ type OrderLineDelete {
   """
   orderLine: OrderLine
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22438,9 +22189,7 @@ type OrderLineUpdate {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
   orderLine: OrderLine
 }
@@ -22463,9 +22212,7 @@ type OrderDiscountAdd {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22497,9 +22244,7 @@ type OrderDiscountUpdate {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22514,9 +22259,7 @@ type OrderDiscountDelete {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22536,9 +22279,7 @@ type OrderLineDiscountUpdate {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22558,9 +22299,7 @@ type OrderLineDiscountRemove {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22575,9 +22314,7 @@ type OrderMarkAsPaid {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22592,9 +22329,7 @@ type OrderRefund {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22605,9 +22340,7 @@ Requires one of the following permissions: MANAGE_ORDERS.
 """
 type OrderUpdate {
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
   order: Order
 }
@@ -22640,9 +22373,7 @@ type OrderUpdateShipping {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22664,9 +22395,7 @@ type OrderVoid {
   """
   order: Order
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22681,9 +22410,7 @@ type OrderBulkCancel {
   """
   count: Int!
   orderErrors: [OrderError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [OrderError!]!
 }
 
@@ -22692,9 +22419,7 @@ Delete metadata of an object. To use it, you need to have access to the modified
 """
 type DeleteMetadata {
   metadataErrors: [MetadataError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [MetadataError!]!
   item: ObjectWithMetadata
 }
@@ -22732,9 +22457,7 @@ Delete object's private metadata. To use it, you need to be an authenticated sta
 """
 type DeletePrivateMetadata {
   metadataErrors: [MetadataError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [MetadataError!]!
   item: ObjectWithMetadata
 }
@@ -22744,9 +22467,7 @@ Updates metadata of an object. To use it, you need to have access to the modifie
 """
 type UpdateMetadata {
   metadataErrors: [MetadataError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [MetadataError!]!
   item: ObjectWithMetadata
 }
@@ -22756,9 +22477,7 @@ Updates private metadata of an object. To use it, you need to be an authenticate
 """
 type UpdatePrivateMetadata {
   metadataErrors: [MetadataError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [MetadataError!]!
   item: ObjectWithMetadata
 }
@@ -22774,9 +22493,7 @@ type AssignNavigation {
   """
   menu: Menu
   menuErrors: [MenuError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [MenuError!]!
 }
 
@@ -22831,9 +22548,7 @@ Requires one of the following permissions: MANAGE_MENUS.
 """
 type MenuCreate {
   menuErrors: [MenuError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [MenuError!]!
   menu: Menu
 }
@@ -22889,9 +22604,7 @@ Requires one of the following permissions: MANAGE_MENUS.
 """
 type MenuDelete {
   menuErrors: [MenuError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [MenuError!]!
   menu: Menu
 }
@@ -22907,9 +22620,7 @@ type MenuBulkDelete {
   """
   count: Int!
   menuErrors: [MenuError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [MenuError!]!
 }
 
@@ -22920,9 +22631,7 @@ Requires one of the following permissions: MANAGE_MENUS.
 """
 type MenuUpdate {
   menuErrors: [MenuError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [MenuError!]!
   menu: Menu
 }
@@ -22946,9 +22655,7 @@ Requires one of the following permissions: MANAGE_MENUS.
 """
 type MenuItemCreate {
   menuErrors: [MenuError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [MenuError!]!
   menuItem: MenuItem
 }
@@ -22997,9 +22704,7 @@ Requires one of the following permissions: MANAGE_MENUS.
 """
 type MenuItemDelete {
   menuErrors: [MenuError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [MenuError!]!
   menuItem: MenuItem
 }
@@ -23015,9 +22720,7 @@ type MenuItemBulkDelete {
   """
   count: Int!
   menuErrors: [MenuError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [MenuError!]!
 }
 
@@ -23028,9 +22731,7 @@ Requires one of the following permissions: MANAGE_MENUS.
 """
 type MenuItemUpdate {
   menuErrors: [MenuError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [MenuError!]!
   menuItem: MenuItem
 }
@@ -23042,9 +22743,7 @@ Requires one of the following permissions: MANAGE_TRANSLATIONS.
 """
 type MenuItemTranslate {
   translationErrors: [TranslationError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [TranslationError!]!
   menuItem: MenuItem
 }
@@ -23060,9 +22759,7 @@ type MenuItemMove {
   """
   menu: Menu
   menuErrors: [MenuError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [MenuError!]!
 }
 
@@ -23094,9 +22791,7 @@ type InvoiceRequest {
   """
   order: Order
   invoiceErrors: [InvoiceError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [InvoiceError!]!
   invoice: Invoice
 }
@@ -23139,9 +22834,7 @@ Requires one of the following permissions: MANAGE_ORDERS.
 """
 type InvoiceRequestDelete {
   invoiceErrors: [InvoiceError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [InvoiceError!]!
   invoice: Invoice
 }
@@ -23153,9 +22846,7 @@ Requires one of the following permissions: MANAGE_ORDERS.
 """
 type InvoiceCreate {
   invoiceErrors: [InvoiceError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [InvoiceError!]!
   invoice: Invoice
 }
@@ -23179,9 +22870,7 @@ Requires one of the following permissions: MANAGE_ORDERS.
 """
 type InvoiceDelete {
   invoiceErrors: [InvoiceError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [InvoiceError!]!
   invoice: Invoice
 }
@@ -23193,9 +22882,7 @@ Requires one of the following permissions: MANAGE_ORDERS.
 """
 type InvoiceUpdate {
   invoiceErrors: [InvoiceError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [InvoiceError!]!
   invoice: Invoice
 }
@@ -23219,9 +22906,7 @@ Requires one of the following permissions: MANAGE_ORDERS.
 """
 type InvoiceSendNotification {
   invoiceErrors: [InvoiceError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [InvoiceError!]!
   invoice: Invoice
 }
@@ -23237,9 +22922,7 @@ type GiftCardActivate {
   """
   giftCard: GiftCard
   giftCardErrors: [GiftCardError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [GiftCardError!]!
 }
 
@@ -23286,9 +22969,7 @@ Requires one of the following permissions: MANAGE_GIFT_CARD.
 """
 type GiftCardCreate {
   giftCardErrors: [GiftCardError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [GiftCardError!]!
   giftCard: GiftCard
 }
@@ -23394,9 +23075,7 @@ Requires one of the following permissions: MANAGE_GIFT_CARD.
 """
 type GiftCardDelete {
   giftCardErrors: [GiftCardError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [GiftCardError!]!
   giftCard: GiftCard
 }
@@ -23412,9 +23091,7 @@ type GiftCardDeactivate {
   """
   giftCard: GiftCard
   giftCardErrors: [GiftCardError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [GiftCardError!]!
 }
 
@@ -23425,9 +23102,7 @@ Requires one of the following permissions: MANAGE_GIFT_CARD.
 """
 type GiftCardUpdate {
   giftCardErrors: [GiftCardError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [GiftCardError!]!
   giftCard: GiftCard
 }
@@ -23655,9 +23330,7 @@ Requires one of the following permissions: MANAGE_PLUGINS.
 type PluginUpdate {
   plugin: Plugin
   pluginsErrors: [PluginError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PluginError!]!
 }
 
@@ -23774,9 +23447,7 @@ Requires one of the following permissions: MANAGE_DISCOUNTS.
 """
 type SaleCreate {
   discountErrors: [DiscountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [DiscountError!]!
   sale: Sale
 }
@@ -23872,9 +23543,7 @@ Requires one of the following permissions: MANAGE_DISCOUNTS.
 """
 type SaleDelete {
   discountErrors: [DiscountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [DiscountError!]!
   sale: Sale
 }
@@ -23890,9 +23559,7 @@ type SaleBulkDelete {
   """
   count: Int!
   discountErrors: [DiscountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [DiscountError!]!
 }
 
@@ -23903,9 +23570,7 @@ Requires one of the following permissions: MANAGE_DISCOUNTS.
 """
 type SaleUpdate {
   discountErrors: [DiscountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [DiscountError!]!
   sale: Sale
 }
@@ -23921,9 +23586,7 @@ type SaleAddCatalogues {
   """
   sale: Sale
   discountErrors: [DiscountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [DiscountError!]!
 }
 
@@ -23962,9 +23625,7 @@ type SaleRemoveCatalogues {
   """
   sale: Sale
   discountErrors: [DiscountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [DiscountError!]!
 }
 
@@ -23975,9 +23636,7 @@ Requires one of the following permissions: MANAGE_TRANSLATIONS.
 """
 type SaleTranslate {
   translationErrors: [TranslationError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [TranslationError!]!
   sale: Sale
 }
@@ -23993,9 +23652,7 @@ type SaleChannelListingUpdate {
   """
   sale: Sale
   discountErrors: [DiscountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [DiscountError!]!
 }
 
@@ -24030,9 +23687,7 @@ Requires one of the following permissions: MANAGE_DISCOUNTS.
 """
 type VoucherCreate {
   discountErrors: [DiscountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [DiscountError!]!
   voucher: Voucher
 }
@@ -24128,9 +23783,7 @@ Requires one of the following permissions: MANAGE_DISCOUNTS.
 """
 type VoucherDelete {
   discountErrors: [DiscountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [DiscountError!]!
   voucher: Voucher
 }
@@ -24146,9 +23799,7 @@ type VoucherBulkDelete {
   """
   count: Int!
   discountErrors: [DiscountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [DiscountError!]!
 }
 
@@ -24159,9 +23810,7 @@ Requires one of the following permissions: MANAGE_DISCOUNTS.
 """
 type VoucherUpdate {
   discountErrors: [DiscountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [DiscountError!]!
   voucher: Voucher
 }
@@ -24177,9 +23826,7 @@ type VoucherAddCatalogues {
   """
   voucher: Voucher
   discountErrors: [DiscountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [DiscountError!]!
 }
 
@@ -24194,9 +23841,7 @@ type VoucherRemoveCatalogues {
   """
   voucher: Voucher
   discountErrors: [DiscountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [DiscountError!]!
 }
 
@@ -24207,9 +23852,7 @@ Requires one of the following permissions: MANAGE_TRANSLATIONS.
 """
 type VoucherTranslate {
   translationErrors: [TranslationError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [TranslationError!]!
   voucher: Voucher
 }
@@ -24225,9 +23868,7 @@ type VoucherChannelListingUpdate {
   """
   voucher: Voucher
   discountErrors: [DiscountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [DiscountError!]!
 }
 
@@ -24271,9 +23912,7 @@ type ExportProducts {
   """
   exportFile: ExportFile
   exportErrors: [ExportError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ExportError!]!
 }
 
@@ -24440,9 +24079,7 @@ Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAF
 type FileUpload {
   uploadedFile: File
   uploadErrors: [UploadError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [UploadError!]!
 }
 
@@ -24479,9 +24116,7 @@ type CheckoutAddPromoCode {
   """
   checkout: Checkout
   checkoutErrors: [CheckoutError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
 }
 
@@ -24559,9 +24194,7 @@ type CheckoutBillingAddressUpdate {
   """
   checkout: Checkout
   checkoutErrors: [CheckoutError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
 }
 
@@ -24584,9 +24217,7 @@ type CheckoutComplete {
   """
   confirmationData: JSONString
   checkoutErrors: [CheckoutError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
 }
 
@@ -24598,13 +24229,9 @@ type CheckoutCreate {
   Whether the checkout was created or the current active one was returned. Refer to checkoutLinesAdd and checkoutLinesUpdate to merge a cart with an active checkout.
   """
   created: Boolean
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Always returns `true`."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Always returns `true`.")
   checkoutErrors: [CheckoutError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
   checkout: Checkout
 }
@@ -24673,9 +24300,7 @@ type CheckoutCustomerAttach {
   """
   checkout: Checkout
   checkoutErrors: [CheckoutError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
 }
 
@@ -24690,9 +24315,7 @@ type CheckoutCustomerDetach {
   """
   checkout: Checkout
   checkoutErrors: [CheckoutError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
 }
 
@@ -24705,9 +24328,7 @@ type CheckoutEmailUpdate {
   """
   checkout: Checkout
   checkoutErrors: [CheckoutError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
 }
 
@@ -24720,9 +24341,7 @@ type CheckoutLineDelete {
   """
   checkout: Checkout
   checkoutErrors: [CheckoutError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
 }
 
@@ -24746,9 +24365,7 @@ type CheckoutLinesAdd {
   """
   checkout: Checkout
   checkoutErrors: [CheckoutError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
 }
 
@@ -24761,9 +24378,7 @@ type CheckoutLinesUpdate {
   """
   checkout: Checkout
   checkoutErrors: [CheckoutError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
 }
 
@@ -24797,9 +24412,7 @@ type CheckoutRemovePromoCode {
   """
   checkout: Checkout
   checkoutErrors: [CheckoutError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
 }
 
@@ -24817,9 +24430,7 @@ type CheckoutPaymentCreate {
   """
   payment: Payment
   paymentErrors: [PaymentError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PaymentError!]!
 }
 
@@ -24888,9 +24499,7 @@ type CheckoutShippingAddressUpdate {
   """
   checkout: Checkout
   checkoutErrors: [CheckoutError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
 }
 
@@ -24903,9 +24512,7 @@ type CheckoutShippingMethodUpdate {
   """
   checkout: Checkout
   checkoutErrors: [CheckoutError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
 }
 
@@ -24933,9 +24540,7 @@ type CheckoutLanguageCodeUpdate {
   """
   checkout: Checkout
   checkoutErrors: [CheckoutError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
 }
 
@@ -25008,9 +24613,7 @@ Requires one of the following permissions: MANAGE_CHANNELS.
 """
 type ChannelCreate {
   channelErrors: [ChannelError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ChannelError!]!
   channel: Channel
 }
@@ -25093,9 +24696,7 @@ Requires one of the following permissions: MANAGE_CHANNELS.
 """
 type ChannelUpdate {
   channelErrors: [ChannelError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ChannelError!]!
   channel: Channel
 }
@@ -25141,9 +24742,7 @@ Requires one of the following permissions: MANAGE_CHANNELS.
 """
 type ChannelDelete {
   channelErrors: [ChannelError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ChannelError!]!
   channel: Channel
 }
@@ -25166,9 +24765,7 @@ type ChannelActivate {
   """
   channel: Channel
   channelErrors: [ChannelError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ChannelError!]!
 }
 
@@ -25183,9 +24780,7 @@ type ChannelDeactivate {
   """
   channel: Channel
   channelErrors: [ChannelError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [ChannelError!]!
 }
 
@@ -25195,9 +24790,7 @@ Creates an attribute.
 type AttributeCreate {
   attribute: Attribute
   attributeErrors: [AttributeError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AttributeError!]!
 }
 
@@ -25338,9 +24931,7 @@ Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES.
 """
 type AttributeDelete {
   attributeErrors: [AttributeError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AttributeError!]!
   attribute: Attribute
 }
@@ -25353,9 +24944,7 @@ Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES.
 type AttributeUpdate {
   attribute: Attribute
   attributeErrors: [AttributeError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AttributeError!]!
 }
 
@@ -25457,9 +25046,7 @@ Requires one of the following permissions: MANAGE_TRANSLATIONS.
 """
 type AttributeTranslate {
   translationErrors: [TranslationError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [TranslationError!]!
   attribute: Attribute
 }
@@ -25475,9 +25062,7 @@ type AttributeBulkDelete {
   """
   count: Int!
   attributeErrors: [AttributeError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AttributeError!]!
 }
 
@@ -25492,9 +25077,7 @@ type AttributeValueBulkDelete {
   """
   count: Int!
   attributeErrors: [AttributeError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AttributeError!]!
 }
 
@@ -25509,9 +25092,7 @@ type AttributeValueCreate {
   """
   attribute: Attribute
   attributeErrors: [AttributeError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AttributeError!]!
   attributeValue: AttributeValue
 }
@@ -25527,9 +25108,7 @@ type AttributeValueDelete {
   """
   attribute: Attribute
   attributeErrors: [AttributeError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AttributeError!]!
   attributeValue: AttributeValue
 }
@@ -25545,9 +25124,7 @@ type AttributeValueUpdate {
   """
   attribute: Attribute
   attributeErrors: [AttributeError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AttributeError!]!
   attributeValue: AttributeValue
 }
@@ -25559,9 +25136,7 @@ Requires one of the following permissions: MANAGE_TRANSLATIONS.
 """
 type AttributeValueTranslate {
   translationErrors: [TranslationError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [TranslationError!]!
   attributeValue: AttributeValue
 }
@@ -25588,9 +25163,7 @@ type AttributeReorderValues {
   """
   attribute: Attribute
   attributeErrors: [AttributeError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AttributeError!]!
 }
 
@@ -25603,9 +25176,7 @@ type AppCreate {
   """
   authToken: String
   appErrors: [AppError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AppError!]!
   app: App
 }
@@ -25670,9 +25241,7 @@ Requires one of the following permissions: MANAGE_APPS.
 """
 type AppUpdate {
   appErrors: [AppError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AppError!]!
   app: App
 }
@@ -25684,9 +25253,7 @@ Requires one of the following permissions: MANAGE_APPS.
 """
 type AppDelete {
   appErrors: [AppError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AppError!]!
   app: App
 }
@@ -25702,9 +25269,7 @@ type AppTokenCreate {
   """
   authToken: String
   appErrors: [AppError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AppError!]!
   appToken: AppToken
 }
@@ -25728,9 +25293,7 @@ Requires one of the following permissions: MANAGE_APPS.
 """
 type AppTokenDelete {
   appErrors: [AppError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AppError!]!
   appToken: AppToken
 }
@@ -25744,9 +25307,7 @@ type AppTokenVerify {
   """
   valid: Boolean!
   appErrors: [AppError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AppError!]!
 }
 
@@ -25755,9 +25316,7 @@ Install new app by using app manifest. Requires the following permissions: AUTHE
 """
 type AppInstall {
   appErrors: [AppError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AppError!]!
   appInstallation: AppInstallation
 }
@@ -25791,9 +25350,7 @@ Requires one of the following permissions: MANAGE_APPS.
 """
 type AppRetryInstall {
   appErrors: [AppError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AppError!]!
   appInstallation: AppInstallation
 }
@@ -25805,9 +25362,7 @@ Requires one of the following permissions: MANAGE_APPS.
 """
 type AppDeleteFailedInstallation {
   appErrors: [AppError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AppError!]!
   appInstallation: AppInstallation
 }
@@ -25820,9 +25375,7 @@ Requires one of the following permissions: MANAGE_APPS.
 type AppFetchManifest {
   manifest: Manifest
   appErrors: [AppError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AppError!]!
 }
 
@@ -25879,9 +25432,7 @@ Requires one of the following permissions: MANAGE_APPS.
 """
 type AppActivate {
   appErrors: [AppError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AppError!]!
   app: App
 }
@@ -25893,9 +25444,7 @@ Requires one of the following permissions: MANAGE_APPS.
 """
 type AppDeactivate {
   appErrors: [AppError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AppError!]!
   app: App
 }
@@ -25924,9 +25473,7 @@ type CreateToken {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26005,9 +25552,7 @@ type RefreshToken {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26030,9 +25575,7 @@ type VerifyToken {
   """
   payload: GenericScalar
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26050,9 +25593,7 @@ Requires one of the following permissions: AUTHENTICATED_USER.
 """
 type DeactivateAllUserTokens {
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26065,9 +25606,7 @@ type ExternalAuthenticationUrl {
   """
   authenticationData: JSONString
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26095,9 +25634,7 @@ type ExternalObtainAccessTokens {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26125,9 +25662,7 @@ type ExternalRefresh {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26140,9 +25675,7 @@ type ExternalLogout {
   """
   logoutData: JSONString
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26165,9 +25698,7 @@ type ExternalVerify {
   """
   verifyData: JSONString
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26176,9 +25707,7 @@ Sends an email with the account password modification link.
 """
 type RequestPasswordReset {
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26191,9 +25720,7 @@ type ConfirmAccount {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26221,9 +25748,7 @@ type SetPassword {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26238,9 +25763,7 @@ type PasswordChange {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26255,9 +25778,7 @@ type RequestEmailChange {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26272,9 +25793,7 @@ type ConfirmEmailChange {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26289,9 +25808,7 @@ type AccountAddressCreate {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   address: Address
 }
@@ -26305,9 +25822,7 @@ type AccountAddressUpdate {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   address: Address
 }
@@ -26321,9 +25836,7 @@ type AccountAddressDelete {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   address: Address
 }
@@ -26339,9 +25852,7 @@ type AccountSetDefaultAddress {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26354,9 +25865,7 @@ type AccountRegister {
   """
   requiresConfirmation: Boolean
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   user: User
 }
@@ -26410,9 +25919,7 @@ Requires one of the following permissions: AUTHENTICATED_USER.
 """
 type AccountUpdate {
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   user: User
 }
@@ -26451,9 +25958,7 @@ Requires one of the following permissions: AUTHENTICATED_USER.
 """
 type AccountRequestDeletion {
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26464,9 +25969,7 @@ Requires one of the following permissions: AUTHENTICATED_USER.
 """
 type AccountDelete {
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   user: User
 }
@@ -26482,9 +25985,7 @@ type AddressCreate {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   address: Address
 }
@@ -26500,9 +26001,7 @@ type AddressUpdate {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   address: Address
 }
@@ -26518,9 +26017,7 @@ type AddressDelete {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   address: Address
 }
@@ -26536,9 +26033,7 @@ type AddressSetDefault {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26549,9 +26044,7 @@ Requires one of the following permissions: MANAGE_USERS.
 """
 type CustomerCreate {
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   user: User
 }
@@ -26615,9 +26108,7 @@ Requires one of the following permissions: MANAGE_USERS.
 """
 type CustomerUpdate {
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   user: User
 }
@@ -26671,9 +26162,7 @@ Requires one of the following permissions: MANAGE_USERS.
 """
 type CustomerDelete {
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   user: User
 }
@@ -26689,9 +26178,7 @@ type CustomerBulkDelete {
   """
   count: Int!
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26702,9 +26189,7 @@ Requires one of the following permissions: MANAGE_STAFF.
 """
 type StaffCreate {
   staffErrors: [StaffError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [StaffError!]!
   user: User
 }
@@ -26790,9 +26275,7 @@ Requires one of the following permissions: MANAGE_STAFF.
 """
 type StaffUpdate {
   staffErrors: [StaffError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [StaffError!]!
   user: User
 }
@@ -26841,9 +26324,7 @@ Requires one of the following permissions: MANAGE_STAFF.
 """
 type StaffDelete {
   staffErrors: [StaffError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [StaffError!]!
   user: User
 }
@@ -26859,9 +26340,7 @@ type StaffBulkDelete {
   """
   count: Int!
   staffErrors: [StaffError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [StaffError!]!
 }
 
@@ -26876,9 +26355,7 @@ type UserAvatarUpdate {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26893,9 +26370,7 @@ type UserAvatarDelete {
   """
   user: User
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26910,9 +26385,7 @@ type UserBulkSetActive {
   """
   count: Int!
   accountErrors: [AccountError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
@@ -26923,9 +26396,7 @@ Requires one of the following permissions: MANAGE_STAFF.
 """
 type PermissionGroupCreate {
   permissionGroupErrors: [PermissionGroupError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PermissionGroupError!]!
   group: Group
 }
@@ -26995,9 +26466,7 @@ Requires one of the following permissions: MANAGE_STAFF.
 """
 type PermissionGroupUpdate {
   permissionGroupErrors: [PermissionGroupError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PermissionGroupError!]!
   group: Group
 }
@@ -27036,9 +26505,7 @@ Requires one of the following permissions: MANAGE_STAFF.
 """
 type PermissionGroupDelete {
   permissionGroupErrors: [PermissionGroupError!]!
-    @deprecated(
-      reason: "This field will be removed in Saleor 4.0. Use `errors` field instead."
-    )
+    @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PermissionGroupError!]!
   group: Group
 }

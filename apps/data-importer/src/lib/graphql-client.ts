@@ -10,8 +10,6 @@ export const GraphQLClient = (): Client => {
   const { appBridge } = useAppBridge();
 
   if (!appBridge) throw new Error("App bridge not found. Cannot attach GraphQL client");
-
-  console.log("token", appBridge.getState().token);
   const client = urqlCreateClient({
     url: appBridge.getState().saleorApiUrl,
     requestPolicy: "network-only",
@@ -24,6 +22,5 @@ export const GraphQLClient = (): Client => {
     exchanges: [cacheExchange, fetchExchange],
   });
 
-  console.log("client", client);
   return client;
 };
