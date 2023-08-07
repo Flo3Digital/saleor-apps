@@ -3,6 +3,7 @@ import { Done, Error, HourglassEmpty } from "@material-ui/icons";
 import React, { useCallback, useEffect } from "react";
 import {
   AttributeValueInput,
+  ProductDetailsFragmentFragment,
   ProductVariantDetailsFragmentFragment,
 } from "../../../../generated/graphql";
 import {
@@ -78,11 +79,14 @@ const PendingStatus = () => (
  */
 export const ProductImportingRow = (props: Props) => {
   const client = GraphQLClient();
+  let processed = false;
+  let processing = false;
 
   /**
    * Callback function to trigger the mutation and create/update the product
    */
   const triggerMutation = useCallback(async () => {
+    processing = true;
     // Switch this to GraphQL Type for Attributes
     const attributes: AttributeValueInput[] = [];
 
@@ -207,6 +211,7 @@ export const ProductImportingRow = (props: Props) => {
           ),
           client
         );
+        processed = true;
       } catch (error) {
         Sentry.captureException(error);
       }
@@ -231,11 +236,13 @@ export const ProductImportingRow = (props: Props) => {
           ),
           client
         );
+        processed = true;
       } catch (error) {
         Sentry.captureException(error);
       }
+      processing = false;
     }
-  }, [props.importedModel]);
+  }, [props.importedModel, processing, processed]);
 
   useEffect(() => {
     if (props.doImport) {
@@ -244,6 +251,11 @@ export const ProductImportingRow = (props: Props) => {
   }, [props.doImport, triggerMutation]);
 
   const renderStatus = () => {
+    if (processed) {
+      return <ImportedStatus id="Done" />;
+    } else if (processing) {
+      return <PendingStatus />;
+    }
     return <PendingStatus />;
   };
 
