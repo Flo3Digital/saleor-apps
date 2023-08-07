@@ -3,6 +3,7 @@ import { Table, TableBody, Typography } from "@material-ui/core";
 import { ProductImportingRow } from "./products-importing-row";
 import React, { useState } from "react";
 import { ProductColumnSchema } from "../products-importer-nuvo/products-columns-model";
+import { triggerBulkImport } from "./products-importing-bulk";
 
 export const ProductsImportingResults = ({
   importedLines,
@@ -34,6 +35,14 @@ export const ProductsImportingResults = ({
           Start importing
         </Button>
       )}
+
+      <Button
+        style={{ margin: "20px 0" }}
+        variant="primary"
+        onClick={() => triggerBulkImport(importedLines)}
+      >
+        Bulk Import
+      </Button>
 
       <Table style={{ marginTop: 50 }}>
         <TableBody>

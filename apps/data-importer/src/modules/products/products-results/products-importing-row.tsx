@@ -54,6 +54,7 @@ const ErrorStatus = ({ message, onRetry }: { message: string; onRetry(): void })
     </Box>
   );
 };
+
 const PendingStatus = () => (
   <Box style={{ gap: 20, display: "flex", alignItems: "center" }}>
     <HourglassEmpty width={30} />
@@ -70,21 +71,6 @@ const PendingStatus = () => (
  * @returns
  */
 export const ProductImportingRow = (props: Props) => {
-  /**
-   *
-   * Mutations
-   *
-   */
-  const [mutationResult, mutate] = useProductCreateMutation();
-  // const [ProductUpdateMutationResult, ProductUpdateMutate] = useProductUpdateMutation();
-
-  /*
-   * const [mutationVariantResult, mutateVariant] = useProductVariantCreateMutation();
-   * const [channelListingMutationResult, channelListingMutation] =
-   *   useProductChannelListingUpdateMutation();
-   * const [variantChannelListingMutationResult, variantChannelListingMutation] =
-   *   useProductVariantChannelListingUpdateMutation();
-   */
   const client = GraphQLClient();
 
   /**
@@ -173,7 +159,7 @@ export const ProductImportingRow = (props: Props) => {
     }
 
     // If we managed to create or find the product then set the channel on it and create the variant
-    if (product?.id && !product?.variants && product?.variants?.length > 0) {
+    if (product?.id && !product?.variants) {
       try {
         let productVariant = await createProductVariant(
           {
@@ -209,36 +195,16 @@ export const ProductImportingRow = (props: Props) => {
         Sentry.captureException(error);
       }
     }
-  }, [props.importedModel, mutate]);
+  }, [props.importedModel]);
 
   useEffect(() => {
-    if (
-      props.doImport &&
-      !mutationResult.data &&
-      !mutationResult.error &&
-      !mutationResult.fetching
-    ) {
+    if (props.doImport) {
       triggerMutation();
     }
-  }, [props.doImport, mutate, mutationResult, triggerMutation]);
+  }, [props.doImport, triggerMutation]);
 
   const renderStatus = () => {
-    if (mutationResult.data?.productCreate?.product?.id) {
-      return <ImportedStatus id={mutationResult.data?.productCreate?.product?.id} />;
-    }
-
-    if (mutationResult.data?.productCreate?.errors) {
-      return (
-        <ErrorStatus
-          onRetry={triggerMutation}
-          message={mutationResult.data?.productCreate?.errors[0].message ?? "Error importing"}
-        />
-      );
-    }
-
-    if (mutationResult.fetching) {
-      return <PendingStatus />;
-    }
+    return <PendingStatus />;
   };
 
   return (
