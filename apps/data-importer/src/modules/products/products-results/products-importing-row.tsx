@@ -181,7 +181,10 @@ export const ProductImportingRow = (props: Props) => {
     let productVariant: ProductVariantResponse;
     // If we managed to create or find the product then set the channel on it and create the variant
 
-    if (product?.id && !product?.variants) {
+    if (
+      (product?.id && !product.variants) ||
+      (product?.id && product.variants && product.variants?.length === 0)
+    ) {
       try {
         productVariant = await createProductVariant(
           {
@@ -215,7 +218,7 @@ export const ProductImportingRow = (props: Props) => {
       } catch (error) {
         Sentry.captureException(error);
       }
-    } else if (product?.id && product?.variants) {
+    } else if (product?.id && product.variants && product.variants?.length > 0) {
       try {
         productVariant = await updateProductVariant(
           product.variants[0].id,
