@@ -1,4 +1,4 @@
-schema: graphql/schema.graphql
+schema: "https://demo.saleor.io/graphql/"
 documents: [graphql/**/*.graphql, src/**/*.ts, src/**/*.tsx]
 extensions:
   codegen:

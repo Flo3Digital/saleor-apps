@@ -14,10 +14,13 @@ import {
   ProductVariantCreateInput,
   ProductChannelListingUpdateDocument,
   ProductVariantChannelListingUpdateDocument,
+  ProductBulkCreateInput,
+  CreateBulkProductDocument,
 } from "./../../generated/graphql";
 import { Client } from "urql";
 
 type ProductResponse = ProductDetailsFragmentFragment | null;
+// type ProductBulkResponse = {__typename?: "ProductBulkResult" | undefined, ProductDetailsFragmentFragment | null | undefined, }[] | undefined;
 type ProductVariantResponse = ProductVariantDetailsFragmentFragment | null;
 
 /**
@@ -29,7 +32,7 @@ type ProductVariantResponse = ProductVariantDetailsFragmentFragment | null;
  */
 async function getProductByExternalReference(
   externalReference: string,
-  client: Client
+  client: Client,
 ): Promise<ProductResponse | null> {
   let result = await client
     .query(ProductByExternalReferenceDocument, { externalReference: externalReference })
@@ -52,7 +55,7 @@ async function getProductByExternalReference(
  */
 async function createProduct(
   input: ProductCreateInput,
-  client: Client
+  client: Client,
 ): Promise<ProductResponse | null> {
   console.log("Product does not yet exist, creating...");
   const result = await client.mutation(CreateProductDocument, { input: input }).toPromise();
@@ -69,6 +72,27 @@ async function createProduct(
   }
 }
 
+async function createBulkProduct(
+  products: ProductBulkCreateInput[],
+  client: Client,
+): Promise<any | null> {
+  console.log("Product does not yet exist, creating...");
+  const result = await client
+    .mutation(CreateBulkProductDocument, { products: products })
+    .toPromise();
+  const productsResult = result?.data?.productBulkCreate?.results;
+
+  if (productsResult) {
+    return productsResult;
+  } else if (result?.error) {
+    throw new Error(result?.error.message);
+  } else if (result?.data?.productBulkCreate?.errors[0]) {
+    throw new Error(String(result?.data?.productBulkCreate?.errors[0]?.message));
+  } else {
+    throw new Error("Error creating product");
+  }
+}
+
 /**
  * Updates an existing product.
  *
@@ -80,7 +104,7 @@ async function createProduct(
 async function updateProduct(
   id: string,
   input: ProductInput,
-  client: Client
+  client: Client,
 ): Promise<ProductResponse | null> {
   console.log("Product exists, updating...");
   const result = await client
@@ -108,7 +132,7 @@ async function updateProduct(
  */
 async function createProductVariant(
   input: ProductVariantCreateInput,
-  client: Client
+  client: Client,
 ): Promise<ProductVariantResponse | null> {
   const result = await client.mutation(CreateProductVariantDocument, { input: input }).toPromise();
   const productVariant = result?.data?.productVariantCreate?.productVariant;
@@ -135,7 +159,7 @@ async function createProductVariant(
 async function updateProductVariant(
   id: string,
   input: ProductVariantInput,
-  client: Client
+  client: Client,
 ): Promise<ProductVariantResponse | null> {
   console.log("updating product variant...");
   const result = await client
@@ -172,7 +196,7 @@ async function setChannelOnProduct(
   publish: boolean,
   isAvailableForPurchase: boolean,
   visibleInListings: boolean,
-  client: Client
+  client: Client,
 ) {
   // Set channel listing
   const result = await client
@@ -216,7 +240,7 @@ async function setChannelOnProductVariant(
   channelId: string,
   productVariant: ProductVariantResponse,
   price: number,
-  client: Client
+  client: Client,
 ) {
   // Set channel listing
   const result = await client
@@ -250,4 +274,5 @@ export {
   getProductByExternalReference,
   setChannelOnProduct,
   setChannelOnProductVariant,
+  createBulkProduct,
 };

@@ -12,6 +12,12 @@ export const ProductsImportingResults = ({
 }) => {
   const [importingStarted, setImportingStarted] = useState(false);
 
+  const handleBulkImport = async () => {
+    const result = await triggerBulkImport(importedLines);
+
+    console.log("result", result);
+  };
+
   return (
     <div style={{ marginTop: 20 }}>
       <Typography paragraph variant="h3">
@@ -36,11 +42,7 @@ export const ProductsImportingResults = ({
         </Button>
       )}
 
-      <Button
-        style={{ margin: "20px 0" }}
-        variant="primary"
-        onClick={() => triggerBulkImport(importedLines)}
-      >
+      <Button style={{ margin: "20px 0" }} variant="primary" onClick={() => handleBulkImport}>
         Bulk Import
       </Button>
 

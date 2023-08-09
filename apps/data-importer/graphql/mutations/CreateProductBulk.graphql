@@ -1,0 +1,12 @@
+mutation createBulkProduct($products: [ProductBulkCreateInput!]!) {
+  productBulkCreate(products: $products) {
+    results{
+      product{
+      ...ProductDetailsFragment
+      }
+    }
+    errors {
+      message
+    }
+  }
+}

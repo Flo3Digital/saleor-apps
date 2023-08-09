@@ -44,6 +44,8 @@ const palettes: PalettesOverride = {
  */
 const appBridgeInstance = typeof window !== "undefined" ? new AppBridge() : undefined;
 
+console.log("appBridgeInstance", appBridgeInstance);
+
 /**
  * That's a hack required by Macaw-UI incompatibility with React@18
  */

@@ -20,6 +20,7 @@ const IndexPage: NextPage = () => {
   if (isInIframe()) {
     return <LinearProgress />;
   }
+  console.log("APP_IFRAME_BASE_URL", process.env);
 
   return (
     <div>
