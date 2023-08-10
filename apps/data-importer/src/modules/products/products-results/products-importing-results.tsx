@@ -4,6 +4,7 @@ import { ProductImportingRow } from "./products-importing-row";
 import React, { useState } from "react";
 import { ProductColumnSchema } from "../products-importer-nuvo/products-columns-model";
 import { triggerBulkImport } from "./products-importing-bulk";
+import { GraphQLClient } from "../../../lib/graphql-client";
 
 export const ProductsImportingResults = ({
   importedLines,
@@ -11,10 +12,20 @@ export const ProductsImportingResults = ({
   importedLines: ProductColumnSchema[];
 }) => {
   const [importingStarted, setImportingStarted] = useState(false);
+  const [existingProducts, setExistingProducts] = useState<string[]>([]);
+  const [startImporting, setStartImporting] = useState<null | string>(null);
+  const [success, setSuccess] = useState<boolean>(false);
+  const client = GraphQLClient();
 
   const handleBulkImport = async () => {
-    const result = await triggerBulkImport(importedLines);
+    if (startImporting) return;
+    setExistingProducts(() => []);
+    setStartImporting(() => "Importing...");
+    setSuccess(() => false);
+    const result = await triggerBulkImport(importedLines, client, setExistingProducts);
 
+    setSuccess(() => true);
+    setStartImporting(() => null);
     console.log("result", result);
   };
 
@@ -42,10 +53,15 @@ export const ProductsImportingResults = ({
         </Button>
       )}
 
-      <Button style={{ margin: "20px 0" }} variant="primary" onClick={() => handleBulkImport}>
-        Bulk Import
+      <Button style={{ margin: "20px 0" }} variant="primary" onClick={() => handleBulkImport()}>
+        {startImporting ? startImporting : "Bulk Import"}
       </Button>
-
+      {success && <Typography>Congratulation. You successfully imported products.</Typography>}
+      {existingProducts.map((each, index) => (
+        <Typography key={index}>
+          {index + 1}. {each} is already exists. We won&lsquo;t add existing products.
+        </Typography>
+      ))}
       <Table style={{ marginTop: 50 }}>
         <TableBody>
           {importedLines.map((row) => (
