@@ -43,7 +43,7 @@ export const ProductsImportingResults = ({
         Products will <strong>not</strong> be informed or notified by this operation.
       </Typography>
 
-      {!importingStarted && (
+      {/* {!importingStarted && (
         <Button
           style={{ margin: "20px 0" }}
           variant="primary"
@@ -51,18 +51,22 @@ export const ProductsImportingResults = ({
         >
           Start importing
         </Button>
-      )}
+      )} */}
 
       <Button style={{ margin: "20px 0" }} variant="primary" onClick={() => handleBulkImport()}>
         {startImporting ? startImporting : "Bulk Import"}
       </Button>
-      {success && <Typography>Congratulation. You successfully imported products.</Typography>}
+      {success && (
+        <Typography style={{ color: "#53B749" }}>
+          Congratulation. You successfully imported products.
+        </Typography>
+      )}
       {existingProducts.map((each, index) => (
-        <Typography key={index}>
+        <Typography key={index} style={{ color: "#F5212D" }}>
           {index + 1}. {each} is already exists. We won&lsquo;t add existing products.
         </Typography>
       ))}
-      <Table style={{ marginTop: 50 }}>
+      {/* <Table style={{ marginTop: 50 }}>
         <TableBody>
           {importedLines.map((row) => (
             <ProductImportingRow
@@ -72,7 +76,7 @@ export const ProductsImportingResults = ({
             />
           ))}
         </TableBody>
-      </Table>
+      </Table> */}
     </div>
   );
 };
