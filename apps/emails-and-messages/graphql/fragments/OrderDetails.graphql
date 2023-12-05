@@ -55,6 +55,18 @@ fragment OrderDetails on Order {
         amount
       }
     }
+    variant {
+      product {
+        attributes {
+          values {
+            name
+          }
+          attribute {
+            name
+          }
+        }
+      }
+    }
   }
   subtotal {
     gross {
