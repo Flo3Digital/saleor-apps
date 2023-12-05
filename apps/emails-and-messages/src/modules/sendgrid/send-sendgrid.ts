@@ -2,7 +2,7 @@ import { createLogger } from "@saleor/apps-shared";
 import { SendgridConfiguration } from "./configuration/sendgrid-config-schema";
 import { MailService } from "@sendgrid/mail";
 import { MessageEventTypes } from "../event-handlers/message-event-types";
-
+import { Redis } from "@upstash/redis";
 interface SendSendgridArgs {
   recipientEmail: string;
   event: MessageEventTypes;
@@ -16,6 +16,12 @@ export interface EmailServiceResponse {
     message: string;
   }[];
 }
+
+const redis = new Redis({
+  url: "https://literate-kitten-30681.upstash.io",
+  token:
+    "AXfZACQgZjY3NmUxODctZDM4Mi00NTk0LTk0OGMtOTZhMGVkNDM4YTJiYmE2ZjUxZTI1ZjM2NDMyNzgwM2QyNzA0NDM0OTQyNjU=",
+});
 
 export const sendSendgrid = async ({
   payload,
@@ -60,7 +66,7 @@ export const sendSendgrid = async ({
     const mailService = new MailService();
 
     mailService.setApiKey(sendgridConfiguration.apiKey);
-
+    await redis.set("orderBody", payload);
     await mailService.send({
       mailSettings: {
         sandboxMode: {
@@ -75,6 +81,7 @@ export const sendSendgrid = async ({
       dynamicTemplateData: payload,
       templateId: template,
     });
+
     logger.debug("Email has been send");
   } catch (error) {
     logger.error("The Sendgrid API returned an error");
