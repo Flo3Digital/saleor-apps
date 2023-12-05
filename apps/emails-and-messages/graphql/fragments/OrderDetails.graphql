@@ -36,9 +36,22 @@ fragment OrderDetails on Order {
   }
   lines {
     id
+    isShippingRequired
     productName
     variantName
     quantity
+    variant {
+      product {
+        attributes {
+          values {
+            name
+          }
+          attribute {
+            name
+          }
+        }
+      }
+    }
     thumbnail {
       url
       alt
@@ -53,18 +66,6 @@ fragment OrderDetails on Order {
       gross {
         currency
         amount
-      }
-    }
-    variant {
-      product {
-        attributes {
-          values {
-            name
-          }
-          attribute {
-            name
-          }
-        }
       }
     }
   }

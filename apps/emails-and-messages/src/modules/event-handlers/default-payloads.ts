@@ -57,6 +57,7 @@ const exampleOrderPayload: OrderDetailsFragment = {
       id: "T3JkZXJMaW5lOjNkNjc4OWE3LWUyNWItNDBlMi1iNjk2LTdmMzA0ZWFjOWI2OQ==",
       productName: "Black Hoodie",
       variantName: "XL",
+      isShippingRequired: false,
       quantity: 1,
       thumbnail: {
         url: "https://placehold.jp/150x150.png",
@@ -148,6 +149,7 @@ const exampleOrderPayload: OrderDetailsFragment = {
       productName: "Code Division T-shirt",
       variantName: "L",
       quantity: 1,
+      isShippingRequired: false,
       thumbnail: {
         url: "https://placehold.jp/150x150.png",
         alt: "",
