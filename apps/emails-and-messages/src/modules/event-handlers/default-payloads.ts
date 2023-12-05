@@ -74,6 +74,74 @@ const exampleOrderPayload: OrderDetailsFragment = {
           amount: 5,
         },
       },
+      variant: {
+        product: {
+          attributes: [
+            {
+              values: [
+                {
+                  name: "France",
+                },
+              ],
+              attribute: {
+                name: "Country",
+              },
+            },
+            {
+              values: [],
+              attribute: {
+                name: "Brand",
+              },
+            },
+            {
+              values: [
+                {
+                  name: "0.75",
+                },
+              ],
+              attribute: {
+                name: "Size",
+              },
+            },
+            {
+              values: [
+                {
+                  name: "White",
+                },
+              ],
+              attribute: {
+                name: "Type",
+              },
+            },
+            {
+              values: [],
+              attribute: {
+                name: "Browse By",
+              },
+            },
+            {
+              values: [
+                {
+                  name: "Jura",
+                },
+              ],
+              attribute: {
+                name: "Region",
+              },
+            },
+            {
+              values: [
+                {
+                  name: "2018",
+                },
+              ],
+              attribute: {
+                name: "Vintage",
+              },
+            },
+          ],
+        },
+      },
     },
     {
       id: "T3JkZXJMaW5lOjVhYmEzMTBkLTZkMzEtNDNlNy1hZjAyLTdlNGUwM2UzYmI4ZA==",
@@ -94,6 +162,74 @@ const exampleOrderPayload: OrderDetailsFragment = {
         gross: {
           currency: "USD",
           amount: 5,
+        },
+      },
+      variant: {
+        product: {
+          attributes: [
+            {
+              values: [
+                {
+                  name: "France",
+                },
+              ],
+              attribute: {
+                name: "Country",
+              },
+            },
+            {
+              values: [],
+              attribute: {
+                name: "Brand",
+              },
+            },
+            {
+              values: [
+                {
+                  name: "0.75",
+                },
+              ],
+              attribute: {
+                name: "Size",
+              },
+            },
+            {
+              values: [
+                {
+                  name: "White",
+                },
+              ],
+              attribute: {
+                name: "Type",
+              },
+            },
+            {
+              values: [],
+              attribute: {
+                name: "Browse By",
+              },
+            },
+            {
+              values: [
+                {
+                  name: "Jura",
+                },
+              ],
+              attribute: {
+                name: "Region",
+              },
+            },
+            {
+              values: [
+                {
+                  name: "2018",
+                },
+              ],
+              attribute: {
+                name: "Vintage",
+              },
+            },
+          ],
         },
       },
     },
