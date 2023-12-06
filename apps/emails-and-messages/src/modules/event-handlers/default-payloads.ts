@@ -143,6 +143,12 @@ const exampleOrderPayload: OrderDetailsFragment = {
           ],
         },
       },
+      unitDiscount: {
+        currency: "USD",
+        amount: 5,
+      },
+      translatedVariantName: "",
+      translatedProductName: "",
     },
     {
       id: "T3JkZXJMaW5lOjVhYmEzMTBkLTZkMzEtNDNlNy1hZjAyLTdlNGUwM2UzYmI4ZA==",
@@ -234,6 +240,12 @@ const exampleOrderPayload: OrderDetailsFragment = {
           ],
         },
       },
+      unitDiscount: {
+        currency: "USD",
+        amount: 5,
+      },
+      translatedVariantName: "",
+      translatedProductName: "",
     },
   ],
   subtotal: {
