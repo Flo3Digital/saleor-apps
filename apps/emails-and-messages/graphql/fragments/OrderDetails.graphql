@@ -68,6 +68,15 @@ fragment OrderDetails on Order {
         amount
       }
     }
+    unitDiscountValue
+    unitDiscountType
+    unitDiscountReason
+    unitDiscount {
+      amount
+      currency
+    }
+    translatedVariantName
+    translatedProductName
   }
   subtotal {
     gross {
