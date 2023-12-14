@@ -19,17 +19,15 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
     const { invoiceNumber, order, companyAddressData, filename } = input;
 
     const microinvoiceInstance = new Microinvoice({
-      /*
-       * style: {
-       *   header: {
-       *     image: {
-       *       path: "./logo.png",
-       *       width: 100,
-       *       height: 38,
-       *     },
-       *   },
-       * },
-       */
+      style: {
+        header: {
+          image: {
+            path: "./logo.png",
+            width: 100,
+            height: 38,
+          },
+        },
+      },
       data: {
         invoice: {
           name: `Invoice ${invoiceNumber}`,
@@ -56,7 +54,6 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
               value: [
                 `${order.billingAddress?.firstName} ${order.billingAddress?.lastName}`,
                 order.billingAddress?.companyName,
-                order.userEmail,
                 `${order.billingAddress?.streetAddress1}`,
                 `${order.billingAddress?.streetAddress2}`,
                 `${order.billingAddress?.postalCode} ${order.billingAddress?.city}`,
