@@ -20,15 +20,13 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
 
     const microinvoiceInstance = new Microinvoice({
       style: {
-        /*
-         * header: {
-         *   image: {
-         *     path: "./examples/logo.png",
-         *     width: 50,
-         *     height: 19,
-         *   },
-         * },
-         */
+        header: {
+          image: {
+            path: "./logo.png",
+            width: 100,
+            height: 38,
+          },
+        },
       },
       data: {
         invoice: {
@@ -56,7 +54,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
               value: [
                 `${order.billingAddress?.firstName} ${order.billingAddress?.lastName}`,
                 order.billingAddress?.companyName,
-                order.billingAddress?.phone,
+                order.userEmail,
                 `${order.billingAddress?.streetAddress1}`,
                 `${order.billingAddress?.streetAddress2}`,
                 `${order.billingAddress?.postalCode} ${order.billingAddress?.city}`,
