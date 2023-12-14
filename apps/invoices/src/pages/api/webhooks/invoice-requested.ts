@@ -101,7 +101,6 @@ const OrderPayload = gql`
       ...TaxedMoney
     }
     shippingMethodName
-    userEmail
   }
 `;
 
