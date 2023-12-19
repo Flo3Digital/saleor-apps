@@ -113,6 +113,7 @@ const OrderPayload = gql`
       ...TaxedMoney
     }
     shippingMethodName
+    paymentStatusDisplay
   }
 `;
 

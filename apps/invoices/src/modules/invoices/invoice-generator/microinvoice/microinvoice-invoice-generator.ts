@@ -19,6 +19,7 @@ const ORDER_QUERY = gql`
     order(id: $id) {
       id
       userEmail
+      paymentStatusDisplay
       lines {
         variant {
           product {
@@ -112,7 +113,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
               label: "Customer",
               value: [
                 `${order.billingAddress?.firstName} ${order.billingAddress?.lastName}`,
-                `Customer email - ${orderFromQuery?.userEmail}`,
+                `${orderFromQuery?.userEmail}`,
                 order.billingAddress?.companyName,
                 order.billingAddress?.phone,
                 `${order.billingAddress?.streetAddress1}`,
@@ -121,12 +122,14 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
                 order.billingAddress?.country.country,
               ],
             },
-            /*
-             * {
-             *   label: "Tax Identifier",
-             *   value: "todo",
-             * },
-             */
+            {
+              label: "PAYMENT STATUS",
+              value: orderFromQuery?.paymentStatusDisplay,
+            },
+            {
+              label: "SHIPMENT METHOD",
+              value: orderFromQuery?.shippingMethodName,
+            },
           ],
 
           seller: [
