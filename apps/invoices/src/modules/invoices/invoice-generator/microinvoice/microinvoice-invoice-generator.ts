@@ -22,7 +22,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
       style: {
         header: {
           image: {
-            path: "./logo.png",
+            path: "https://www.liquidcollectionhk.com/logo/logo.svg",
             width: 100,
             height: 38,
           },
