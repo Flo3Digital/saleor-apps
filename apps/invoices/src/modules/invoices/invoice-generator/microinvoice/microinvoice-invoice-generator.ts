@@ -59,7 +59,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
   }): Promise<void> {
     const { invoiceNumber, order, companyAddressData, filename } = input;
     const response = await client.query(ORDER_QUERY, { id: order.id }).toPromise();
-    const orderFromQuery = response.data?.id ? response.data : order;
+    const orderFromQuery = response.data?.order ? response.data.order : order;
     const getAttributeValue = (attributes: any[] | undefined, name: string) => {
       if (!attributes) {
         return "";
@@ -94,7 +94,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
           header: [
             {
               label: "Order number",
-              value: `${order.number} saleor-api-url -> ${saleorApiUrl} ${response.data?.id} ${response.error?.message}`,
+              value: `${order.number} saleor-api-url -> ${order.userEmail}/${response.data?.order?.userEmail} ${response.data?.order?.id} ${response.error?.message}`,
             },
             {
               label: "Date",
@@ -112,7 +112,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
               label: "Customer",
               value: [
                 `${order.billingAddress?.firstName} ${order.billingAddress?.lastName}`,
-                `Customer email - ${orderFromQuery?.userEmail}`,
+                `Customer email - ${orderFromQuery?.userEmail} / ${order.userEmail}`,
                 order.billingAddress?.companyName,
                 order.billingAddress?.phone,
                 `${order.billingAddress?.streetAddress1}`,
