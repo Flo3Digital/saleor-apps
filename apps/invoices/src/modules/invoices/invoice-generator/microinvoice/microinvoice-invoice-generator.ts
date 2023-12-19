@@ -65,7 +65,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
         return "";
       }
       const selectAttribute = attributes.filter((each) => {
-        return each?.attribute?.name === "name";
+        return each?.attribute?.name === name;
       });
 
       if (selectAttribute.length > 0) {
@@ -94,7 +94,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
           header: [
             {
               label: "Order number",
-              value: `${order.number} saleor-api-url -> ${order.userEmail}/${response.data?.order?.userEmail} ${response.data?.order?.id} ${response.error?.message}`,
+              value: `${order.number}`,
             },
             {
               label: "Date",
@@ -112,7 +112,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
               label: "Customer",
               value: [
                 `${order.billingAddress?.firstName} ${order.billingAddress?.lastName}`,
-                `Customer email - ${orderFromQuery?.userEmail} / ${order.userEmail}`,
+                `Customer email - ${orderFromQuery?.userEmail}`,
                 order.billingAddress?.companyName,
                 order.billingAddress?.phone,
                 `${order.billingAddress?.streetAddress1}`,
