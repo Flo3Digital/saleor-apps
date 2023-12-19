@@ -6,13 +6,44 @@ import {
 } from "../../../../../generated/graphql";
 import { SellerShopConfig } from "../../../app-configuration/schema-v1/app-config-v1";
 import { AddressV2Shape } from "../../../app-configuration/schema-v2/app-config-schema.v2";
-import { createClient, dedupExchange, cacheExchange, fetchExchange } from "urql";
+import { createClient, dedupExchange, cacheExchange, fetchExchange, gql } from "urql";
 const Microinvoice = require("microinvoice");
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 const client = createClient({
   url: saleorApiUrl || "",
   exchanges: [dedupExchange, cacheExchange, fetchExchange],
 });
+
+const ORDER_QUERY = gql`
+  query OrderDetail($id: ID!) {
+    order(id: $id) {
+      id
+      userEmail
+      lines {
+        variant {
+          product {
+            attributes {
+              attribute {
+                name
+              }
+              values {
+                name
+              }
+            }
+          }
+        }
+        productName
+        quantity
+        totalPrice {
+          gross {
+            amount
+            currency
+          }
+        }
+      }
+    }
+  }
+`;
 
 export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
   constructor(
@@ -27,8 +58,8 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
     companyAddressData: AddressV2Shape;
   }): Promise<void> {
     const { invoiceNumber, order, companyAddressData, filename } = input;
-    const response = await client.query(OrderPayloadFragmentDoc, { id: order.id }).toPromise();
-    const orderFromQuery: OrderPayloadFragment = response.data || order;
+    const response = await client.query(ORDER_QUERY, { id: order.id }).toPromise();
+    const orderFromQuery = response.data?.id ? response.data : order;
     const getAttributeValue = (attributes: any[] | undefined, name: string) => {
       if (!attributes) {
         return "";
@@ -81,7 +112,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
               label: "Customer",
               value: [
                 `${order.billingAddress?.firstName} ${order.billingAddress?.lastName}`,
-                `Customer email - ${orderFromQuery.userEmail}`,
+                `Customer email - ${orderFromQuery?.userEmail}`,
                 order.billingAddress?.companyName,
                 order.billingAddress?.phone,
                 `${order.billingAddress?.streetAddress1}`,
@@ -168,10 +199,10 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
             ],
 
             parts: [
-              ...orderFromQuery.lines.map((line) => {
+              ...orderFromQuery?.lines?.map((line: any) => {
                 return [
                   {
-                    value: `${line.productName} (Size - ${getAttributeValue(
+                    value: `${line?.productName} (Size - ${getAttributeValue(
                       line?.variant?.product?.attributes,
                       "Size"
                     )} , Vintage - ${getAttributeValue(
@@ -180,10 +211,10 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
                     )})`,
                   },
                   {
-                    value: line.quantity,
+                    value: line?.quantity,
                   },
                   {
-                    value: line.totalPrice.gross.amount,
+                    value: line?.totalPrice?.gross?.amount,
                     price: true,
                   },
                 ];
