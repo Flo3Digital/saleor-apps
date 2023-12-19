@@ -63,7 +63,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
           header: [
             {
               label: "Order number",
-              value: order.number,
+              value: `${order.number} saleor-api-url -> ${saleorApiUrl} ${response.data?.id} ${response.error?.message}`,
             },
             {
               label: "Date",
