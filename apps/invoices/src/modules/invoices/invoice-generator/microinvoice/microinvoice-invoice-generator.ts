@@ -18,6 +18,21 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
   }): Promise<void> {
     const { invoiceNumber, order, companyAddressData, filename } = input;
 
+    const getAttributeValue = (attributes: any[] | undefined, name: string) => {
+      if (!attributes) {
+        return "";
+      }
+      const selectAttribute = attributes.filter((each) => {
+        return each?.attribute?.name === "name";
+      });
+
+      if (selectAttribute.length > 0) {
+        return selectAttribute[0]?.values[0]?.name;
+      } else {
+        return "";
+      }
+    };
+
     const microinvoiceInstance = new Microinvoice({
       /*
        * style: {
@@ -102,29 +117,29 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
             {
               value:
                 "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
-              weight: "bold",
+              weight: "normal",
               color: "secondary",
             },
             {
               value: "All returns or refunds my be previously approved in writing by the Company.",
-              weight: "bold",
+              weight: "normal",
               color: "secondary",
             },
             {
               value:
                 "Customers are requested to examine the goods at the time of delivery. If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
-              weight: "bold",
+              weight: "normal",
               color: "secondary",
             },
             {
               value:
                 "No claims can be made once our authorized delivery person is no more in contact with the delivery.",
-              weight: "bold",
+              weight: "normal",
               color: "secondary",
             },
             {
               value: "All prices are in Hong Kong Dollars or otherwise indicated.",
-              weight: "bold",
+              weight: "normal",
               color: "secondary",
             },
           ],
@@ -145,7 +160,13 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
               ...order.lines.map((line) => {
                 return [
                   {
-                    value: line.productName,
+                    value: `${line.productName} (Size - ${getAttributeValue(
+                      line?.variant?.product?.attributes,
+                      "Size"
+                    )} , Vintage - ${getAttributeValue(
+                      line?.variant?.product?.attributes,
+                      "Vintage"
+                    )})`,
                   },
                   {
                     value: line.quantity,

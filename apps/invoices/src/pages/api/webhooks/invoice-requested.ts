@@ -96,6 +96,18 @@ const OrderPayload = gql`
       totalPrice {
         ...TaxedMoney
       }
+      variant {
+        product {
+          attributes {
+            attribute {
+              name
+            }
+            values {
+              name
+            }
+          }
+        }
+      }
     }
     shippingPrice {
       ...TaxedMoney
