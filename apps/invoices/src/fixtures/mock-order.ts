@@ -19,6 +19,8 @@ export const mockOrder: OrderPayloadFragment = {
       currency: "USD",
     },
   },
+  userEmail: "dev@flo3.digital",
+  paymentStatusDisplay: "Not Charged",
   shippingMethodName: "CyCreateVariants-1462",
   number: "3991",
   id: "T3JkZXI6OTFiZjM5ZDQtZjRiMC00M2QyLTgwMjEtZjVkMTMwNDVlMjkx",
