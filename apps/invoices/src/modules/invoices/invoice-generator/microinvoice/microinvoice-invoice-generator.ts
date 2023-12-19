@@ -19,15 +19,17 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
     const { invoiceNumber, order, companyAddressData, filename } = input;
 
     const microinvoiceInstance = new Microinvoice({
-      style: {
-        header: {
-          image: {
-            path: "https://www.liquidcollectionhk.com/logo/logo.svg",
-            width: 100,
-            height: 38,
-          },
-        },
-      },
+      /*
+       * style: {
+       *   header: {
+       *     image: {
+       *       path: "https://www.liquidcollectionhk.com/logo/logo.svg",
+       *       width: 100,
+       *       height: 38,
+       *     },
+       *   },
+       * },
+       */
       data: {
         invoice: {
           name: `Invoice ${invoiceNumber}`,
@@ -53,6 +55,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
               label: "Customer",
               value: [
                 `${order.billingAddress?.firstName} ${order.billingAddress?.lastName}`,
+                order.userEmail,
                 order.billingAddress?.companyName,
                 order.billingAddress?.phone,
                 `${order.billingAddress?.streetAddress1}`,

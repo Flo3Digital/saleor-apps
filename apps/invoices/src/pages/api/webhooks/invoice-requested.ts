@@ -72,7 +72,7 @@ const OrderPayload = gql`
     }
     shippingMethodName
     number
-
+    userEmail
     id
     billingAddress {
       ...Address
