@@ -81,7 +81,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
       style: {
         header: {
           image: {
-            path: "./examples/logo.png",
+            path: "./microinvoice/logo.png",
             width: 100,
             height: 38,
           },
