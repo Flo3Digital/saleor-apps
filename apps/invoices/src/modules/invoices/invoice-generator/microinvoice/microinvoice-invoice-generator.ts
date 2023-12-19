@@ -20,6 +20,7 @@ const ORDER_QUERY = gql`
       id
       userEmail
       paymentStatusDisplay
+      shippingMethodName
       lines {
         variant {
           product {
