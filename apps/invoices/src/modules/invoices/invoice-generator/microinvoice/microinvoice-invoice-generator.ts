@@ -55,7 +55,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
               label: "Customer",
               value: [
                 `${order.billingAddress?.firstName} ${order.billingAddress?.lastName}`,
-                order.userEmail,
+                `Customer email - ${order.userEmail}`,
                 order.billingAddress?.companyName,
                 order.billingAddress?.phone,
                 `${order.billingAddress?.streetAddress1}`,
@@ -94,20 +94,40 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
           ],
 
           legal: [
-            /*
-             * {
-             *   value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-             *   weight: "bold",
-             *   color: "primary",
-             * },
-             * {
-             *   value: "sed do eiusmod tempor incididunt ut labore et dolore magna.",
-             *   weight: "bold",
-             *   color: "secondary",
-             * },
-             */
+            {
+              value: "TERMS AND CONDITIONS",
+              weight: "bold",
+              color: "primary",
+            },
+            {
+              value:
+                "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
+              weight: "bold",
+              color: "secondary",
+            },
+            {
+              value: "All returns or refunds my be previously approved in writing by the Company.",
+              weight: "bold",
+              color: "secondary",
+            },
+            {
+              value:
+                "Customers are requested to examine the goods at the time of delivery. If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
+              weight: "bold",
+              color: "secondary",
+            },
+            {
+              value:
+                "No claims can be made once our authorized delivery person is no more in contact with the delivery.",
+              weight: "bold",
+              color: "secondary",
+            },
+            {
+              value: "All prices are in Hong Kong Dollars or otherwise indicated.",
+              weight: "bold",
+              color: "secondary",
+            },
           ],
-
           details: {
             header: [
               {
