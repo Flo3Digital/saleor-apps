@@ -20,15 +20,13 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
 
     const microinvoiceInstance = new Microinvoice({
       style: {
-        /*
-         * header: {
-         *   image: {
-         *     path: "./logo.png",
-         *     width: 100,
-         *     height: 38,
-         *   },
-         * },
-         */
+        header: {
+          image: {
+            path: "./logo.png",
+            width: 100,
+            height: 38,
+          },
+        },
       },
       data: {
         invoice: {
