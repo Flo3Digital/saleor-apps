@@ -13,6 +13,7 @@
         "VERCEL_URL",
         "ALLOWED_DOMAIN_PATTERN",
         "NEXT_PUBLIC_VERCEL_ENV",
+        "NEXT_PUBLIC_SALEOR_API_URL",
         "REST_APL_ENDPOINT",
         "REST_APL_TOKEN",
         "SENTRY_PROJECT",
