@@ -27,28 +27,25 @@ const fileUpload = gql`
 export class SaleorInvoiceUploader implements InvoiceUploader {
   constructor(private client: Client) {}
 
-  upload(filePath: string, asName: string): Promise<string> {
-    logger.debug({ filePath, asName }, "Will upload blob to Saleor");
+  async upload(fileUnit8Array: Uint8Array, asName: string): Promise<string> {
+    const file = Buffer.from(fileUnit8Array.buffer);
+    const blob = new File([file], asName, { type: "application/pdf" });
 
-    return readFile(filePath).then((file) => {
-      const blob = new File([file], asName, { type: "application/pdf" });
+    return this.client
+      .mutation<FileUploadMutation>(fileUpload, {
+        file: blob,
+      })
+      .toPromise()
+      .then((r) => {
+        if (r.data?.fileUpload?.uploadedFile?.url) {
+          logger.debug({ data: r.data }, "Saleor returned response after uploading blob");
 
-      return this.client
-        .mutation<FileUploadMutation>(fileUpload, {
-          file: blob,
-        })
-        .toPromise()
-        .then((r) => {
-          if (r.data?.fileUpload?.uploadedFile?.url) {
-            logger.debug({ data: r.data }, "Saleor returned response after uploading blob");
+          return r.data.fileUpload.uploadedFile.url;
+        } else {
+          logger.error({ data: r }, "Uploading blob failed");
 
-            return r.data.fileUpload.uploadedFile.url;
-          } else {
-            logger.error({ data: r }, "Uploading blob failed");
-
-            throw new Error(r.error?.message);
-          }
-        });
-    });
+          throw new Error(r.error?.message);
+        }
+      });
   }
 }

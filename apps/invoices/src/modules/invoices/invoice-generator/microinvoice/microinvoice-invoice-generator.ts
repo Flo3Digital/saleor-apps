@@ -1,4 +1,4 @@
-import { InvoiceGenerator } from "../invoice-generator";
+import { InvoiceGenerator, MicroInvoiceGeneratorInterface } from "../invoice-generator";
 import {
   Order,
   OrderPayloadFragment,
@@ -47,7 +47,7 @@ const ORDER_QUERY = gql`
   }
 `;
 
-export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
+export class MicroinvoiceInvoiceGenerator implements MicroInvoiceGeneratorInterface {
   constructor(
     private settings = {
       locale: "en-US",

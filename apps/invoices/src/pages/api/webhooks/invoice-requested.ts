@@ -28,6 +28,7 @@ import { shopInfoQueryToAddressShape } from "../../../modules/shop-info/shop-inf
 
 import * as Sentry from "@sentry/nextjs";
 import { AppConfigV2 } from "../../../modules/app-configuration/schema-v2/app-config";
+import { PdfLibInvoiceGenerator } from "../../../modules/invoices/invoice-generator/pdf-lib/pdfLibInvoiceGenerator";
 
 const OrderPayload = gql`
   fragment Address on Address {
@@ -246,22 +247,28 @@ export const handler: NextWebhookApiHandler<InvoiceRequestedPayloadFragment> = a
       return res.status(200).end("App not configured");
     }
 
-    await new MicroinvoiceInvoiceGenerator()
-      .generate({
-        order,
-        invoiceNumber: invoiceName,
-        filename: tempPdfLocation,
-        companyAddressData: address,
-      })
-      .catch((err) => {
-        logger.error(err, "Error generating invoice");
+    /*
+     * await new MicroinvoiceInvoiceGenerator()
+     *   .generate({
+     *     order,
+     *     invoiceNumber: invoiceName,
+     *     filename: tempPdfLocation,
+     *     companyAddressData: address,
+     *   })
+     *   .catch((err) => {
+     *     logger.error(err, "Error generating invoice");
+     */
 
-        Sentry.captureException(err);
+    //     Sentry.captureException(err);
 
-        return res.status(500).json({
-          error: "Error generating invoice",
-        });
-      });
+    /*
+     *     return res.status(500).json({
+     *       error: "Error generating invoice",
+     *     });
+     *   });
+     */
+    const PdfInvoiceGenerator = new PdfLibInvoiceGenerator();
+    const fileUnit8Array = await PdfInvoiceGenerator.createTestPdf();
 
     Sentry.addBreadcrumb({
       message: "Generated invoice file",
@@ -270,7 +277,7 @@ export const handler: NextWebhookApiHandler<InvoiceRequestedPayloadFragment> = a
 
     const uploader = new SaleorInvoiceUploader(client);
 
-    const uploadedFileUrl = await uploader.upload(tempPdfLocation, `${invoiceName}.pdf`);
+    const uploadedFileUrl = await uploader.upload(fileUnit8Array.pdfBytes, `${invoiceName}.pdf`);
 
     Sentry.addBreadcrumb({
       message: "Uploaded file to Saleor",
