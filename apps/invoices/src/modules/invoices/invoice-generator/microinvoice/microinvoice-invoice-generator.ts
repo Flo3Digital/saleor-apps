@@ -81,7 +81,7 @@ export class MicroinvoiceInvoiceGenerator implements InvoiceGenerator {
       style: {
         header: {
           image: {
-            path: "/vercel.svg",
+            path: "/logo_small.png",
             width: 100,
             height: 38,
           },
