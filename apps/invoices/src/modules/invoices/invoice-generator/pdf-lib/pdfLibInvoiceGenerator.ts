@@ -140,7 +140,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     });
 
     //logo section
-    const url = "/lc_logo.png";
+    const url = "https://www.liquidcollectionhk.com/logo/logo.png";
     const arrayBuffer = await fetch(url).then((res) => res.arrayBuffer());
     const image4 = await pdfDoc.embedPng(arrayBuffer);
 
