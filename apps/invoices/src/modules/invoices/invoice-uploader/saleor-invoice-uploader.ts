@@ -28,12 +28,13 @@ export class SaleorInvoiceUploader implements InvoiceUploader {
   constructor(private client: Client) {}
 
   async upload(fileUnit8Array: Uint8Array, asName: string): Promise<string> {
-    const file = Buffer.from(fileUnit8Array.buffer);
-    const blob = new File([file], asName, { type: "application/pdf" });
+    // const file = Buffer.from(fileUnit8Array.buffer);
+    const blob = new Blob([fileUnit8Array], { type: "application/pdf" });
+    const file = new File([blob], asName, { type: "application/pdf" });
 
     return this.client
       .mutation<FileUploadMutation>(fileUpload, {
-        file: blob,
+        file: file,
       })
       .toPromise()
       .then((r) => {

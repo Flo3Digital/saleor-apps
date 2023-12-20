@@ -18,6 +18,9 @@ const IndexPage: NextPage = () => {
     const pdfUri = await pdfInvoiceGenerator.createTestPdf();
 
     setPdfDataUri(() => pdfUri.pdfDataUri);
+    const file = Buffer.from(pdfUri.pdfBytes.buffer);
+
+    console.log("file", file);
   };
 
   useEffect(() => {
@@ -48,7 +51,7 @@ const IndexPage: NextPage = () => {
       >
         <button
           onClick={handleGenerate}
-          style={{ width: "100px", height: "40px", marginBottom: "20px", marginTop: "20px" }}
+          style={{ width: "200px", height: "40px", marginBottom: "20px", marginTop: "20px" }}
         >
           Generate Test PDF Template
         </button>
