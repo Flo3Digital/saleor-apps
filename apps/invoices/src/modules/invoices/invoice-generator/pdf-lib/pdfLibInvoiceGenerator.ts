@@ -83,9 +83,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     companyAddressData: AddressV2Shape;
   }): Promise<{ pdfDataUri: string; pdfBytes: Uint8Array }> {
     const { invoiceNumber, order, companyAddressData, filename } = input;
-    const response = await client
-      .query(ORDER_QUERY, { id: "T3JkZXI6ZTQxNTMyMTctMWRlOS00ZjdjLWI2NWEtYWQ0Y2IyMTMzNTFl" })
-      .toPromise();
+    const response = await client.query(ORDER_QUERY, { id: order.id }).toPromise();
     const orderFromQuery = response.data?.order ? response.data.order : order;
     const getAttributeValue = (attributes: any[] | undefined, name: string) => {
       if (!attributes) {
