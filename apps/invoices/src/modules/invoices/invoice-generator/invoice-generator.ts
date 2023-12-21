@@ -7,7 +7,7 @@ export interface InvoiceGenerator {
     invoiceNumber: string;
     filename: string;
     companyAddressData: SellerShopConfig["address"];
-  }): Promise<void>;
+  }): Promise<{ pdfDataUri: string; pdfBytes: Uint8Array }>;
 }
 
 export interface MicroInvoiceGeneratorInterface {

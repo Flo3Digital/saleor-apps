@@ -268,7 +268,12 @@ export const handler: NextWebhookApiHandler<InvoiceRequestedPayloadFragment> = a
      *   });
      */
     const PdfInvoiceGenerator = new PdfLibInvoiceGenerator();
-    const fileUnit8Array = await PdfInvoiceGenerator.createTestPdf();
+    const fileUnit8Array = await PdfInvoiceGenerator.createPdf({
+      order,
+      invoiceNumber: invoiceName,
+      filename: tempPdfLocation,
+      companyAddressData: address,
+    });
 
     Sentry.addBreadcrumb({
       message: "Generated invoice file",
