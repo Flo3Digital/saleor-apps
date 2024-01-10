@@ -141,6 +141,12 @@ const exampleOrderPayload: OrderDetailsFragment = {
               },
             },
           ],
+          privateMetadata: [
+            {
+              key: "Service Charge Percentage To Customer",
+              value: "6",
+            },
+          ],
         },
       },
       unitDiscount: {
@@ -236,6 +242,12 @@ const exampleOrderPayload: OrderDetailsFragment = {
               attribute: {
                 name: "Vintage",
               },
+            },
+          ],
+          privateMetadata: [
+            {
+              key: "Service Charge Percentage To Customer",
+              value: "6",
             },
           ],
         },

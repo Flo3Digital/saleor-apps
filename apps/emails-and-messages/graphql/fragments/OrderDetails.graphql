@@ -50,6 +50,10 @@ fragment OrderDetails on Order {
             name
           }
         }
+        privateMetadata {
+            key
+            value
+        }
       }
     }
     thumbnail {
