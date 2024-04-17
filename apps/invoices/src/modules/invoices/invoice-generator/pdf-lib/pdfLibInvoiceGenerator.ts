@@ -42,6 +42,15 @@ const ORDER_QUERY = gql`
               }
             }
           }
+          pricing {
+            price {
+              gross {
+                amount
+                currency
+              }
+            }
+          }
+          sku
         }
         productName
         quantity
