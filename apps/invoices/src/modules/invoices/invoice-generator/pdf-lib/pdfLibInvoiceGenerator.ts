@@ -83,6 +83,8 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     companyAddressData: AddressV2Shape;
   }): Promise<{ pdfDataUri: string; pdfBytes: Uint8Array }> {
     const { invoiceNumber, order, companyAddressData, filename } = input;
+
+    console.log("invoice_number", invoiceNumber);
     const response = await client.query(ORDER_QUERY, { id: order.id }).toPromise();
     const orderFromQuery = response.data?.order ? response.data.order : order;
     const getAttributeValue = (attributes: any[] | undefined, name: string) => {
@@ -106,13 +108,13 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const page = pdfDoc.addPage([1000, 1500]);
     const { width, height } = page.getSize();
     const fontSize = {
-      xs: 10,
-      sm: 12,
-      base: 14,
-      md: 16,
-      lg: 18,
-      xl: 20,
-      xxl: 24,
+      xs: 8,
+      sm: 10,
+      base: 10,
+      md: 12,
+      lg: 14,
+      xl: 16,
+      xxl: 20,
     };
     const cellPadding = 50;
 
@@ -190,12 +192,27 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const headerSectionHeight = 270;
     const headerSectionDetail: { name: string; value: string }[] = [
       { name: "Order:", value: `${order.number}` },
-      { name: "Amount:", value: `${order.total.gross.amount}` },
       { name: "Date:", value: `${date}` },
     ];
 
+    const createdDate = new Date(order.created);
+
+    const add0 = (num: string) => {
+      return num.length < 2 ? `0${num}` : num;
+    };
+    let invoiceString = "LC";
+
+    invoiceString =
+      invoiceString +
+      createdDate.getFullYear().toString() +
+      "-" +
+      add0(createdDate.getMonth().toString()) +
+      add0(createdDate.getDate().toString()) +
+      "-" +
+      order.number;
+
     page.drawText("INVOICE", secondSectionFirstColumn({ size: fontSize.md }));
-    page.drawText(`${invoiceNumber}`, secondSectionSecondColumn({ size: fontSize.md }));
+    page.drawText(invoiceString, secondSectionSecondColumn({ size: fontSize.md }));
     headerSectionDetail.forEach((each, index) => {
       const currentSectionHeight = headerSectionHeight + index * 20;
 
@@ -232,37 +249,43 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     //seller section
 
-    const sellerSectionHeight = 400;
-    const sellerSectionDetail: { name: string; value: string }[] = [
-      { name: "Company Name:", value: `${companyAddressData.companyName}` },
-      {
-        name: "Company Address:",
-        value: `${companyAddressData.streetAddress1},${companyAddressData.streetAddress2}`,
-      },
-      { name: "Company PostCode:", value: `${companyAddressData.postalCode}` },
-      { name: "Company City:", value: `${companyAddressData.city}` },
-      { name: "Company Country", value: `${companyAddressData.country}` },
-    ];
+    /*
+     * const sellerSectionHeight = 400;
+     * const sellerSectionDetail: { name: string; value: string }[] = [
+     *   { name: "Company Name:", value: `${companyAddressData.companyName}` },
+     *   {
+     *     name: "Company Address:",
+     *     value: `${companyAddressData.streetAddress1},${companyAddressData.streetAddress2}`,
+     *   },
+     *   { name: "Company PostCode:", value: `${companyAddressData.postalCode}` },
+     *   { name: "Company City:", value: `${companyAddressData.city}` },
+     *   { name: "Company Country", value: `${companyAddressData.country}` },
+     * ];
+     */
 
-    page.drawText(
-      "SELLER",
-      secondSectionFirstColumn({ y: height - 380, x: secondSctionThirdCellLeft, size: fontSize.lg })
-    );
-    sellerSectionDetail.forEach((each, index) => {
-      const currentSectionHeight = sellerSectionHeight + 10 + index * 20;
+    /*
+     * page.drawText(
+     *   "SELLER",
+     *   secondSectionFirstColumn({ y: height - 380, x: secondSctionThirdCellLeft, size: fontSize.lg })
+     * );
+     * sellerSectionDetail.forEach((each, index) => {
+     *   const currentSectionHeight = sellerSectionHeight + 10 + index * 20;
+     */
 
-      page.drawText(
-        each.name,
-        secondSectionFirstColumn({ y: height - currentSectionHeight, x: secondSctionThirdCellLeft })
-      );
-      page.drawText(
-        each.value,
-        secondSectionSecondColumn({
-          y: height - currentSectionHeight,
-          x: secondSctionThirdCellLeft + 150,
-        })
-      );
-    });
+    /*
+     *   page.drawText(
+     *     each.name,
+     *     secondSectionFirstColumn({ y: height - currentSectionHeight, x: secondSctionThirdCellLeft })
+     *   );
+     *   page.drawText(
+     *     each.value,
+     *     secondSectionSecondColumn({
+     *       y: height - currentSectionHeight,
+     *       x: secondSctionThirdCellLeft + 150,
+     *     })
+     *   );
+     * });
+     */
 
     page.drawText(
       "SHIPPING METHOD",
@@ -288,17 +311,22 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const tableSectionHeight = 600;
     const tableRowSpacing = 50;
 
-    const column1Spacing = 20;
-    const column2Spacing = 350;
-    const column3Spacing = 500;
-    const column4Spacing = 650;
-    const column5Spacing = 800;
+    const column1Spacing = 10;
+    const column2Spacing = 190;
+    const column3Spacing = 260;
+    const column4Spacing = 500;
+    const column5Spacing = 600;
+    const column6Spacing = 700;
+    const column7Spacing = 800;
 
-    const column1Width = column2Spacing - column1Spacing;
-    const column2Width = column3Spacing - column2Spacing;
-    const column3Width = column4Spacing - column3Spacing;
-    const column4Width = column5Spacing - column4Spacing;
-    const column5Width = tableWidth - column5Spacing;
+    const column1Width = column2Spacing - column1Spacing; // 150
+    const column2Width = column3Spacing - column2Spacing; // 330
+    const column3Width = column4Spacing - column3Spacing; // 150
+    const column4Width = column5Spacing - column4Spacing; // 150
+    const column5Width = tableWidth - column5Spacing; // 150
+    const column6Width = column7Spacing - column6Spacing; // 150
+    const column7Width = tableWidth - column7Spacing; // 150
+    const column8Width = tableWidth - column7Spacing; // 150
     const tableRow = ({
       row,
       column,
@@ -328,7 +356,17 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       } else if (column === 5) {
         columnSpacing = column5Spacing;
         columnWidth = column5Width;
+      } else if (column === 6) {
+        columnSpacing = column6Spacing;
+        columnWidth = column6Width;
+      } else if (column === 7) {
+        columnSpacing = column7Spacing;
+        columnWidth = column7Width;
+      } else if (column === 8) {
+        columnSpacing = column7Spacing;
+        columnWidth = column8Width;
       }
+
       const x = cellPadding + columnSpacing;
       const y = height - (tableSectionHeight + row * tableRowSpacing);
 
@@ -349,7 +387,15 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       color: rgb(35 / 255, 38 / 255, 62 / 255),
     });
 
-    const tableHeader = ["Description", "Quantity", "Vintage", "Format", "Total"];
+    const tableHeader = [
+      "Item Code",
+      "Quantity",
+      "Description",
+      "Vintage",
+      "Format",
+      "Unit Price",
+      "Total",
+    ];
 
     tableHeader.forEach((header, index) => {
       const row = 1;
@@ -363,12 +409,16 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     orderFromQuery?.lines?.forEach((line: any, index: number) => {
       const row = index + 2;
+      const itemCode = line.variant ? line?.variant?.sku : "-";
       const description = line?.productName;
       const quantity = line?.quantity;
       const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
       const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
       const subtotal = `${line?.totalPrice?.gross?.amount} ${line?.totalPrice?.gross?.currency}`;
-      const tableRowArray = [description, quantity, vintage, format, subtotal];
+      const unitPrice = line.variant
+        ? `${line?.variant?.pricing?.price?.gross?.amount} ${line?.variant?.pricing?.price?.gross?.currency}`
+        : "-";
+      const tableRowArray = [itemCode, quantity, description, vintage, format, unitPrice, subtotal];
 
       tableRowArray.forEach((each, i) => {
         const column = i + 1;
@@ -391,6 +441,8 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         "-",
         "-",
         "-",
+        "-",
+        "-",
         `${orderFromQuery.shippingPrice.gross.amount} ${orderFromQuery.shippingPrice.gross.currency}`,
       ];
 
@@ -406,29 +458,44 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       currentRowToContinue = currentRowToContinue + 1;
     }
 
-    if (orderFromQuery.total?.net) {
-      page.drawText(`TOTAL NET`, tableRow({ row: currentRowToContinue, column: 4 }));
-      page.drawText(
-        `${orderFromQuery.total.net.amount} ${orderFromQuery.total.net.currency}`,
-        tableRow({ row: currentRowToContinue, column: 5 })
-      );
-      currentRowToContinue = currentRowToContinue + 1;
-    }
+    /*
+     * if (orderFromQuery.total?.net) {
+     *   page.drawText(`TOTAL NET`, tableRow({ row: currentRowToContinue, column: 4 }));
+     *   page.drawText(
+     *     `${orderFromQuery.total.net.amount} ${orderFromQuery.total.net.currency}`,
+     *     tableRow({ row: currentRowToContinue, column: 5 })
+     *   );
+     *   currentRowToContinue = currentRowToContinue + 1;
+     * }
+     */
 
-    if (orderFromQuery.total?.tax) {
-      page.drawText(`TOTAL TAX`, tableRow({ row: currentRowToContinue, column: 4 }));
-      page.drawText(
-        `${orderFromQuery.total.tax.amount} ${orderFromQuery.total.tax.currency}`,
-        tableRow({ row: currentRowToContinue, column: 5 })
-      );
-      currentRowToContinue = currentRowToContinue + 1;
-    }
+    /*
+     * if (orderFromQuery.total?.tax) {
+     *   page.drawText(`TOTAL TAX`, tableRow({ row: currentRowToContinue, column: 4 }));
+     *   page.drawText(
+     *     `${orderFromQuery.total.tax.amount} ${orderFromQuery.total.tax.currency}`,
+     *     tableRow({ row: currentRowToContinue, column: 5 })
+     *   );
+     *   currentRowToContinue = currentRowToContinue + 1;
+     * }
+     */
+
+    page.drawRectangle({
+      x: cellPadding,
+      y: height - (tableSectionHeight + (currentRowToContinue * tableRowSpacing + 20)),
+      width: 900,
+      height: 50,
+      color: rgb(35 / 255, 38 / 255, 62 / 255),
+    });
 
     if (orderFromQuery.total?.gross) {
-      page.drawText(`GRAND TOTAL`, tableRow({ row: currentRowToContinue, column: 4 }));
+      page.drawText(
+        `GRAND TOTAL`,
+        tableRow({ row: currentRowToContinue, column: 1, color: rgb(1, 1, 1) })
+      );
       page.drawText(
         `${orderFromQuery.total.gross.amount} ${orderFromQuery.total.gross.currency}`,
-        tableRow({ row: currentRowToContinue, column: 5 })
+        tableRow({ row: currentRowToContinue, column: 8, color: rgb(1, 1, 1) })
       );
       currentRowToContinue = currentRowToContinue + 1;
     }
@@ -437,27 +504,34 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     const footerSectionHeight = tableSectionHeight + currentRowToContinue * tableRowSpacing + 50;
 
-    page.drawText("TERMS AND CONDITION", secondSectionFirstColumn({ y: 250, size: fontSize.md }));
+    page.drawText("TERMS AND CONDITION", secondSectionFirstColumn({ y: 310, size: fontSize.md }));
     page.drawText(
       "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
-      secondSectionFirstColumn({ y: 210 })
+      secondSectionFirstColumn({ y: 270 })
     );
     page.drawText(
-      "All returns or refunds my be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
-      secondSectionFirstColumn({ y: 180 })
+      "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
+      secondSectionFirstColumn({ y: 240 })
     );
     page.drawText(
       "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
-      secondSectionFirstColumn({ y: 150 })
+      secondSectionFirstColumn({ y: 210 })
     );
     page.drawText(
       "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
-      secondSectionFirstColumn({ y: 120 })
+      secondSectionFirstColumn({ y: 180 })
     );
     page.drawText(
       " All prices are in Hong Kong Dollars or otherwise indicated.",
+      secondSectionFirstColumn({ y: 150 })
+    );
+    page.drawText(" A brand of Green Grand Ltd", secondSectionFirstColumn({ y: 120 }));
+    page.drawText(
+      "#2505B- The Centrium, 60 Wyndham Street- Central HK SAR China",
       secondSectionFirstColumn({ y: 90 })
     );
+    page.drawText(`Tel: +852 6466 9196`, secondSectionFirstColumn({ y: 60 }));
+    page.drawText(`Email: contact@liquidcollectionhk.com`, secondSectionFirstColumn({ y: 30 }));
 
     const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
 
@@ -495,13 +569,13 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const page = pdfDoc.addPage([1000, 1500]);
     const { width, height } = page.getSize();
     const fontSize = {
-      xs: 10,
-      sm: 12,
-      base: 14,
-      md: 16,
-      lg: 18,
-      xl: 20,
-      xxl: 24,
+      xs: 8,
+      sm: 10,
+      base: 10,
+      md: 12,
+      lg: 14,
+      xl: 16,
+      xxl: 20,
     };
     const cellPadding = 50;
 
@@ -579,12 +653,27 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const headerSectionHeight = 270;
     const headerSectionDetail: { name: string; value: string }[] = [
       { name: "Order:", value: `${order.number}` },
-      { name: "Amount:", value: `${order.total.gross.amount}` },
       { name: "Date:", value: `${date}` },
     ];
 
+    const createdDate = new Date(order.created);
+
+    const add0 = (num: string) => {
+      return num.length < 2 ? `0${num}` : num;
+    };
+    let invoiceString = "LC";
+
+    invoiceString =
+      invoiceString +
+      createdDate.getFullYear().toString() +
+      "-" +
+      add0(createdDate.getMonth().toString()) +
+      add0(createdDate.getDate().toString()) +
+      "-" +
+      order.number;
     page.drawText("INVOICE", secondSectionFirstColumn({ size: fontSize.md }));
-    page.drawText("102399", secondSectionSecondColumn({ size: fontSize.md }));
+    console.log("order", response.data.order);
+    page.drawText(invoiceString, secondSectionSecondColumn({ size: fontSize.md }));
     headerSectionDetail.forEach((each, index) => {
       const currentSectionHeight = headerSectionHeight + index * 20;
 
@@ -637,36 +726,42 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       secondSectionFirstColumn({ y: height - 340, x: secondSctionThirdCellLeft })
     );
 
-    //seller section
+    // //seller section
 
-    const sellerSectionHeight = 400;
-    const sellerSectionDetail: { name: string; value: string }[] = [
-      { name: "Company Name:", value: `Liquid Collection` },
-      { name: "Company Address:", value: `12 TST` },
-      { name: "Company PostCode:", value: `0000` },
-      { name: "Company City:", value: `Hong Kong` },
-      { name: "Company Country", value: `Hong Kong Island` },
-    ];
+    /*
+     * const sellerSectionHeight = 400;
+     * const sellerSectionDetail: { name: string; value: string }[] = [
+     *   { name: "Company Name:", value: `Liquid Collection` },
+     *   { name: "Company Address:", value: `12 TST` },
+     *   { name: "Company PostCode:", value: `0000` },
+     *   { name: "Company City:", value: `Hong Kong` },
+     *   { name: "Company Country", value: `Hong Kong Island` },
+     * ];
+     */
 
-    page.drawText(
-      "SELLER",
-      secondSectionFirstColumn({ y: height - 380, x: secondSctionThirdCellLeft, size: fontSize.lg })
-    );
-    sellerSectionDetail.forEach((each, index) => {
-      const currentSectionHeight = sellerSectionHeight + 10 + index * 20;
+    /*
+     * page.drawText(
+     *   "SELLER",
+     *   secondSectionFirstColumn({ y: height - 380, x: secondSctionThirdCellLeft, size: fontSize.lg })
+     * );
+     * sellerSectionDetail.forEach((each, index) => {
+     *   const currentSectionHeight = sellerSectionHeight + 10 + index * 20;
+     */
 
-      page.drawText(
-        each.name,
-        secondSectionFirstColumn({ y: height - currentSectionHeight, x: secondSctionThirdCellLeft })
-      );
-      page.drawText(
-        each.value,
-        secondSectionSecondColumn({
-          y: height - currentSectionHeight,
-          x: secondSctionThirdCellLeft + 150,
-        })
-      );
-    });
+    /*
+     *   page.drawText(
+     *     each.name,
+     *     secondSectionFirstColumn({ y: height - currentSectionHeight, x: secondSctionThirdCellLeft })
+     *   );
+     *   page.drawText(
+     *     each.value,
+     *     secondSectionSecondColumn({
+     *       y: height - currentSectionHeight,
+     *       x: secondSctionThirdCellLeft + 150,
+     *     })
+     *   );
+     * });
+     */
 
     //table section
 
@@ -674,17 +769,22 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const tableSectionHeight = 600;
     const tableRowSpacing = 50;
 
-    const column1Spacing = 20;
-    const column2Spacing = 350;
-    const column3Spacing = 500;
-    const column4Spacing = 650;
-    const column5Spacing = 800;
+    const column1Spacing = 10;
+    const column2Spacing = 120;
+    const column3Spacing = 190;
+    const column4Spacing = 500;
+    const column5Spacing = 600;
+    const column6Spacing = 700;
+    const column7Spacing = 800;
 
-    const column1Width = column2Spacing - column1Spacing;
-    const column2Width = column3Spacing - column2Spacing;
-    const column3Width = column4Spacing - column3Spacing;
-    const column4Width = column5Spacing - column4Spacing;
-    const column5Width = tableWidth - column5Spacing;
+    const column1Width = column2Spacing - column1Spacing; // 150
+    const column2Width = column3Spacing - column2Spacing; // 330
+    const column3Width = column4Spacing - column3Spacing; // 150
+    const column4Width = column5Spacing - column4Spacing; // 150
+    const column5Width = tableWidth - column5Spacing; // 150
+    const column6Width = column7Spacing - column6Spacing; // 150
+    const column7Width = tableWidth - column7Spacing; // 150
+    const column8Width = tableWidth - column7Spacing; // 150
     const tableRow = ({
       row,
       column,
@@ -714,7 +814,17 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       } else if (column === 5) {
         columnSpacing = column5Spacing;
         columnWidth = column5Width;
+      } else if (column === 6) {
+        columnSpacing = column6Spacing;
+        columnWidth = column6Width;
+      } else if (column === 7) {
+        columnSpacing = column7Spacing;
+        columnWidth = column7Width;
+      } else if (column === 8) {
+        columnSpacing = column7Spacing;
+        columnWidth = column8Width;
       }
+
       const x = cellPadding + columnSpacing;
       const y = height - (tableSectionHeight + row * tableRowSpacing);
 
@@ -735,7 +845,15 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       color: rgb(35 / 255, 38 / 255, 62 / 255),
     });
 
-    const tableHeader = ["Description", "Quantity", "Vintage", "Format", "Total"];
+    const tableHeader = [
+      "Item Code",
+      "Quantity",
+      "Description",
+      "Vintage",
+      "Format",
+      "Unit Price",
+      "Total",
+    ];
 
     tableHeader.forEach((header, index) => {
       const row = 1;
@@ -749,12 +867,16 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     orderFromQuery?.lines?.forEach((line: any, index: number) => {
       const row = index + 2;
-      const description = line?.productName;
+      const itemCode = line.variant ? line?.variant?.sku : "-";
       const quantity = line?.quantity;
+      const description = line?.productName;
       const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
       const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
       const subtotal = `${line?.totalPrice?.gross?.amount} ${line?.totalPrice?.gross?.currency}`;
-      const tableRowArray = [description, quantity, vintage, format, subtotal];
+      const unitPrice = line.variant
+        ? `${line?.variant?.pricing?.price?.gross?.amount} ${line?.variant?.pricing?.price?.gross?.currency}`
+        : "-";
+      const tableRowArray = [itemCode, quantity, description, vintage, format, unitPrice, subtotal];
 
       tableRowArray.forEach((each, i) => {
         const column = i + 1;
@@ -777,6 +899,8 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         "-",
         "-",
         "-",
+        "-",
+        "-",
         `${orderFromQuery.shippingPrice.gross.amount} ${orderFromQuery.shippingPrice.gross.currency}`,
       ];
 
@@ -792,29 +916,44 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       currentRowToContinue = currentRowToContinue + 1;
     }
 
-    if (orderFromQuery.total?.net) {
-      page.drawText(`TOTAL NET`, tableRow({ row: currentRowToContinue, column: 4 }));
-      page.drawText(
-        `${orderFromQuery.total.net.amount} ${orderFromQuery.total.net.currency}`,
-        tableRow({ row: currentRowToContinue, column: 5 })
-      );
-      currentRowToContinue = currentRowToContinue + 1;
-    }
+    /*
+     * if (orderFromQuery.total?.net) {
+     *   page.drawText(`TOTAL NET`, tableRow({ row: currentRowToContinue, column: 4 }));
+     *   page.drawText(
+     *     `${orderFromQuery.total.net.amount} ${orderFromQuery.total.net.currency}`,
+     *     tableRow({ row: currentRowToContinue, column: 5 })
+     *   );
+     *   currentRowToContinue = currentRowToContinue + 1;
+     * }
+     */
 
-    if (orderFromQuery.total?.tax) {
-      page.drawText(`TOTAL TAX`, tableRow({ row: currentRowToContinue, column: 4 }));
-      page.drawText(
-        `${orderFromQuery.total.tax.amount} ${orderFromQuery.total.tax.currency}`,
-        tableRow({ row: currentRowToContinue, column: 5 })
-      );
-      currentRowToContinue = currentRowToContinue + 1;
-    }
+    /*
+     * if (orderFromQuery.total?.tax) {
+     *   page.drawText(`TOTAL TAX`, tableRow({ row: currentRowToContinue, column: 4 }));
+     *   page.drawText(
+     *     `${orderFromQuery.total.tax.amount} ${orderFromQuery.total.tax.currency}`,
+     *     tableRow({ row: currentRowToContinue, column: 5 })
+     *   );
+     *   currentRowToContinue = currentRowToContinue + 1;
+     * }
+     */
+
+    page.drawRectangle({
+      x: cellPadding,
+      y: height - (tableSectionHeight + (currentRowToContinue * tableRowSpacing + 20)),
+      width: 900,
+      height: 50,
+      color: rgb(35 / 255, 38 / 255, 62 / 255),
+    });
 
     if (orderFromQuery.total?.gross) {
-      page.drawText(`GRAND TOTAL`, tableRow({ row: currentRowToContinue, column: 4 }));
+      page.drawText(
+        `GRAND TOTAL`,
+        tableRow({ row: currentRowToContinue, column: 1, color: rgb(1, 1, 1) })
+      );
       page.drawText(
         `${orderFromQuery.total.gross.amount} ${orderFromQuery.total.gross.currency}`,
-        tableRow({ row: currentRowToContinue, column: 5 })
+        tableRow({ row: currentRowToContinue, column: 8, color: rgb(1, 1, 1) })
       );
       currentRowToContinue = currentRowToContinue + 1;
     }
@@ -823,27 +962,34 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     const footerSectionHeight = tableSectionHeight + currentRowToContinue * tableRowSpacing + 50;
 
-    page.drawText("TERMS AND CONDITION", secondSectionFirstColumn({ y: 250, size: fontSize.md }));
+    page.drawText("TERMS AND CONDITION", secondSectionFirstColumn({ y: 310, size: fontSize.md }));
     page.drawText(
       "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
-      secondSectionFirstColumn({ y: 210 })
+      secondSectionFirstColumn({ y: 270 })
     );
     page.drawText(
-      "All returns or refunds my be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
-      secondSectionFirstColumn({ y: 180 })
+      "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
+      secondSectionFirstColumn({ y: 240 })
     );
     page.drawText(
       "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
-      secondSectionFirstColumn({ y: 150 })
+      secondSectionFirstColumn({ y: 210 })
     );
     page.drawText(
       "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
-      secondSectionFirstColumn({ y: 120 })
+      secondSectionFirstColumn({ y: 180 })
     );
     page.drawText(
       " All prices are in Hong Kong Dollars or otherwise indicated.",
+      secondSectionFirstColumn({ y: 150 })
+    );
+    page.drawText(" A brand of Green Grand Ltd", secondSectionFirstColumn({ y: 120 }));
+    page.drawText(
+      "#2505B- The Centrium, 60 Wyndham Street- Central HK SAR China",
       secondSectionFirstColumn({ y: 90 })
     );
+    page.drawText(`Tel: +852 6466 9196`, secondSectionFirstColumn({ y: 60 }));
+    page.drawText(`Email: contact@liquidcollectionhk.com`, secondSectionFirstColumn({ y: 30 }));
 
     const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
 
