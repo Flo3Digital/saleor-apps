@@ -418,13 +418,13 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     orderFromQuery?.lines?.forEach((line: any, index: number) => {
       const row = index + 2;
-      const itemCode = line.variant ? line?.variant?.sku : "-";
+      const itemCode = line.variant?.sku ? line?.variant?.sku : "-";
       const description = line?.productName;
       const quantity = line?.quantity;
       const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
       const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
       const subtotal = `${line?.totalPrice?.gross?.amount} ${line?.totalPrice?.gross?.currency}`;
-      const unitPrice = line.variant
+      const unitPrice = line.variant?.pricing
         ? `${line?.variant?.pricing?.price?.gross?.amount} ${line?.variant?.pricing?.price?.gross?.currency}`
         : "-";
       const tableRowArray = [itemCode, quantity, description, vintage, format, unitPrice, subtotal];
