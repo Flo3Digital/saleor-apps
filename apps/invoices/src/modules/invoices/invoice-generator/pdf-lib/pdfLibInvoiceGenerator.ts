@@ -520,27 +520,35 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     );
     page.drawText(
       "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
-      secondSectionFirstColumn({ y: 240 })
+      secondSectionFirstColumn({ y: 250 })
     );
     page.drawText(
       "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
-      secondSectionFirstColumn({ y: 210 })
+      secondSectionFirstColumn({ y: 230 })
     );
     page.drawText(
       "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
-      secondSectionFirstColumn({ y: 180 })
+      secondSectionFirstColumn({ y: 210 })
     );
     page.drawText(
       " All prices are in Hong Kong Dollars or otherwise indicated.",
-      secondSectionFirstColumn({ y: 150 })
+      secondSectionFirstColumn({ y: 190 })
     );
-    page.drawText(" A brand of Green Grand Ltd", secondSectionFirstColumn({ y: 120 }));
     page.drawText(
-      "#2505B- The Centrium, 60 Wyndham Street- Central HK SAR China",
-      secondSectionFirstColumn({ y: 90 })
+      " A brand of Green Grand Ltd",
+      secondSectionFirstColumn({ y: 60, x: cellPadding })
     );
-    page.drawText(`Tel: +852 6466 9196`, secondSectionFirstColumn({ y: 60 }));
-    page.drawText(`Email: contact@liquidcollectionhk.com`, secondSectionFirstColumn({ y: 30 }));
+    page.drawText(
+      `    #2505B- The Centrium,
+60 Wyndham Street- Central
+            HK SAR China`,
+      secondSectionFirstColumn({ y: 105, x: 430 })
+    );
+    page.drawText(`Tel: +852 6466 9196`, secondSectionFirstColumn({ y: 60, x: 840 }));
+    page.drawText(
+      `Email: contact@liquidcollectionhk.com`,
+      secondSectionFirstColumn({ y: 90, x: 760 })
+    );
 
     const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
 
