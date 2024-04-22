@@ -9,6 +9,7 @@ import { AddressV2Shape } from "../../../app-configuration/schema-v2/app-config-
 import { createClient, dedupExchange, cacheExchange, fetchExchange, gql } from "urql";
 import { PDFDocument, RGB, StandardFonts, rgb } from "pdf-lib";
 import { mockOrder } from "../../../../fixtures/mock-order";
+import { input } from "@saleor/macaw-ui/dist/components/SearchInput/SearchInput.css";
 
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 
@@ -79,6 +80,17 @@ const ORDER_QUERY = gql`
   }
 `;
 
+function truncateText(inputText: string, maxWords: number) {
+  const words = inputText;
+
+  if (words.length > maxWords) {
+    console.log("length of the word 1", words.length);
+    return words.slice(0, maxWords) + "...";
+  } else {
+    console.log("length of the word 2", words.length);
+    return inputText;
+  }
+}
 export class PdfLibInvoiceGenerator implements InvoiceGenerator {
   constructor(
     private settings = {
@@ -301,7 +313,9 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       secondSectionFirstColumn({ y: height - 250, x: secondSctionThirdCellLeft, size: fontSize.md })
     );
     page.drawText(
-      `${orderFromQuery?.shippingMethodName}`,
+      `${orderFromQuery?.shippingMethodName} 
+(for order HK$3000 or above, Surcharge for deliver
+  to Kowloon HK$200 & New Territories HK$350)`,
       secondSectionFirstColumn({ y: height - 270, x: secondSctionThirdCellLeft })
     );
 
@@ -419,7 +433,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     orderFromQuery?.lines?.forEach((line: any, index: number) => {
       const row = index + 2;
       const itemCode = line.variant?.sku ? line?.variant?.sku : "-";
-      const description = line?.productName;
+      const description = truncateText(line?.productName, 80); //line?.productName;
       const quantity = line?.quantity;
       const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
       const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
@@ -452,7 +466,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         "-",
         "-",
         "-",
-        `${orderFromQuery.shippingPrice.gross.amount} ${orderFromQuery.shippingPrice.gross.currency}`,
+        `${orderFromQuery.shippingPrice.gross.amount}`,
       ];
 
       tableRowArray.forEach((each, i) => {
@@ -503,11 +517,39 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         tableRow({ row: currentRowToContinue, column: 1, color: rgb(1, 1, 1) })
       );
       page.drawText(
-        `${orderFromQuery.total.gross.amount} ${orderFromQuery.total.gross.currency}`,
+        `${orderFromQuery.total.gross.currency} ${orderFromQuery.total.gross.amount}`,
         tableRow({ row: currentRowToContinue, column: 8, color: rgb(1, 1, 1) })
       );
       currentRowToContinue = currentRowToContinue + 1;
     }
+
+    //payment deatails section
+    const paymentSectionHeight = tableSectionHeight + currentRowToContinue * tableRowSpacing + 50;
+    const paymentSectionDetail: { name: string; value: string }[] = [
+      {
+        name: "Bank name:",
+        value: `The Hong Kong And Shanghai Banking Corporation Limited`,
+      },
+      { name: "Bank address:", value: `1 Queen's Road Central, Hong Kong` },
+      { name: "SWIFT code:", value: `HSBCHKHHHKH` },
+      { name: "Account name:", value: `Green Grand Limited` },
+      {
+        name: "Account number:",
+        value: `741 385124 001`,
+      },
+      { name: "FPS ID:", value: `169 418 381` },
+    ];
+
+    page.drawText(
+      "PAYMENT",
+      secondSectionFirstColumn({ y: height - paymentSectionHeight, size: fontSize.lg })
+    );
+    paymentSectionDetail.forEach((each, index) => {
+      const currentSectionHeight = paymentSectionHeight + 20 + index * 20;
+
+      page.drawText(each.name, secondSectionFirstColumn({ y: height - currentSectionHeight }));
+      page.drawText(each.value, secondSectionSecondColumn({ y: height - currentSectionHeight }));
+    });
 
     //footer section
 
@@ -684,7 +726,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       invoiceString +
       createdDate.getFullYear().toString() +
       "-" +
-      add0(createdDate.getMonth().toString()) +
+      add0(String(createdDate.getMonth() + 1)) +
       add0(createdDate.getDate().toString()) +
       "-" +
       order.number;
@@ -730,17 +772,19 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       secondSectionFirstColumn({ y: height - 250, x: secondSctionThirdCellLeft, size: fontSize.md })
     );
     page.drawText(
-      `${orderFromQuery?.shippingMethodName}`,
+      `${orderFromQuery?.shippingMethodName} 
+(for order HK$3000 or above, Surcharge for deliver
+  to Kowloon HK$200 & New Territories HK$350)`,
       secondSectionFirstColumn({ y: height - 270, x: secondSctionThirdCellLeft })
     );
 
     page.drawText(
       "PAYMENT STATUS",
-      secondSectionFirstColumn({ y: height - 320, size: fontSize.md, x: secondSctionThirdCellLeft })
+      secondSectionFirstColumn({ y: height - 380, size: fontSize.md, x: secondSctionThirdCellLeft })
     );
     page.drawText(
       `${orderFromQuery?.paymentStatusDisplay}`,
-      secondSectionFirstColumn({ y: height - 340, x: secondSctionThirdCellLeft })
+      secondSectionFirstColumn({ y: height - 400, x: secondSctionThirdCellLeft })
     );
 
     // //seller section
@@ -886,13 +930,11 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       const row = index + 2;
       const itemCode = line.variant?.sku ? line?.variant?.sku : "-";
       const quantity = line?.quantity;
-      const description = line?.productName;
+      const description = truncateText(line?.productName, 80); //line?.productName;
       const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
       const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
-      const subtotal = `${line?.totalPrice?.gross?.amount} ${line?.totalPrice?.gross?.currency}`;
-      const unitPrice = line.variant
-        ? `${line?.variant?.pricing?.price?.gross?.amount} ${line?.variant?.pricing?.price?.gross?.currency}`
-        : "-";
+      const subtotal = `${line?.totalPrice?.gross?.amount}`;
+      const unitPrice = line.variant ? `${line?.variant?.pricing?.price?.gross?.amount}` : "-";
       const tableRowArray = [itemCode, quantity, description, vintage, format, unitPrice, subtotal];
 
       tableRowArray.forEach((each, i) => {
@@ -918,7 +960,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         "-",
         "-",
         "-",
-        `${orderFromQuery.shippingPrice.gross.amount} ${orderFromQuery.shippingPrice.gross.currency}`,
+        `${orderFromQuery.shippingPrice.gross.amount}`,
       ];
 
       tableRowArray.forEach((each, i) => {
@@ -969,11 +1011,39 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         tableRow({ row: currentRowToContinue, column: 1, color: rgb(1, 1, 1) })
       );
       page.drawText(
-        `${orderFromQuery.total.gross.amount} ${orderFromQuery.total.gross.currency}`,
+        ` ${orderFromQuery.total.gross.currency} ${orderFromQuery.total.gross.amount}`,
         tableRow({ row: currentRowToContinue, column: 8, color: rgb(1, 1, 1) })
       );
       currentRowToContinue = currentRowToContinue + 1;
     }
+
+    //payment deatails section
+    const paymentSectionHeight = tableSectionHeight + currentRowToContinue * tableRowSpacing + 50;
+    const paymentSectionDetail: { name: string; value: string }[] = [
+      {
+        name: "Bank name:",
+        value: `The Hong Kong And Shanghai Banking Corporation Limited`,
+      },
+      { name: "Bank address:", value: `1 Queen's Road Central, Hong Kong` },
+      { name: "SWIFT code:", value: `HSBCHKHHHKH` },
+      { name: "Account name:", value: `Green Grand Limited` },
+      {
+        name: "Account number:",
+        value: `741 385124 001`,
+      },
+      { name: "FPS ID:", value: `169 418 381` },
+    ];
+
+    page.drawText(
+      "PAYMENT",
+      secondSectionFirstColumn({ y: height - paymentSectionHeight, size: fontSize.lg })
+    );
+    paymentSectionDetail.forEach((each, index) => {
+      const currentSectionHeight = paymentSectionHeight + 20 + index * 20;
+
+      page.drawText(each.name, secondSectionFirstColumn({ y: height - currentSectionHeight }));
+      page.drawText(each.value, secondSectionSecondColumn({ y: height - currentSectionHeight }));
+    });
 
     //footer section
 
