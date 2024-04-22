@@ -9,7 +9,7 @@ import { AddressV2Shape } from "../../../app-configuration/schema-v2/app-config-
 import { createClient, dedupExchange, cacheExchange, fetchExchange, gql } from "urql";
 import { PDFDocument, RGB, StandardFonts, rgb } from "pdf-lib";
 import { mockOrder } from "../../../../fixtures/mock-order";
-import { input } from "@saleor/macaw-ui/dist/components/SearchInput/SearchInput.css";
+// import { input } from "@saleor/macaw-ui/dist/components/SearchInput/SearchInput.css";
 
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 
