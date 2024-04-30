@@ -324,7 +324,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       secondSectionFirstColumn({ y: height - 250, x: secondSctionThirdCellLeft, size: fontSize.md })
     );
     page.drawText(
-      `${orderFromQuery?.shippingMethodName} 
+      `${"HK island Free Delivery"} 
 (for order HK$3000 or above, Surcharge for deliver
   to Kowloon HK$200 & New Territories HK$350)`,
       secondSectionFirstColumn({ y: height - 270, x: secondSctionThirdCellLeft })
@@ -830,7 +830,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       secondSectionFirstColumn({ y: height - 250, x: secondSctionThirdCellLeft, size: fontSize.md })
     );
     page.drawText(
-      `${orderFromQuery?.shippingMethodName} 
+      `${"HK island Free Delivery"} 
 (for order HK$3000 or above, Surcharge for deliver
   to Kowloon HK$200 & New Territories HK$350)`,
       secondSectionFirstColumn({ y: height - 270, x: secondSctionThirdCellLeft })
