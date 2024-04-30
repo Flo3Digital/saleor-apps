@@ -91,6 +91,16 @@ function truncateText(inputText: string, maxWords: number) {
     return inputText;
   }
 }
+
+async function stringToArray(longString: string, maxWords: number) {
+  let result = [];
+
+  for (let i = 0; i < longString.length; i += maxWords) {
+    result.push(longString.substring(i, i + maxWords));
+  }
+  return result;
+}
+
 export class PdfLibInvoiceGenerator implements InvoiceGenerator {
   constructor(
     private settings = {
@@ -221,13 +231,14 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const add0 = (num: string) => {
       return num.length < 2 ? `0${num}` : num;
     };
+
     let invoiceString = "LC";
 
     invoiceString =
       invoiceString +
       createdDate.getFullYear().toString() +
       "-" +
-      add0(createdDate.getMonth().toString()) +
+      add0(String(createdDate.getMonth() + 1)) +
       add0(createdDate.getDate().toString()) +
       "-" +
       order.number;
@@ -257,7 +268,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       },
       { name: "Post Code:", value: `${order.billingAddress?.postalCode}` },
       { name: "City:", value: `${order.billingAddress?.city}` },
-      { name: "Country:", value: `${order.billingAddress?.country?.country}` },
+      { name: "Country/Area:", value: `${order.billingAddress?.country?.country}` },
     ];
 
     page.drawText("CUSTOMER", secondSectionFirstColumn({ y: height - 380, size: fontSize.lg }));
@@ -335,11 +346,11 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const tableRowSpacing = 50;
 
     const column1Spacing = 10;
-    const column2Spacing = 190;
-    const column3Spacing = 260;
-    const column4Spacing = 500;
-    const column5Spacing = 600;
-    const column6Spacing = 700;
+    const column2Spacing = 120;
+    const column3Spacing = 180;
+    const column4Spacing = 560;
+    const column5Spacing = 640;
+    const column6Spacing = 720;
     const column7Spacing = 800;
 
     const column1Width = column2Spacing - column1Spacing; // 150
@@ -355,11 +366,15 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       column,
       size,
       color,
+      customLineHeight,
+      customLine = false,
     }: {
       row: number;
       column: number;
       size?: number | undefined;
       color?: RGB | undefined;
+      customLineHeight?: number | undefined;
+      customLine?: boolean | undefined;
     }) => {
       let columnSpacing = 0;
       let columnWidth = 0;
@@ -391,12 +406,23 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       }
 
       const x = cellPadding + columnSpacing;
-      const y = height - (tableSectionHeight + row * tableRowSpacing);
+
+      let y = 0;
+
+      if (customLineHeight !== undefined) {
+        y =
+          height -
+          (tableSectionHeight + row * tableRowSpacing) -
+          customLineHeight * 13 +
+          (customLine ? 17 : 0);
+      } else {
+        y = height - (tableSectionHeight + row * tableRowSpacing);
+      }
 
       return {
         x: x,
         y: y,
-        size: size ? size : fontSize.base,
+        size: customLine ? fontSize.xs : size ? size : fontSize.base,
         color: color ? color : rgb(0, 0, 0),
         width: columnWidth,
       };
@@ -430,21 +456,52 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       );
     });
 
-    orderFromQuery?.lines?.forEach((line: any, index: number) => {
+    orderFromQuery?.lines?.forEach(async (line: any, index: number) => {
       const row = index + 2;
       const itemCode = line.variant?.sku ? line?.variant?.sku : "-";
-      const description = truncateText(line?.productName, 40); //line?.productName;
       const quantity = line?.quantity;
+      const description = line?.productName; //line?.productName;
+      // const description = `<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj`; //line?.productName;
+      const descriptionArray = await stringToArray(description, 125);
       const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
       const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
-      const subtotal = `${line?.totalPrice?.gross?.amount} ${line?.totalPrice?.gross?.currency}`;
-      const unitPrice = line.variant?.pricing
-        ? `${line?.variant?.pricing?.price?.gross?.amount} ${line?.variant?.pricing?.price?.gross?.currency}`
-        : "-";
-      const tableRowArray = [itemCode, quantity, description, vintage, format, unitPrice, subtotal];
+      const subtotal = `${line?.totalPrice?.gross?.amount}`;
+      const unitPrice = line.variant ? `${line?.variant?.pricing?.price?.gross?.amount}` : "-";
+      const tableRowArray = [
+        itemCode,
+        quantity,
+        descriptionArray,
+        vintage,
+        format,
+        unitPrice,
+        subtotal,
+      ];
 
       tableRowArray.forEach((each, i) => {
         const column = i + 1;
+
+        if (Array.isArray(each)) {
+          each.forEach((eachLine, index) => {
+            page.drawText(
+              `${eachLine}`,
+              tableRow({
+                row: row,
+                column: column,
+                size: fontSize.base,
+                customLineHeight: index,
+                customLine: each.length > 1,
+              })
+            );
+          });
+          page.drawRectangle({
+            x: cellPadding,
+            y: height - (tableSectionHeight + (row * tableRowSpacing + 20)),
+            width: tableWidth,
+            height: 1,
+            color: rgb(35 / 255, 38 / 255, 62 / 255),
+          });
+          return;
+        }
 
         page.drawText(`${each}`, tableRow({ row: row, column: column, size: fontSize.base }));
         page.drawRectangle({
@@ -456,6 +513,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         });
       });
     });
+
     let currentRowToContinue: number = 2 + (orderFromQuery?.lines.length || 0);
 
     if (orderFromQuery?.shippingMethodName && orderFromQuery.shippingPrice?.gross?.amount) {
@@ -756,7 +814,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       },
       { name: "Post Code:", value: `${order.billingAddress?.postalCode}` },
       { name: "City:", value: `${order.billingAddress?.city}` },
-      { name: "Country:", value: `${order.billingAddress?.country?.country}` },
+      { name: "Country/Area:", value: `${order.billingAddress?.country?.country}` },
     ];
 
     page.drawText("CUSTOMER", secondSectionFirstColumn({ y: height - 380, size: fontSize.lg }));
@@ -832,10 +890,10 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     const column1Spacing = 10;
     const column2Spacing = 120;
-    const column3Spacing = 190;
-    const column4Spacing = 500;
-    const column5Spacing = 600;
-    const column6Spacing = 700;
+    const column3Spacing = 180;
+    const column4Spacing = 560;
+    const column5Spacing = 640;
+    const column6Spacing = 720;
     const column7Spacing = 800;
 
     const column1Width = column2Spacing - column1Spacing; // 150
@@ -851,11 +909,15 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       column,
       size,
       color,
+      customLineHeight,
+      customLine = false,
     }: {
       row: number;
       column: number;
       size?: number | undefined;
       color?: RGB | undefined;
+      customLineHeight?: number | undefined;
+      customLine?: boolean | undefined;
     }) => {
       let columnSpacing = 0;
       let columnWidth = 0;
@@ -887,12 +949,23 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       }
 
       const x = cellPadding + columnSpacing;
-      const y = height - (tableSectionHeight + row * tableRowSpacing);
+
+      let y = 0;
+
+      if (customLineHeight !== undefined) {
+        y =
+          height -
+          (tableSectionHeight + row * tableRowSpacing) -
+          customLineHeight * 13 +
+          (customLine ? 17 : 0);
+      } else {
+        y = height - (tableSectionHeight + row * tableRowSpacing);
+      }
 
       return {
         x: x,
         y: y,
-        size: size ? size : fontSize.base,
+        size: customLine ? fontSize.xs : size ? size : fontSize.base,
         color: color ? color : rgb(0, 0, 0),
         width: columnWidth,
       };
@@ -926,19 +999,52 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       );
     });
 
-    orderFromQuery?.lines?.forEach((line: any, index: number) => {
+    orderFromQuery?.lines?.forEach(async (line: any, index: number) => {
       const row = index + 2;
       const itemCode = line.variant?.sku ? line?.variant?.sku : "-";
       const quantity = line?.quantity;
-      const description = truncateText(line?.productName, 40); //line?.productName;
+      const description = line?.productName; //line?.productName;
+      // const description = `<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj`; //line?.productName;
+      const descriptionArray = await stringToArray(description, 125);
       const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
       const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
       const subtotal = `${line?.totalPrice?.gross?.amount}`;
       const unitPrice = line.variant ? `${line?.variant?.pricing?.price?.gross?.amount}` : "-";
-      const tableRowArray = [itemCode, quantity, description, vintage, format, unitPrice, subtotal];
+      const tableRowArray = [
+        itemCode,
+        quantity,
+        descriptionArray,
+        vintage,
+        format,
+        unitPrice,
+        subtotal,
+      ];
 
       tableRowArray.forEach((each, i) => {
         const column = i + 1;
+
+        if (Array.isArray(each)) {
+          each.forEach((eachLine, index) => {
+            page.drawText(
+              `${eachLine}`,
+              tableRow({
+                row: row,
+                column: column,
+                size: fontSize.base,
+                customLineHeight: index,
+                customLine: each.length > 1,
+              })
+            );
+          });
+          page.drawRectangle({
+            x: cellPadding,
+            y: height - (tableSectionHeight + (row * tableRowSpacing + 20)),
+            width: tableWidth,
+            height: 1,
+            color: rgb(35 / 255, 38 / 255, 62 / 255),
+          });
+          return;
+        }
 
         page.drawText(`${each}`, tableRow({ row: row, column: column, size: fontSize.base }));
         page.drawRectangle({
@@ -950,6 +1056,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         });
       });
     });
+
     let currentRowToContinue: number = 2 + (orderFromQuery?.lines.length || 0);
 
     if (orderFromQuery?.shippingMethodName && orderFromQuery.shippingPrice?.gross?.amount) {
