@@ -321,11 +321,11 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     page.drawText(
       "PAYMENT STATUS",
-      secondSectionFirstColumn({ y: height - 320, size: fontSize.md, x: secondSctionThirdCellLeft })
+      secondSectionFirstColumn({ y: height - 380, size: fontSize.md, x: secondSctionThirdCellLeft })
     );
     page.drawText(
       `${orderFromQuery?.paymentStatusDisplay}`,
-      secondSectionFirstColumn({ y: height - 340, x: secondSctionThirdCellLeft })
+      secondSectionFirstColumn({ y: height - 400, x: secondSctionThirdCellLeft })
     );
 
     //table section
@@ -433,7 +433,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     orderFromQuery?.lines?.forEach((line: any, index: number) => {
       const row = index + 2;
       const itemCode = line.variant?.sku ? line?.variant?.sku : "-";
-      const description = truncateText(line?.productName, 80); //line?.productName;
+      const description = truncateText(line?.productName, 40); //line?.productName;
       const quantity = line?.quantity;
       const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
       const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
@@ -930,7 +930,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       const row = index + 2;
       const itemCode = line.variant?.sku ? line?.variant?.sku : "-";
       const quantity = line?.quantity;
-      const description = truncateText(line?.productName, 80); //line?.productName;
+      const description = truncateText(line?.productName, 40); //line?.productName;
       const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
       const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
       const subtotal = `${line?.totalPrice?.gross?.amount}`;
