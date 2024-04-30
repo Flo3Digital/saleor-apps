@@ -346,8 +346,8 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const tableRowSpacing = 50;
 
     const column1Spacing = 10;
-    const column2Spacing = 120;
-    const column3Spacing = 180;
+    const column2Spacing = 150;
+    const column3Spacing = 210;
     const column4Spacing = 560;
     const column5Spacing = 640;
     const column6Spacing = 720;
@@ -462,7 +462,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       const quantity = line?.quantity;
       const description = line?.productName; //line?.productName;
       // const description = `<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj`; //line?.productName;
-      const descriptionArray = await stringToArray(description, 125);
+      const descriptionArray = await stringToArray(description, 110);
       const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
       const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
       const subtotal = `${line?.totalPrice?.gross?.amount}`;
@@ -889,8 +889,8 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const tableRowSpacing = 50;
 
     const column1Spacing = 10;
-    const column2Spacing = 120;
-    const column3Spacing = 180;
+    const column2Spacing = 150;
+    const column3Spacing = 210;
     const column4Spacing = 560;
     const column5Spacing = 640;
     const column6Spacing = 720;
@@ -1005,7 +1005,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       const quantity = line?.quantity;
       const description = line?.productName; //line?.productName;
       // const description = `<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj`; //line?.productName;
-      const descriptionArray = await stringToArray(description, 125);
+      const descriptionArray = await stringToArray(description, 110);
       const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
       const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
       const subtotal = `${line?.totalPrice?.gross?.amount}`;
