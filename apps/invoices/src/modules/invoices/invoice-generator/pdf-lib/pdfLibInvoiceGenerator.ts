@@ -462,7 +462,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       const quantity = line?.quantity;
       const description = line?.productName; //line?.productName;
       // const description = `<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj`; //line?.productName;
-      const descriptionArray = await stringToArray(description, 110);
+      const descriptionArray = await stringToArray(description, 70);
       const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
       const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
       const subtotal = `${line?.totalPrice?.gross?.amount}`;
@@ -1003,9 +1003,11 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       const row = index + 2;
       const itemCode = line.variant?.sku ? line?.variant?.sku : "-";
       const quantity = line?.quantity;
-      const description = line?.productName; //line?.productName;
+      // const description = line?.productName; //line?.productName;
+      const description =
+        "Domaine Bruno Desaunay Bissey, Vosne Romanee Les Rouges Vieilles Vignes 1° Cru ";
       // const description = `<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj`; //line?.productName;
-      const descriptionArray = await stringToArray(description, 110);
+      const descriptionArray = await stringToArray(description, 70);
       const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
       const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
       const subtotal = `${line?.totalPrice?.gross?.amount}`;
