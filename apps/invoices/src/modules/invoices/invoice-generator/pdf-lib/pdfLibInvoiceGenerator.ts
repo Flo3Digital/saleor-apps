@@ -95,7 +95,7 @@ function truncateText(inputText: string, maxWords: number) {
 async function stringToArray(longString: string, maxWords: number) {
   let result = [];
 
-  for (let i = 0; i < longString.length; i += maxWords) {
+  for (let i = 0; i < longString?.length; i += maxWords) {
     result.push(longString.substring(i, i + maxWords));
   }
   return result;
@@ -126,7 +126,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         return each?.attribute?.name === name;
       });
 
-      if (selectAttribute.length > 0) {
+      if (selectAttribute?.length > 0) {
         return selectAttribute[0]?.values[0]?.name;
       } else {
         return "";
@@ -229,7 +229,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const createdDate = new Date(order.created);
 
     const add0 = (num: string) => {
-      return num.length < 2 ? `0${num}` : num;
+      return num?.length < 2 ? `0${num}` : num;
     };
 
     let invoiceString = "LC";
@@ -489,7 +489,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
                 column: column,
                 size: fontSize.base,
                 customLineHeight: index,
-                customLine: each.length > 1,
+                customLine: each?.length > 1,
               })
             );
           });
@@ -514,7 +514,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       });
     });
 
-    let currentRowToContinue: number = 2 + (orderFromQuery?.lines.length || 0);
+    let currentRowToContinue: number = 2 + (orderFromQuery?.lines?.length || 0);
 
     if (orderFromQuery?.shippingMethodName && orderFromQuery.shippingPrice?.gross?.amount) {
       const tableRowArray = [
@@ -673,7 +673,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         return each?.attribute?.name === name;
       });
 
-      if (selectAttribute.length > 0) {
+      if (selectAttribute?.length > 0) {
         return selectAttribute[0]?.values[0]?.name;
       } else {
         return "";
@@ -776,7 +776,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const createdDate = new Date(order.created);
 
     const add0 = (num: string) => {
-      return num.length < 2 ? `0${num}` : num;
+      return num?.length < 2 ? `0${num}` : num;
     };
     let invoiceString = "LC";
 
@@ -1034,7 +1034,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
                 column: column,
                 size: fontSize.base,
                 customLineHeight: index,
-                customLine: each.length > 1,
+                customLine: each?.length > 1,
               })
             );
           });
@@ -1059,7 +1059,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       });
     });
 
-    let currentRowToContinue: number = 2 + (orderFromQuery?.lines.length || 0);
+    let currentRowToContinue: number = 2 + (orderFromQuery?.lines?.length || 0);
 
     if (orderFromQuery?.shippingMethodName && orderFromQuery.shippingPrice?.gross?.amount) {
       const tableRowArray = [
