@@ -81,16 +81,26 @@ const exampleOrderPayload: OrderDetailsFragment = {
             {
               values: [
                 {
+                  id: "QXR0cmlidXRlOjE=",
+                  slug: "country",
+                  file: {
+                    url: "https://klsjdlfk",
+                    contentType: null,
+                  },
                   name: "France",
                 },
               ],
               attribute: {
+                id: "QXR0cmlidXRlOjE=",
+                slug: "country",
                 name: "Country",
               },
             },
             {
               values: [],
               attribute: {
+                id: "QXR0cmlidXRlOjE=",
+                slug: "brand",
                 name: "Brand",
               },
             },
@@ -98,9 +108,17 @@ const exampleOrderPayload: OrderDetailsFragment = {
               values: [
                 {
                   name: "0.75",
+                  id: "QXR0cmlidXRlOjE=",
+                  slug: "country",
+                  file: {
+                    url: "https://klsjdlfk",
+                    contentType: null,
+                  },
                 },
               ],
               attribute: {
+                id: "QXR0cmlidXRlOjE=",
+                slug: "size",
                 name: "Size",
               },
             },
@@ -108,15 +126,25 @@ const exampleOrderPayload: OrderDetailsFragment = {
               values: [
                 {
                   name: "White",
+                  id: "QXR0cmlidXRlOjE=",
+                  slug: "country",
+                  file: {
+                    url: "https://klsjdlfk",
+                    contentType: null,
+                  },
                 },
               ],
               attribute: {
+                id: "QXR0cmlidXRlOjE=",
+                slug: "type",
                 name: "Type",
               },
             },
             {
               values: [],
               attribute: {
+                id: "QXR0cmlidXRlOjE=",
+                slug: "browse-by",
                 name: "Browse By",
               },
             },
@@ -124,9 +152,17 @@ const exampleOrderPayload: OrderDetailsFragment = {
               values: [
                 {
                   name: "Jura",
+                  id: "QXR0cmlidXRlOjE=",
+                  slug: "country",
+                  file: {
+                    url: "https://klsjdlfk",
+                    contentType: null,
+                  },
                 },
               ],
               attribute: {
+                id: "QXR0cmlidXRlOjE=",
+                slug: "region",
                 name: "Region",
               },
             },
@@ -134,10 +170,18 @@ const exampleOrderPayload: OrderDetailsFragment = {
               values: [
                 {
                   name: "2018",
+                  id: "QXR0cmlidXRlOjE=",
+                  slug: "country",
+                  file: {
+                    url: "https://klsjdlfk",
+                    contentType: null,
+                  },
                 },
               ],
               attribute: {
                 name: "Vintage",
+                id: "QXR0cmlidXRlOjE=",
+                slug: "vintage",
               },
             },
           ],
@@ -185,62 +229,106 @@ const exampleOrderPayload: OrderDetailsFragment = {
               values: [
                 {
                   name: "France",
+                  id: "QXR0cmlidXRlOjE=",
+                  slug: "country",
+                  file: {
+                    url: "https://klsjdlfk",
+                    contentType: null,
+                  },
                 },
               ],
               attribute: {
                 name: "Country",
+                id: "QXR0cmlidXRlOjE=",
+                slug: "country",
               },
             },
             {
               values: [],
               attribute: {
                 name: "Brand",
+                id: "QXR0cmlidXRlOjE=",
+                slug: "brand",
               },
             },
             {
               values: [
                 {
                   name: "0.75",
+                  id: "QXR0cmlidXRlOjE=",
+                  slug: "country",
+                  file: {
+                    url: "https://klsjdlfk",
+                    contentType: null,
+                  },
                 },
               ],
               attribute: {
                 name: "Size",
+                id: "QXR0cmlidXRlOjE=",
+                slug: "size",
               },
             },
             {
               values: [
                 {
                   name: "White",
+                  id: "QXR0cmlidXRlOjE=",
+                  slug: "country",
+                  file: {
+                    url: "https://klsjdlfk",
+                    contentType: null,
+                  },
                 },
               ],
               attribute: {
                 name: "Type",
+                id: "QXR0cmlidXRlOjE=",
+                slug: "type",
               },
             },
             {
               values: [],
               attribute: {
                 name: "Browse By",
+                id: "QXR0cmlidXRlOjE=",
+                slug: "browse-by",
               },
             },
             {
               values: [
                 {
                   name: "Jura",
+                  id: "QXR0cmlidXRlOjE=",
+                  slug: "country",
+                  file: {
+                    url: "https://klsjdlfk",
+                    contentType: null,
+                  },
                 },
               ],
               attribute: {
                 name: "Region",
+                id: "QXR0cmlidXRlOjE=",
+                slug: "region",
               },
             },
             {
               values: [
                 {
                   name: "2018",
+                  id: "QXR0cmlidXRlOjE=",
+                  slug: "country",
+                  file: {
+                    url: "https://klsjdlfk",
+                    contentType: null,
+                  },
                 },
               ],
               attribute: {
                 name: "Vintage",
+                id: "QXR0cmlidXRlOjE=",
+                slug: "vintage",
               },
             },
           ],
