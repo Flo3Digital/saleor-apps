@@ -43,16 +43,21 @@ fragment OrderDetails on Order {
     variant {
       product {
         attributes {
-          values {
-            name
-          }
           attribute {
+            id
             name
+            slug
           }
-        }
-        privateMetadata {
-            key
-            value
+          values {
+            id
+            name
+            slug
+            file{
+              url
+              contentType
+            }
+            
+          }
         }
       }
     }
