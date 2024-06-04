@@ -38,6 +38,7 @@ const exampleOrderPayload: OrderDetailsFragment = {
   },
   billingAddress: {
     streetAddress1: "59314 Mary Well Suite 281",
+    streetAddress2: "",
     city: "METROPOLIS",
     postalCode: "71653",
     country: {
@@ -46,6 +47,7 @@ const exampleOrderPayload: OrderDetailsFragment = {
   },
   shippingAddress: {
     streetAddress1: "59314 Mary Well Suite 281",
+    streetAddress2: "",
     city: "METROPOLIS",
     postalCode: "71653",
     country: {

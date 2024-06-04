@@ -20,6 +20,7 @@ fragment OrderDetails on Order {
   }
   billingAddress {
     streetAddress1
+    streetAddress2
     city
     postalCode
     country {
@@ -28,6 +29,7 @@ fragment OrderDetails on Order {
   }
   shippingAddress {
     streetAddress1
+    streetAddress2
     city
     postalCode
     country {

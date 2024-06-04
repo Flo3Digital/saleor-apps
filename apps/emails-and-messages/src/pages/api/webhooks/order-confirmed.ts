@@ -61,6 +61,7 @@ const ORDER_DETAILS_FRAGMENT = gql`
     }
     billingAddress {
       streetAddress1
+      streetAddress2
       city
       postalCode
       country {
@@ -69,6 +70,7 @@ const ORDER_DETAILS_FRAGMENT = gql`
     }
     shippingAddress {
       streetAddress1
+      streetAddress2
       city
       postalCode
       country {
@@ -204,9 +206,14 @@ const handler: NextWebhookApiHandler<OrderConfirmedWebhookPayloadFragment> = asy
     const result = await client.query(GET_ORDER_DETAILS_QUERY, { id: id }).toPromise();
 
     const orderDetails = result.data.order;
-    const lines = orderDetails?.lines ? orderDetails : {};
+    const lines: any[] = orderDetails?.lines ? orderDetails.lines : [];
 
-    return { ...order, lines: lines };
+    return {
+      ...order,
+      lines: lines,
+      billingAddress: orderDetails?.billingAddress,
+      shippingAddress: orderDetails?.shippingAddress,
+    };
   };
 
   const orderWithFullDetails = await getOrderDetails(order.id);
