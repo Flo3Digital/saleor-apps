@@ -6,6 +6,7 @@ import {
   OrderConfirmedWebhookPayloadFragment,
   OrderDetailsFragmentDoc,
   UntypedOrderDetailsFragmentDoc,
+  UntypedOrderConfirmedWebhookPayloadFragmentDoc,
 } from "../../../../generated/graphql";
 import { sendEventMessages } from "../../../modules/event-handlers/send-event-messages";
 
@@ -20,10 +21,10 @@ const OrderConfirmedWebhookPayload = gql`
 `;
 
 const OrderConfirmedGraphqlSubscription = gql`
-  ${OrderConfirmedWebhookPayload}
+  ${UntypedOrderConfirmedWebhookPayloadFragmentDoc}
   subscription OrderConfirmed {
     event {
-      ...OrderConfirmedWebhookPayload
+      ...UntypedOrderConfirmedWebhookPayloadFragmentDoc
     }
   }
 `;
