@@ -11,8 +11,7 @@ import {
 import { sendEventMessages } from "../../../modules/event-handlers/send-event-messages";
 
 const OrderConfirmedWebhookPayload = gql`
-  ${UntypedOrderDetailsFragmentDoc}
-
+  ${OrderDetailsFragmentDoc}
   fragment OrderConfirmedWebhookPayload on OrderConfirmed {
     order {
       ...OrderDetails
