@@ -204,9 +204,9 @@ const handler: NextWebhookApiHandler<OrderConfirmedWebhookPayloadFragment> = asy
     const result = await client.query(GET_ORDER_DETAILS_QUERY, { id: id }).toPromise();
 
     const orderDetails = result.data.order;
-    const variant = orderDetails?.variant ? orderDetails : {};
+    const lines = orderDetails?.lines ? orderDetails : {};
 
-    return { ...order, variant: variant };
+    return { ...order, lines: lines };
   };
 
   const orderWithFullDetails = await getOrderDetails(order.id);
