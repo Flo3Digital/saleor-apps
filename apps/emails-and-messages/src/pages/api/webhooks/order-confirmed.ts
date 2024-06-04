@@ -5,11 +5,12 @@ import { createLogger, createGraphQLClient } from "@saleor/apps-shared";
 import {
   OrderConfirmedWebhookPayloadFragment,
   OrderDetailsFragmentDoc,
+  UntypedOrderDetailsFragmentDoc,
 } from "../../../../generated/graphql";
 import { sendEventMessages } from "../../../modules/event-handlers/send-event-messages";
 
 const OrderConfirmedWebhookPayload = gql`
-  ${OrderDetailsFragmentDoc}
+  ${UntypedOrderDetailsFragmentDoc}
 
   fragment OrderConfirmedWebhookPayload on OrderConfirmed {
     order {
