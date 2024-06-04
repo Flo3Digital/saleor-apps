@@ -5,8 +5,6 @@ import { createLogger, createGraphQLClient } from "@saleor/apps-shared";
 import {
   OrderConfirmedWebhookPayloadFragment,
   OrderDetailsFragmentDoc,
-  UntypedOrderDetailsFragmentDoc,
-  UntypedOrderConfirmedWebhookPayloadFragmentDoc,
 } from "../../../../generated/graphql";
 import { sendEventMessages } from "../../../modules/event-handlers/send-event-messages";
 
@@ -40,6 +38,138 @@ const logger = createLogger({
   name: orderConfirmedWebhook.webhookPath,
 });
 
+const ORDER_DETAILS_FRAGMENT = gql`
+  fragment OrderDetailsFragment on Order {
+    id
+    number
+    userEmail
+    channel {
+      slug
+    }
+    metadata {
+      key
+      value
+    }
+    privateMetadata {
+      key
+      value
+    }
+    user {
+      email
+      firstName
+      lastName
+    }
+    billingAddress {
+      streetAddress1
+      city
+      postalCode
+      country {
+        country
+      }
+    }
+    shippingAddress {
+      streetAddress1
+      city
+      postalCode
+      country {
+        country
+      }
+    }
+    lines {
+      id
+      isShippingRequired
+      productName
+      variantName
+      quantity
+      variant {
+        product {
+          attributes {
+            attribute {
+              id
+              name
+              slug
+            }
+            values {
+              id
+              name
+              slug
+              file {
+                url
+                contentType
+              }
+            }
+          }
+          privateMetadata {
+            key
+            value
+          }
+        }
+      }
+      thumbnail {
+        url
+        alt
+      }
+      unitPrice {
+        gross {
+          currency
+          amount
+        }
+      }
+      totalPrice {
+        gross {
+          currency
+          amount
+        }
+      }
+      unitDiscount {
+        amount
+        currency
+      }
+      translatedVariantName
+      translatedProductName
+
+      metafields
+      privateMetafields
+      productSku
+      productVariantId
+      quantityFulfilled
+      quantityToFulfill
+      taxClassName
+      taxRate
+      unitDiscountReason
+      unitDiscountType
+      unitDiscountValue
+    }
+    subtotal {
+      gross {
+        amount
+        currency
+      }
+    }
+    shippingPrice {
+      gross {
+        amount
+        currency
+      }
+    }
+    total {
+      gross {
+        amount
+        currency
+      }
+    }
+  }
+`;
+
+const GET_ORDER_DETAILS_QUERY = gql`
+  query GetOrderDetails($id: ID!) {
+    order(id: $id) {
+      ...OrderDetailsFragment
+    }
+  }
+  ${ORDER_DETAILS_FRAGMENT}
+`;
+
 const handler: NextWebhookApiHandler<OrderConfirmedWebhookPayloadFragment> = async (
   req,
   res,
@@ -70,12 +200,23 @@ const handler: NextWebhookApiHandler<OrderConfirmedWebhookPayloadFragment> = asy
     token: authData.token,
   });
 
+  const getOrderDetails = async (id: string) => {
+    const result = await client.query(GET_ORDER_DETAILS_QUERY, { id: id }).toPromise();
+
+    const orderDetails = result.data.order;
+    const variant = orderDetails?.variant ? orderDetails : {};
+
+    return { ...order, variant: variant };
+  };
+
+  const orderWithFullDetails = await getOrderDetails(order.id);
+
   await sendEventMessages({
     authData,
     channel,
     client,
     event: "ORDER_CONFIRMED",
-    payload: { order: payload.order },
+    payload: { order: orderWithFullDetails },
     recipientEmail,
   });
 
