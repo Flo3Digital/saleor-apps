@@ -21,10 +21,10 @@ const OrderConfirmedWebhookPayload = gql`
 `;
 
 const OrderConfirmedGraphqlSubscription = gql`
-  ${UntypedOrderConfirmedWebhookPayloadFragmentDoc}
+  ${OrderConfirmedWebhookPayload}
   subscription OrderConfirmed {
     event {
-      ...UntypedOrderConfirmedWebhookPayloadFragmentDoc
+      ...OrderConfirmedWebhookPayload
     }
   }
 `;

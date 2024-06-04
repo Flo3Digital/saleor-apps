@@ -87,6 +87,18 @@ fragment OrderDetails on Order {
     }
     translatedVariantName
     translatedProductName
+
+    metafields
+    privateMetafields
+    productSku
+    productVariantId
+    quantityFulfilled
+    quantityToFulfill
+    taxClassName
+    taxRate
+    unitDiscountReason
+    unitDiscountType
+    unitDiscountValue
   }
   subtotal {
     gross {
