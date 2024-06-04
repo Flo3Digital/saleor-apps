@@ -199,6 +199,10 @@ const exampleOrderPayload: OrderDetailsFragment = {
       },
       translatedVariantName: "",
       translatedProductName: "",
+      quantityFulfilled: 0,
+      quantityToFulfill: 0,
+      taxRate: 0,
+      unitDiscountValue: undefined,
     },
     {
       id: "T3JkZXJMaW5lOjVhYmEzMTBkLTZkMzEtNDNlNy1hZjAyLTdlNGUwM2UzYmI4ZA==",
@@ -346,6 +350,10 @@ const exampleOrderPayload: OrderDetailsFragment = {
       },
       translatedVariantName: "",
       translatedProductName: "",
+      quantityFulfilled: 0,
+      quantityToFulfill: 0,
+      taxRate: 0,
+      unitDiscountValue: undefined,
     },
   ],
   subtotal: {
