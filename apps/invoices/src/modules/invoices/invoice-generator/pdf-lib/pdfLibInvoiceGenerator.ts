@@ -583,6 +583,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     //payment deatails section
     const paymentSectionHeight = tableSectionHeight + currentRowToContinue * tableRowSpacing + 50;
+    let paymentSectionHeightForFooter = 0;
     const paymentSectionDetail: { name: string; value: string }[] = [
       {
         name: "Bank name:",
@@ -602,6 +603,8 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       "PAYMENT",
       secondSectionFirstColumn({ y: height - paymentSectionHeight, size: fontSize.lg })
     );
+    paymentSectionHeightForFooter = 50 + paymentSectionDetail.length * 20;
+
     paymentSectionDetail.forEach((each, index) => {
       const currentSectionHeight = paymentSectionHeight + 20 + index * 20;
 
@@ -611,44 +614,120 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     //footer section
 
-    const footerSectionHeight = tableSectionHeight + currentRowToContinue * tableRowSpacing + 50;
+    let footerSectionHeight = paymentSectionHeight + paymentSectionHeightForFooter;
 
-    page.drawText("TERMS AND CONDITION", secondSectionFirstColumn({ y: 310, size: fontSize.md }));
-    page.drawText(
-      "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
-      secondSectionFirstColumn({ y: 270 })
-    );
-    page.drawText(
-      "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
-      secondSectionFirstColumn({ y: 250 })
-    );
-    page.drawText(
-      "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
-      secondSectionFirstColumn({ y: 230 })
-    );
-    page.drawText(
-      "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
-      secondSectionFirstColumn({ y: 210 })
-    );
-    page.drawText(
-      " All prices are in Hong Kong Dollars or otherwise indicated.",
-      secondSectionFirstColumn({ y: 190 })
-    );
-    page.drawText(
-      " A brand of Green Grand Ltd",
-      secondSectionFirstColumn({ y: 60, x: cellPadding })
-    );
-    page.drawText(
-      `    #2505B- The Centrium,
-60 Wyndham Street- Central
-            HK SAR China`,
-      secondSectionFirstColumn({ y: 105, x: 430 })
-    );
-    page.drawText(`Tel: +852 6466 9196`, secondSectionFirstColumn({ y: 60, x: 840 }));
-    page.drawText(
-      `Email: contact@liquidcollectionhk.com`,
-      secondSectionFirstColumn({ y: 90, x: 760 })
-    );
+    if (height - footerSectionHeight <= 300) {
+      const page2 = pdfDoc.addPage([1000, 1500]);
+      const { height } = page2.getSize();
+
+      footerSectionHeight = 100;
+      //create new pdf page
+      page2.drawText(
+        `TERMS AND CONDITION`,
+        secondSectionFirstColumn({ y: height - footerSectionHeight, size: fontSize.md })
+      );
+      page2.drawText(
+        "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
+      );
+      page2.drawText(
+        "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
+      );
+      page2.drawText(
+        "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
+      );
+      page2.drawText(
+        "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
+      );
+      page2.drawText(
+        " All prices are in Hong Kong Dollars or otherwise indicated.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
+      );
+
+      const footerSectionHeightForBottom = footerSectionHeight + 200;
+
+      page2.drawText(
+        " A brand of Green Grand Ltd page2Height",
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: cellPadding }) //y 60
+      );
+      page2.drawText(
+        `#2505B- The Centrium,`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom + 15, x: 440 }) //y 105
+      );
+      page2.drawText(
+        `60 Wyndham Street- Central`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 430 }) //y 105
+      );
+      page2.drawText(
+        `HK SAR China`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 460 }) //y 105
+      );
+      page2.drawText(
+        `Tel: +852 6466 9196`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 840 })
+      ); //y 60
+      page2.drawText(
+        `Email: contact@liquidcollectionhk.com`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 760 }) //y 90
+      );
+    } else {
+      page.drawText(
+        `TERMS AND CONDITION`,
+        secondSectionFirstColumn({ y: height - footerSectionHeight, size: fontSize.md })
+      );
+      page.drawText(
+        "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
+      );
+      page.drawText(
+        "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
+      );
+      page.drawText(
+        "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
+      );
+      page.drawText(
+        "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
+      );
+      page.drawText(
+        " All prices are in Hong Kong Dollars or otherwise indicated.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
+      );
+
+      const footerSectionHeightForBottom = footerSectionHeight + 200;
+
+      page.drawText(
+        " A brand of Green Grand Ltd page2Height",
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: cellPadding }) //y 60
+      );
+
+      page.drawText(
+        `#2505B- The Centrium,`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom + 15, x: 440 }) //y 105
+      );
+      page.drawText(
+        `60 Wyndham Street- Central`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 430 }) //y 105
+      );
+      page.drawText(
+        `HK SAR China`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 460 }) //y 105
+      );
+
+      page.drawText(
+        `Tel: +852 6466 9196`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 840 })
+      ); //y 60
+      page.drawText(
+        `Email: contact@liquidcollectionhk.com`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 760 }) //y 90
+      );
+    }
 
     const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
 
@@ -1128,6 +1207,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     //payment deatails section
     const paymentSectionHeight = tableSectionHeight + currentRowToContinue * tableRowSpacing + 50;
+    let paymentSectionHeightForFooter = 0;
     const paymentSectionDetail: { name: string; value: string }[] = [
       {
         name: "Bank name:",
@@ -1147,6 +1227,8 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       "PAYMENT",
       secondSectionFirstColumn({ y: height - paymentSectionHeight, size: fontSize.lg })
     );
+    paymentSectionHeightForFooter = 50 + paymentSectionDetail.length * 20;
+
     paymentSectionDetail.forEach((each, index) => {
       const currentSectionHeight = paymentSectionHeight + 20 + index * 20;
 
@@ -1156,44 +1238,120 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     //footer section
 
-    const footerSectionHeight = tableSectionHeight + currentRowToContinue * tableRowSpacing + 50;
+    let footerSectionHeight = paymentSectionHeight + paymentSectionHeightForFooter;
 
-    page.drawText("TERMS AND CONDITION", secondSectionFirstColumn({ y: 310, size: fontSize.md }));
-    page.drawText(
-      "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
-      secondSectionFirstColumn({ y: 270 })
-    );
-    page.drawText(
-      "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
-      secondSectionFirstColumn({ y: 250 })
-    );
-    page.drawText(
-      "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
-      secondSectionFirstColumn({ y: 230 })
-    );
-    page.drawText(
-      "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
-      secondSectionFirstColumn({ y: 210 })
-    );
-    page.drawText(
-      " All prices are in Hong Kong Dollars or otherwise indicated.",
-      secondSectionFirstColumn({ y: 190 })
-    );
-    page.drawText(
-      " A brand of Green Grand Ltd",
-      secondSectionFirstColumn({ y: 60, x: cellPadding })
-    );
-    page.drawText(
-      `    #2505B- The Centrium,
-60 Wyndham Street- Central
-            HK SAR China`,
-      secondSectionFirstColumn({ y: 105, x: 430 })
-    );
-    page.drawText(`Tel: +852 6466 9196`, secondSectionFirstColumn({ y: 60, x: 840 }));
-    page.drawText(
-      `Email: contact@liquidcollectionhk.com`,
-      secondSectionFirstColumn({ y: 90, x: 760 })
-    );
+    if (height - footerSectionHeight <= 300) {
+      const page2 = pdfDoc.addPage([1000, 1500]);
+      const { height } = page2.getSize();
+
+      footerSectionHeight = 100;
+      //create new pdf page
+      page2.drawText(
+        `TERMS AND CONDITION`,
+        secondSectionFirstColumn({ y: height - footerSectionHeight, size: fontSize.md })
+      );
+      page2.drawText(
+        "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
+      );
+      page2.drawText(
+        "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
+      );
+      page2.drawText(
+        "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
+      );
+      page2.drawText(
+        "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
+      );
+      page2.drawText(
+        " All prices are in Hong Kong Dollars or otherwise indicated.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
+      );
+
+      const footerSectionHeightForBottom = footerSectionHeight + 200;
+
+      page2.drawText(
+        " A brand of Green Grand Ltd page2Height",
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: cellPadding }) //y 60
+      );
+      page2.drawText(
+        `#2505B- The Centrium,`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom + 15, x: 440 }) //y 105
+      );
+      page2.drawText(
+        `60 Wyndham Street- Central`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 430 }) //y 105
+      );
+      page2.drawText(
+        `HK SAR China`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 460 }) //y 105
+      );
+      page2.drawText(
+        `Tel: +852 6466 9196`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 840 })
+      ); //y 60
+      page2.drawText(
+        `Email: contact@liquidcollectionhk.com`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 760 }) //y 90
+      );
+    } else {
+      page.drawText(
+        `TERMS AND CONDITION`,
+        secondSectionFirstColumn({ y: height - footerSectionHeight, size: fontSize.md })
+      );
+      page.drawText(
+        "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
+      );
+      page.drawText(
+        "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
+      );
+      page.drawText(
+        "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
+      );
+      page.drawText(
+        "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
+      );
+      page.drawText(
+        " All prices are in Hong Kong Dollars or otherwise indicated.",
+        secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
+      );
+
+      const footerSectionHeightForBottom = footerSectionHeight + 200;
+
+      page.drawText(
+        " A brand of Green Grand Ltd page2Height",
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: cellPadding }) //y 60
+      );
+
+      page.drawText(
+        `#2505B- The Centrium,`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom + 15, x: 440 }) //y 105
+      );
+      page.drawText(
+        `60 Wyndham Street- Central`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 430 }) //y 105
+      );
+      page.drawText(
+        `HK SAR China`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 460 }) //y 105
+      );
+
+      page.drawText(
+        `Tel: +852 6466 9196`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 840 })
+      ); //y 60
+      page.drawText(
+        `Email: contact@liquidcollectionhk.com`,
+        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 760 }) //y 90
+      );
+    }
 
     const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
 
