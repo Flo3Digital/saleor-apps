@@ -13,6 +13,7 @@ const IndexPage: NextPage = () => {
   const isMounted = useIsMounted();
   const { replace } = useRouter();
   const [pdfDataUri, setPdfDataUri] = useState<null | string>("");
+
   const handleGenerate = async () => {
     const pdfInvoiceGenerator = new PdfLibInvoiceGenerator();
     const pdfUri = await pdfInvoiceGenerator.createTestPdf();

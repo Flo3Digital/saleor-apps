@@ -148,7 +148,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
     const fontBytes = await fetchFont(
-      "https://saleor-apps-invoices.vercel.app/fonts/chinese_font.ttf"
+      "https://saleor-apps-invoices.vercel.app/fonts/NotoSansSC_Light.ttf"
     );
 
     const chineseFont = await pdfDoc.embedFont(fontBytes);
@@ -757,7 +757,6 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
 
-    console.log("pdf dta uri", pdfDataUri);
     const pdfBytes = await pdfDoc.save();
 
     // return pdf file here.
@@ -789,8 +788,9 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     pdfDoc.registerFontkit(fontkit);
     const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
-    const fontBytes = await fetchFont("/fonts/chinese_font.ttf");
+    const fontBytes = await fetchFont("/fonts/HanyiSentyPine_Regular.ttf");
     const chineseFont = await pdfDoc.embedFont(fontBytes);
+
     const page = pdfDoc.addPage([1000, 1500]);
     const { width, height } = page.getSize();
     const fontSize = {
@@ -921,7 +921,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       { name: "Phone:", value: `${order.billingAddress?.phone}` },
       {
         name: "Address:",
-        value: `${order.billingAddress?.streetAddress1}, ${order.billingAddress?.streetAddress2}`,
+        value: `${order.billingAddress?.streetAddress1} 觀塘鴻圖道43號鴻達工業大廈1103 室, ${order.billingAddress?.streetAddress2}`,
       },
       { name: "Post Code:", value: `${order.billingAddress?.postalCode}` },
       { name: "City:", value: `${order.billingAddress?.city}` },
@@ -937,7 +937,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         each.value,
         secondSectionSecondColumn({
           y: height - currentSectionHeight,
-          font: each.name === "Address:" ? chineseFont : undefined,
+          font: each.name === "Address:" ? (chineseFont ? chineseFont : undefined) : undefined,
         })
       );
     });
@@ -1393,10 +1393,11 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
 
-    console.log("pdf dta uri", pdfDataUri);
     const pdfBytes = await pdfDoc.save();
 
     // return pdf file here.
+    console.log("pdfDataUri", pdfDataUri);
+    console.log("pdfBytes", pdfBytes);
     return { pdfDataUri, pdfBytes };
   }
 }
