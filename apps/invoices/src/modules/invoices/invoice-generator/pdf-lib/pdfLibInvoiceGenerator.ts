@@ -295,7 +295,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         each.value,
         secondSectionSecondColumn({
           y: height - currentSectionHeight,
-          font: each.name === "Address:" ? chineseFont : undefined,
+          font: each.name === "Address:" ? timesRomanFont : undefined,
         })
       );
     });
@@ -916,7 +916,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       { name: "Phone:", value: `${order.billingAddress?.phone}` },
       {
         name: "Address:",
-        value: `${order.billingAddress?.streetAddress1} "觀塘鴻圖道43號鴻達工業大廈1103 室", ${order.billingAddress?.streetAddress2}`,
+        value: `${order.billingAddress?.streetAddress1}, ${order.billingAddress?.streetAddress2}`,
       },
       { name: "Post Code:", value: `${order.billingAddress?.postalCode}` },
       { name: "City:", value: `${order.billingAddress?.city}` },
