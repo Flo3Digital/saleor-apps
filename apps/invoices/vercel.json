@@ -1,9 +1,9 @@
 {
     "functions": {
-        "invoices/src/pages/api/**/*.js": {
+        "src/pages/api/**/*.js": {
             "maxDuration": 300
           },
-          "invoices/src/pages/api/**/*.ts": {
+          "src/pages/api/**/*.ts": {
             "maxDuration": 300
           }
     }
