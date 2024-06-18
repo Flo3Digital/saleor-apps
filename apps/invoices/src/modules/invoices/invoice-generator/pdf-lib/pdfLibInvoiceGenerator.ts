@@ -144,10 +144,13 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     const pdfDoc = await PDFDocument.create();
 
-    pdfDoc.registerFontkit(fontkit);
+    // pdfDoc.registerFontkit(fontkit);
+
     const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
-    const fontBytes = await fetchFont("/fonts/chinese_font.ttf");
-    const chineseFont = await pdfDoc.embedFont(fontBytes);
+    // const fontBytes = await fetchFont("/fonts/chinese_font.ttf");
+
+    // const chineseFont = await pdfDoc.embedFont(fontBytes);
+
     const page = pdfDoc.addPage([1000, 1500]);
     const { width, height } = page.getSize();
     const fontSize = {
