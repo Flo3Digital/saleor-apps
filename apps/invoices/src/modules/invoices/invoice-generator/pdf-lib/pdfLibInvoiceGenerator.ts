@@ -147,10 +147,11 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     pdfDoc.registerFontkit(fontkit);
 
     const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
-    const fontBytes = await fetchFont("/fonts/chinese_font.ttf");
+    const fontBytes = await fetchFont(
+      "https://saleor-apps-invoices.vercel.app/fonts/chinese_font.ttf"
+    );
 
-    console.log(fontBytes);
-    // const chineseFont = await pdfDoc.embedFont(fontBytes);
+    const chineseFont = await pdfDoc.embedFont(fontBytes);
 
     const page = pdfDoc.addPage([1000, 1500]);
     const { width, height } = page.getSize();
@@ -299,7 +300,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         each.value,
         secondSectionSecondColumn({
           y: height - currentSectionHeight,
-          font: each.name === "Address:" ? timesRomanFont : undefined,
+          font: each.name === "Address:" ? chineseFont : undefined,
         })
       );
     });
