@@ -7,8 +7,10 @@ import {
 import { SellerShopConfig } from "../../../app-configuration/schema-v1/app-config-v1";
 import { AddressV2Shape } from "../../../app-configuration/schema-v2/app-config-schema.v2";
 import { createClient, dedupExchange, cacheExchange, fetchExchange, gql } from "urql";
-import { PDFDocument, RGB, StandardFonts, rgb } from "pdf-lib";
+import { PDFDocument, PDFFont, RGB, StandardFonts, rgb } from "pdf-lib";
 import { mockOrder } from "../../../../fixtures/mock-order";
+import fontkit from "@pdf-lib/fontkit";
+
 // import { input } from "@saleor/macaw-ui/dist/components/SearchInput/SearchInput.css";
 
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
@@ -101,6 +103,13 @@ async function stringToArray(longString: string, maxWords: number) {
   return result;
 }
 
+const fetchFont = async (url: string): Promise<Uint8Array> => {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+
+  return new Uint8Array(arrayBuffer);
+};
+
 export class PdfLibInvoiceGenerator implements InvoiceGenerator {
   constructor(
     private settings = {
@@ -134,8 +143,11 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     };
 
     const pdfDoc = await PDFDocument.create();
-    const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
 
+    pdfDoc.registerFontkit(fontkit);
+    const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+    const fontBytes = await fetchFont("/fonts/chinese_font.ttf");
+    const chineseFont = await pdfDoc.embedFont(fontBytes);
     const page = pdfDoc.addPage([1000, 1500]);
     const { width, height } = page.getSize();
     const fontSize = {
@@ -200,17 +212,20 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       y,
       size,
       color,
+      font,
     }: {
       x?: number | undefined;
       y?: number | undefined;
       size?: number | undefined;
       color?: RGB | undefined;
+      font?: PDFFont | undefined;
     }) => {
       return {
         x: x ? x : secondSectionSecondCellLeft,
         y: y ? y : height - 250,
         size: size ? size : fontSize.base,
         color: color ? color : rgb(0, 0, 0),
+        font: font ? font : undefined,
       };
     };
 
@@ -276,7 +291,13 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       const currentSectionHeight = customerSectionHeight + 10 + index * 20;
 
       page.drawText(each.name, secondSectionFirstColumn({ y: height - currentSectionHeight }));
-      page.drawText(each.value, secondSectionSecondColumn({ y: height - currentSectionHeight }));
+      page.drawText(
+        each.value,
+        secondSectionSecondColumn({
+          y: height - currentSectionHeight,
+          font: each.name === "Address:" ? chineseFont : undefined,
+        })
+      );
     });
 
     //seller section
@@ -760,8 +781,11 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     };
 
     const pdfDoc = await PDFDocument.create();
-    const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
 
+    pdfDoc.registerFontkit(fontkit);
+    const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+    const fontBytes = await fetchFont("/fonts/chinese_font.ttf");
+    const chineseFont = await pdfDoc.embedFont(fontBytes);
     const page = pdfDoc.addPage([1000, 1500]);
     const { width, height } = page.getSize();
     const fontSize = {
@@ -826,17 +850,20 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       y,
       size,
       color,
+      font,
     }: {
       x?: number | undefined;
       y?: number | undefined;
       size?: number | undefined;
       color?: RGB | undefined;
+      font?: PDFFont | undefined;
     }) => {
       return {
         x: x ? x : secondSectionSecondCellLeft,
         y: y ? y : height - 250,
         size: size ? size : fontSize.base,
         color: color ? color : rgb(0, 0, 0),
+        font: font ? font : undefined,
       };
     };
 
@@ -889,7 +916,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       { name: "Phone:", value: `${order.billingAddress?.phone}` },
       {
         name: "Address:",
-        value: `${order.billingAddress?.streetAddress1}, ${order.billingAddress?.streetAddress2}`,
+        value: `${order.billingAddress?.streetAddress1} "觀塘鴻圖道43號鴻達工業大廈1103 室", ${order.billingAddress?.streetAddress2}`,
       },
       { name: "Post Code:", value: `${order.billingAddress?.postalCode}` },
       { name: "City:", value: `${order.billingAddress?.city}` },
@@ -901,7 +928,13 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       const currentSectionHeight = customerSectionHeight + 10 + index * 20;
 
       page.drawText(each.name, secondSectionFirstColumn({ y: height - currentSectionHeight }));
-      page.drawText(each.value, secondSectionSecondColumn({ y: height - currentSectionHeight }));
+      page.drawText(
+        each.value,
+        secondSectionSecondColumn({
+          y: height - currentSectionHeight,
+          font: each.name === "Address:" ? chineseFont : undefined,
+        })
+      );
     });
 
     page.drawText(
