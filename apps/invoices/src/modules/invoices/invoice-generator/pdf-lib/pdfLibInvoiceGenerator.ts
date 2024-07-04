@@ -277,18 +277,18 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const customerSectionDetail: { name: string; value: string }[] = [
       {
         name: "Name:",
-        value: `${order.billingAddress?.firstName} ${order.billingAddress?.lastName}`,
+        value: `${order.shippingAddress?.firstName} ${order.shippingAddress?.lastName}`,
       },
       { name: "Email:", value: `${orderFromQuery.userEmail}` },
-      { name: "Company Name:", value: `${order.billingAddress?.companyName}` },
-      { name: "Phone:", value: `${order.billingAddress?.phone}` },
+      { name: "Company Name:", value: `${order.shippingAddress?.companyName}` },
+      { name: "Phone:", value: `${order.shippingAddress?.phone}` },
       {
         name: "Address:",
-        value: `${order.billingAddress?.streetAddress1}, ${order.billingAddress?.streetAddress2}`,
+        value: `${order.shippingAddress?.streetAddress1}, ${order.shippingAddress?.streetAddress2}`,
       },
-      { name: "Post Code:", value: `${order.billingAddress?.postalCode}` },
-      { name: "City:", value: `${order.billingAddress?.city}` },
-      { name: "Country/Area:", value: `${order.billingAddress?.country?.country}` },
+      { name: "Post Code:", value: `${order.shippingAddress?.postalCode}` },
+      { name: "City:", value: `${order.shippingAddress?.city}` },
+      { name: "Country/Area:", value: `${order.shippingAddress?.country?.country}` },
     ];
 
     page.drawText("CUSTOMER", secondSectionFirstColumn({ y: height - 380, size: fontSize.lg }));
