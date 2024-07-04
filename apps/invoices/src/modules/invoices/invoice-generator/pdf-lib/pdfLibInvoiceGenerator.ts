@@ -33,6 +33,23 @@ const ORDER_QUERY = gql`
           currency
         }
       }
+      shippingAddress {
+        id
+        country {
+          country
+          code
+        }
+        companyName
+        cityArea
+        countryArea
+        streetAddress1
+        streetAddress2
+        postalCode
+        phone
+        firstName
+        lastName
+        city
+      }
       lines {
         variant {
           product {
@@ -277,18 +294,18 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const customerSectionDetail: { name: string; value: string }[] = [
       {
         name: "Name:",
-        value: `${order.shippingAddress?.firstName} ${order.shippingAddress?.lastName}`,
+        value: `${orderFromQuery.shippingAddress?.firstName} ${orderFromQuery.shippingAddress?.lastName}`,
       },
       { name: "Email:", value: `${orderFromQuery.userEmail}` },
-      { name: "Company Name:", value: `${order.shippingAddress?.companyName}` },
-      { name: "Phone:", value: `${order.shippingAddress?.phone}` },
+      { name: "Company Name:", value: `${orderFromQuery.shippingAddress?.companyName}` },
+      { name: "Phone:", value: `${orderFromQuery.shippingAddress?.phone}` },
       {
         name: "Address:",
-        value: `${order.shippingAddress?.streetAddress1}, ${order.shippingAddress?.streetAddress2}`,
+        value: `${orderFromQuery.shippingAddress?.streetAddress1}, ${orderFromQuery.shippingAddress?.streetAddress2}`,
       },
-      { name: "Post Code:", value: `${order.shippingAddress?.postalCode}` },
-      { name: "City:", value: `${order.shippingAddress?.city}` },
-      { name: "Country/Area:", value: `${order.shippingAddress?.country?.country}` },
+      { name: "Post Code:", value: `${orderFromQuery.shippingAddress?.postalCode}` },
+      { name: "City:", value: `${orderFromQuery.shippingAddress?.city}` },
+      { name: "Country/Area:", value: `${orderFromQuery.shippingAddress?.country?.country}` },
     ];
 
     page.drawText("CUSTOMER", secondSectionFirstColumn({ y: height - 380, size: fontSize.lg }));
