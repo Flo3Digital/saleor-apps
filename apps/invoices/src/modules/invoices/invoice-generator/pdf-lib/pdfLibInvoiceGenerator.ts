@@ -317,7 +317,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         each.value,
         secondSectionSecondColumn({
           y: height - currentSectionHeight,
-          font: each.name === "Address:" ? chineseFont : undefined,
+          font: chineseFont,
         })
       );
     });
@@ -954,7 +954,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         each.value,
         secondSectionSecondColumn({
           y: height - currentSectionHeight,
-          font: each.name === "Address:" ? (chineseFont ? chineseFont : undefined) : undefined,
+          font: chineseFont,
         })
       );
     });
