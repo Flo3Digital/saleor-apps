@@ -609,7 +609,10 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
           currentRowToContinue = currentRowToContinue + 1;
         }
 
-        if (itemsToShow.length < 5) {
+        if (
+          !!(!!(itemsToShow.length < 5) && !!(pageNumber === 0)) ||
+          !!(!!(itemsToShow.length < 13) && !!(pageNumber !== 0))
+        ) {
           //payment deatails section
 
           const paymentSectionHeight =
