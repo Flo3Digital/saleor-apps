@@ -322,46 +322,6 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       );
     });
 
-    //seller section
-
-    /*
-     * const sellerSectionHeight = 400;
-     * const sellerSectionDetail: { name: string; value: string }[] = [
-     *   { name: "Company Name:", value: `${companyAddressData.companyName}` },
-     *   {
-     *     name: "Company Address:",
-     *     value: `${companyAddressData.streetAddress1},${companyAddressData.streetAddress2}`,
-     *   },
-     *   { name: "Company PostCode:", value: `${companyAddressData.postalCode}` },
-     *   { name: "Company City:", value: `${companyAddressData.city}` },
-     *   { name: "Company Country", value: `${companyAddressData.country}` },
-     * ];
-     */
-
-    /*
-     * page.drawText(
-     *   "SELLER",
-     *   secondSectionFirstColumn({ y: height - 380, x: secondSctionThirdCellLeft, size: fontSize.lg })
-     * );
-     * sellerSectionDetail.forEach((each, index) => {
-     *   const currentSectionHeight = sellerSectionHeight + 10 + index * 20;
-     */
-
-    /*
-     *   page.drawText(
-     *     each.name,
-     *     secondSectionFirstColumn({ y: height - currentSectionHeight, x: secondSctionThirdCellLeft })
-     *   );
-     *   page.drawText(
-     *     each.value,
-     *     secondSectionSecondColumn({
-     *       y: height - currentSectionHeight,
-     *       x: secondSctionThirdCellLeft + 150,
-     *     })
-     *   );
-     * });
-     */
-
     page.drawText(
       "SHIPPING METHOD",
       secondSectionFirstColumn({ y: height - 250, x: secondSctionThirdCellLeft, size: fontSize.md })
@@ -411,6 +371,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       color,
       customLineHeight,
       customLine = false,
+      customTableHeight,
     }: {
       row: number;
       column: number;
@@ -418,6 +379,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       color?: RGB | undefined;
       customLineHeight?: number | undefined;
       customLine?: boolean | undefined;
+      customTableHeight?: number | undefined;
     }) => {
       let columnSpacing = 0;
       let columnWidth = 0;
@@ -452,14 +414,18 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
       let y = 0;
 
+      const tableHeight =
+        typeof customTableHeight === "number" ? customTableHeight : tableSectionHeight;
+
       if (customLineHeight !== undefined) {
+        // y = height - ((tableSectionHeightForCurrentPage) + (row * tableRowSpacing + 20)),
         y =
           height -
-          (tableSectionHeight + row * tableRowSpacing) -
+          (tableHeight + row * tableRowSpacing) -
           customLineHeight * 13 +
           (customLine ? 17 : 0);
       } else {
-        y = height - (tableSectionHeight + row * tableRowSpacing);
+        y = height - (tableHeight + row * tableRowSpacing);
       }
 
       return {
@@ -499,277 +465,348 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       );
     });
 
-    orderFromQuery?.lines?.forEach(async (line: any, index: number) => {
-      const row = index + 2;
-      const itemCode = line.variant?.sku ? line?.variant?.sku : "-";
-      const quantity = line?.quantity;
-      const description = line?.productName; //line?.productName;
-      // const description = `<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj`; //line?.productName;
-      const descriptionArray = await stringToArray(description, 70);
-      const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
-      const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
-      const subtotal = `${line?.totalPrice?.gross?.amount}`;
-      const unitPrice = line.variant ? `${line?.variant?.pricing?.price?.gross?.amount}` : "-";
-      const tableRowArray = [
-        itemCode,
-        quantity,
-        descriptionArray,
-        vintage,
-        format,
-        unitPrice,
-        subtotal,
-      ];
+    const totalItems = orderFromQuery?.lines?.length;
+    const totalPagesFor25Items = Math.ceil(totalItems / 25);
+    const totalPagesForAllItems =
+      totalPagesFor25Items === 1 && totalItems > 15
+        ? totalPagesFor25Items + 1
+        : totalPagesFor25Items;
 
-      tableRowArray.forEach((each, i) => {
-        const column = i + 1;
+    for (let pageNumber = 0; pageNumber < totalPagesForAllItems; pageNumber++) {
+      const itemsToShow =
+        pageNumber === 0
+          ? orderFromQuery?.lines?.slice(pageNumber * 15, (pageNumber + 1) * 15)
+          : orderFromQuery?.lines?.slice(pageNumber * 25 - 10, (pageNumber + 1) * 25 - 10);
+      const pageForDraw = pageNumber === 0 ? page : pdfDoc.addPage([1000, 1500]);
+      const tableSectionHeightForCurrentPage = pageNumber === 0 ? tableSectionHeight : 0;
 
-        if (Array.isArray(each)) {
-          each.forEach((eachLine, index) => {
-            page.drawText(
-              `${eachLine}`,
-              tableRow({
-                row: row,
-                column: column,
-                size: fontSize.base,
-                customLineHeight: index,
-                customLine: each?.length > 1,
-              })
-            );
-          });
-          page.drawRectangle({
+      itemsToShow.forEach(async (line: any, index: number) => {
+        const row = index + 2;
+        const itemCode = line.variant?.sku ? line?.variant?.sku : "-";
+        const quantity = line?.quantity;
+        const description = line?.productName; //line?.productName;
+        const descriptionArray = await stringToArray(description, 70);
+        const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
+        const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
+        const subtotal = `${line?.totalPrice?.gross?.amount}`;
+        const unitPrice = line.variant ? `${line?.variant?.pricing?.price?.gross?.amount}` : "-";
+        const tableRowArray = [
+          itemCode,
+          quantity,
+          descriptionArray,
+          vintage,
+          format,
+          unitPrice,
+          subtotal,
+        ];
+
+        tableRowArray.forEach((each, i) => {
+          const column = i + 1;
+
+          if (Array.isArray(each)) {
+            each.forEach((eachLine, index) => {
+              pageForDraw.drawText(
+                `${eachLine}`,
+                tableRow({
+                  row: row,
+                  column: column,
+                  size: fontSize.base,
+                  customLineHeight: index,
+                  customLine: each?.length > 1,
+                  customTableHeight: tableSectionHeightForCurrentPage,
+                })
+              );
+            });
+            pageForDraw.drawRectangle({
+              x: cellPadding,
+              y: height - (tableSectionHeightForCurrentPage + (row * tableRowSpacing + 20)),
+              width: tableWidth,
+              height: 1,
+              color: rgb(35 / 255, 38 / 255, 62 / 255),
+            });
+            return;
+          }
+
+          pageForDraw.drawText(
+            `${each}`,
+            tableRow({
+              row: row,
+              column: column,
+              size: fontSize.base,
+              customTableHeight: tableSectionHeightForCurrentPage,
+            })
+          );
+          pageForDraw.drawRectangle({
             x: cellPadding,
-            y: height - (tableSectionHeight + (row * tableRowSpacing + 20)),
+            y: height - (tableSectionHeightForCurrentPage + (row * tableRowSpacing + 20)),
             width: tableWidth,
             height: 1,
             color: rgb(35 / 255, 38 / 255, 62 / 255),
           });
-          return;
-        }
-
-        page.drawText(`${each}`, tableRow({ row: row, column: column, size: fontSize.base }));
-        page.drawRectangle({
-          x: cellPadding,
-          y: height - (tableSectionHeight + (row * tableRowSpacing + 20)),
-          width: tableWidth,
-          height: 1,
-          color: rgb(35 / 255, 38 / 255, 62 / 255),
         });
       });
-    });
 
-    let currentRowToContinue: number = 2 + (orderFromQuery?.lines?.length || 0);
+      if (pageNumber + 1 === totalPagesFor25Items) {
+        let currentRowToContinue: number = 2 + (itemsToShow.length || 0);
 
-    if (orderFromQuery?.shippingMethodName && orderFromQuery.shippingPrice?.gross?.amount) {
-      const tableRowArray = [
-        orderFromQuery.shippingMethodName,
-        "-",
-        "-",
-        "-",
-        "-",
-        "-",
-        `${orderFromQuery.shippingPrice.gross.amount}`,
-      ];
+        if (orderFromQuery?.shippingMethodName && orderFromQuery.shippingPrice?.gross?.amount) {
+          const tableRowArray = [
+            orderFromQuery.shippingMethodName,
+            "-",
+            "-",
+            "-",
+            "-",
+            "-",
+            `${orderFromQuery.shippingPrice.gross.amount}`,
+          ];
 
-      tableRowArray.forEach((each, i) => {
-        const column = i + 1;
+          tableRowArray.forEach((each, i) => {
+            const column = i + 1;
 
-        page.drawText(
-          `${each}`,
-          tableRow({ row: currentRowToContinue, column: column, size: fontSize.base })
-        );
-      });
+            pageForDraw.drawText(
+              `${each}`,
+              tableRow({
+                row: currentRowToContinue,
+                column: column,
+                size: fontSize.base,
+                customTableHeight: tableSectionHeightForCurrentPage,
+              })
+            );
+          });
 
-      currentRowToContinue = currentRowToContinue + 1;
-    }
+          currentRowToContinue = currentRowToContinue + 1;
+        }
 
-    /*
-     * if (orderFromQuery.total?.net) {
-     *   page.drawText(`TOTAL NET`, tableRow({ row: currentRowToContinue, column: 4 }));
-     *   page.drawText(
-     *     `${orderFromQuery.total.net.amount} ${orderFromQuery.total.net.currency}`,
-     *     tableRow({ row: currentRowToContinue, column: 5 })
-     *   );
-     *   currentRowToContinue = currentRowToContinue + 1;
-     * }
-     */
+        pageForDraw.drawRectangle({
+          x: cellPadding,
+          y:
+            height -
+            (tableSectionHeightForCurrentPage + (currentRowToContinue * tableRowSpacing + 20)),
+          width: 900,
+          height: 50,
+          color: rgb(35 / 255, 38 / 255, 62 / 255),
+        });
 
-    /*
-     * if (orderFromQuery.total?.tax) {
-     *   page.drawText(`TOTAL TAX`, tableRow({ row: currentRowToContinue, column: 4 }));
-     *   page.drawText(
-     *     `${orderFromQuery.total.tax.amount} ${orderFromQuery.total.tax.currency}`,
-     *     tableRow({ row: currentRowToContinue, column: 5 })
-     *   );
-     *   currentRowToContinue = currentRowToContinue + 1;
-     * }
-     */
+        if (orderFromQuery.total?.gross) {
+          pageForDraw.drawText(
+            `GRAND TOTAL`,
+            tableRow({
+              row: currentRowToContinue,
+              column: 1,
+              color: rgb(1, 1, 1),
+              customTableHeight: tableSectionHeightForCurrentPage,
+            })
+          );
+          pageForDraw.drawText(
+            `${orderFromQuery.total.gross.currency} ${orderFromQuery.total.gross.amount}`,
+            tableRow({
+              row: currentRowToContinue,
+              column: 8,
+              color: rgb(1, 1, 1),
+              customTableHeight: tableSectionHeightForCurrentPage,
+            })
+          );
+          currentRowToContinue = currentRowToContinue + 1;
+        }
 
-    page.drawRectangle({
-      x: cellPadding,
-      y: height - (tableSectionHeight + (currentRowToContinue * tableRowSpacing + 20)),
-      width: 900,
-      height: 50,
-      color: rgb(35 / 255, 38 / 255, 62 / 255),
-    });
+        if (itemsToShow.length < 5) {
+          //payment deatails section
 
-    if (orderFromQuery.total?.gross) {
-      page.drawText(
-        `GRAND TOTAL`,
-        tableRow({ row: currentRowToContinue, column: 1, color: rgb(1, 1, 1) })
-      );
-      page.drawText(
-        `${orderFromQuery.total.gross.currency} ${orderFromQuery.total.gross.amount}`,
-        tableRow({ row: currentRowToContinue, column: 8, color: rgb(1, 1, 1) })
-      );
-      currentRowToContinue = currentRowToContinue + 1;
-    }
+          const paymentSectionHeight =
+            tableSectionHeightForCurrentPage + currentRowToContinue * tableRowSpacing + 50;
 
-    //payment deatails section
-    const paymentSectionHeight = tableSectionHeight + currentRowToContinue * tableRowSpacing + 50;
-    let paymentSectionHeightForFooter = 0;
-    const paymentSectionDetail: { name: string; value: string }[] = [
-      {
-        name: "Bank name:",
-        value: `The Hong Kong And Shanghai Banking Corporation Limited`,
-      },
-      { name: "Bank address:", value: `1 Queen's Road Central, Hong Kong` },
-      { name: "SWIFT code:", value: `HSBCHKHHHKH` },
-      { name: "Account name:", value: `Green Grand Limited` },
-      {
-        name: "Account number:",
-        value: `741 385124 001`,
-      },
-      { name: "FPS ID:", value: `169 418 381` },
-    ];
+          let paymentSectionHeightForFooter = 0;
+          const paymentSectionDetail: { name: string; value: string }[] = [
+            {
+              name: "Bank name:",
+              value: `The Hong Kong And Shanghai Banking Corporation Limited`,
+            },
+            { name: "Bank address:", value: `1 Queen's Road Central, Hong Kong` },
+            { name: "SWIFT code:", value: `HSBCHKHHHKH` },
+            { name: "Account name:", value: `Green Grand Limited` },
+            {
+              name: "Account number:",
+              value: `741 385124 001`,
+            },
+            { name: "FPS ID:", value: `169 418 381` },
+          ];
 
-    page.drawText(
-      "PAYMENT",
-      secondSectionFirstColumn({ y: height - paymentSectionHeight, size: fontSize.lg })
-    );
-    paymentSectionHeightForFooter = 50 + paymentSectionDetail.length * 20;
+          pageForDraw.drawText(
+            "PAYMENT",
+            secondSectionFirstColumn({ y: height - paymentSectionHeight, size: fontSize.lg })
+          );
+          paymentSectionHeightForFooter = 50 + paymentSectionDetail.length * 20;
 
-    paymentSectionDetail.forEach((each, index) => {
-      const currentSectionHeight = paymentSectionHeight + 20 + index * 20;
+          paymentSectionDetail.forEach((each, index) => {
+            const currentSectionHeight = paymentSectionHeight + 20 + index * 20;
 
-      page.drawText(each.name, secondSectionFirstColumn({ y: height - currentSectionHeight }));
-      page.drawText(each.value, secondSectionSecondColumn({ y: height - currentSectionHeight }));
-    });
+            pageForDraw.drawText(
+              each.name,
+              secondSectionFirstColumn({ y: height - currentSectionHeight })
+            );
+            pageForDraw.drawText(
+              each.value,
+              secondSectionSecondColumn({ y: height - currentSectionHeight })
+            );
+          });
+          let footerSectionHeight = paymentSectionHeight + paymentSectionHeightForFooter;
 
-    //footer section
+          pageForDraw.drawText(
+            `TERMS AND CONDITION`,
+            secondSectionFirstColumn({ y: height - footerSectionHeight, size: fontSize.md })
+          );
+          pageForDraw.drawText(
+            "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
+          );
+          pageForDraw.drawText(
+            "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
+          );
+          pageForDraw.drawText(
+            "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
+          );
+          pageForDraw.drawText(
+            "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
+          );
+          pageForDraw.drawText(
+            " All prices are in Hong Kong Dollars or otherwise indicated.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
+          );
 
-    let footerSectionHeight = paymentSectionHeight + paymentSectionHeightForFooter;
+          const footerSectionHeightForBottom = footerSectionHeight + 200;
 
-    if (height - footerSectionHeight <= 300) {
-      const page2 = pdfDoc.addPage([1000, 1500]);
-      const { height } = page2.getSize();
+          pageForDraw.drawText(
+            " A brand of Green Grand Ltd",
+            secondSectionFirstColumn({
+              y: height - footerSectionHeightForBottom - 45,
+              x: cellPadding,
+            }) //y 60
+          );
 
-      footerSectionHeight = 100;
-      //create new pdf page
-      page2.drawText(
-        `TERMS AND CONDITION`,
-        secondSectionFirstColumn({ y: height - footerSectionHeight, size: fontSize.md })
-      );
-      page2.drawText(
-        "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
-      );
-      page2.drawText(
-        "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
-      );
-      page2.drawText(
-        "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
-      );
-      page2.drawText(
-        "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
-      );
-      page2.drawText(
-        " All prices are in Hong Kong Dollars or otherwise indicated.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
-      );
+          pageForDraw.drawText(
+            `#2505B- The Centrium,`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom + 15, x: 440 }) //y 105
+          );
+          pageForDraw.drawText(
+            `60 Wyndham Street- Central`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 430 }) //y 105
+          );
+          pageForDraw.drawText(
+            `HK SAR China`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 460 }) //y 105
+          );
 
-      const footerSectionHeightForBottom = footerSectionHeight + 200;
+          pageForDraw.drawText(
+            `Tel: +852 6466 9196`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 840 })
+          ); //y 60
+          pageForDraw.drawText(
+            `Email: contact@liquidcollectionhk.com`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 760 }) //y 90
+          );
+        } else {
+          const page2 = pdfDoc.addPage([1000, 1500]);
+          const { height } = page2.getSize();
 
-      page2.drawText(
-        " A brand of Green Grand Ltd page2Height",
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: cellPadding }) //y 60
-      );
-      page2.drawText(
-        `#2505B- The Centrium,`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom + 15, x: 440 }) //y 105
-      );
-      page2.drawText(
-        `60 Wyndham Street- Central`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 430 }) //y 105
-      );
-      page2.drawText(
-        `HK SAR China`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 460 }) //y 105
-      );
-      page2.drawText(
-        `Tel: +852 6466 9196`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 840 })
-      ); //y 60
-      page2.drawText(
-        `Email: contact@liquidcollectionhk.com`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 760 }) //y 90
-      );
-    } else {
-      page.drawText(
-        `TERMS AND CONDITION`,
-        secondSectionFirstColumn({ y: height - footerSectionHeight, size: fontSize.md })
-      );
-      page.drawText(
-        "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
-      );
-      page.drawText(
-        "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
-      );
-      page.drawText(
-        "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
-      );
-      page.drawText(
-        "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
-      );
-      page.drawText(
-        " All prices are in Hong Kong Dollars or otherwise indicated.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
-      );
+          const paymentSectionHeight = 100;
 
-      const footerSectionHeightForBottom = footerSectionHeight + 200;
+          let paymentSectionHeightForFooter = 0;
+          const paymentSectionDetail: { name: string; value: string }[] = [
+            {
+              name: "Bank name:",
+              value: `The Hong Kong And Shanghai Banking Corporation Limited`,
+            },
+            { name: "Bank address:", value: `1 Queen's Road Central, Hong Kong` },
+            { name: "SWIFT code:", value: `HSBCHKHHHKH` },
+            { name: "Account name:", value: `Green Grand Limited` },
+            {
+              name: "Account number:",
+              value: `741 385124 001`,
+            },
+            { name: "FPS ID:", value: `169 418 381` },
+          ];
 
-      page.drawText(
-        " A brand of Green Grand Ltd page2Height",
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: cellPadding }) //y 60
-      );
+          page2.drawText(
+            "PAYMENT",
+            secondSectionFirstColumn({ y: height - paymentSectionHeight, size: fontSize.lg })
+          );
+          paymentSectionHeightForFooter = 50 + paymentSectionDetail.length * 20;
 
-      page.drawText(
-        `#2505B- The Centrium,`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom + 15, x: 440 }) //y 105
-      );
-      page.drawText(
-        `60 Wyndham Street- Central`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 430 }) //y 105
-      );
-      page.drawText(
-        `HK SAR China`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 460 }) //y 105
-      );
+          paymentSectionDetail.forEach((each, index) => {
+            const currentSectionHeight = paymentSectionHeight + 20 + index * 20;
 
-      page.drawText(
-        `Tel: +852 6466 9196`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 840 })
-      ); //y 60
-      page.drawText(
-        `Email: contact@liquidcollectionhk.com`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 760 }) //y 90
-      );
+            page2.drawText(
+              each.name,
+              secondSectionFirstColumn({ y: height - currentSectionHeight })
+            );
+            page2.drawText(
+              each.value,
+              secondSectionSecondColumn({ y: height - currentSectionHeight })
+            );
+          });
+
+          let footerSectionHeight = paymentSectionHeight + paymentSectionHeightForFooter;
+
+          //create new pdf page
+          page2.drawText(
+            `TERMS AND CONDITION`,
+            secondSectionFirstColumn({ y: height - footerSectionHeight, size: fontSize.md })
+          );
+          page2.drawText(
+            "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
+          );
+          page2.drawText(
+            "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
+          );
+          page2.drawText(
+            "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
+          );
+          page2.drawText(
+            "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
+          );
+          page2.drawText(
+            " All prices are in Hong Kong Dollars or otherwise indicated.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
+          );
+
+          const footerSectionHeightForBottom = footerSectionHeight + 200;
+
+          page2.drawText(
+            " A brand of Green Grand Ltd page2Height",
+            secondSectionFirstColumn({
+              y: height - footerSectionHeightForBottom - 45,
+              x: cellPadding,
+            }) //y 60
+          );
+          page2.drawText(
+            `#2505B- The Centrium,`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom + 15, x: 440 }) //y 105
+          );
+          page2.drawText(
+            `60 Wyndham Street- Central`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 430 }) //y 105
+          );
+          page2.drawText(
+            `HK SAR China`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 460 }) //y 105
+          );
+          page2.drawText(
+            `Tel: +852 6466 9196`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 840 })
+          ); //y 60
+          page2.drawText(
+            `Email: contact@liquidcollectionhk.com`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 760 }) //y 90
+          );
+        }
+      }
     }
 
     const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
@@ -779,11 +816,10 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     // return pdf file here.
     return { pdfDataUri, pdfBytes };
   }
-
   async createTestPdf(): Promise<{ pdfDataUri: string; pdfBytes: Uint8Array }> {
     const order = mockOrder;
     const response = await client
-      .query(ORDER_QUERY, { id: "T3JkZXI6ZTQxNTMyMTctMWRlOS00ZjdjLWI2NWEtYWQ0Y2IyMTMzNTFl" })
+      .query(ORDER_QUERY, { id: "T3JkZXI6NTMwYzczNWItNTYwNC00ZTE1LWI1OGItZDYwOGMxODQxODdj" })
       .toPromise();
     const orderFromQuery = response.data?.order ? response.data.order : order;
     const getAttributeValue = (attributes: any[] | undefined, name: string) => {
@@ -803,10 +839,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
     const pdfDoc = await PDFDocument.create();
 
-    pdfDoc.registerFontkit(fontkit);
     const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
-    const fontBytes = await fetchFont("/fonts/HanyiSentyPine_Regular.ttf");
-    const chineseFont = await pdfDoc.embedFont(fontBytes);
 
     const page = pdfDoc.addPage([1000, 1500]);
     const { width, height } = page.getSize();
@@ -906,6 +939,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const add0 = (num: string) => {
       return num?.length < 2 ? `0${num}` : num;
     };
+
     let invoiceString = "LC";
 
     invoiceString =
@@ -916,8 +950,8 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       add0(createdDate.getDate().toString()) +
       "-" +
       order.number;
+
     page.drawText("INVOICE", secondSectionFirstColumn({ size: fontSize.md }));
-    console.log("order", response.data.order);
     page.drawText(invoiceString, secondSectionSecondColumn({ size: fontSize.md }));
     headerSectionDetail.forEach((each, index) => {
       const currentSectionHeight = headerSectionHeight + index * 20;
@@ -931,18 +965,18 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const customerSectionDetail: { name: string; value: string }[] = [
       {
         name: "Name:",
-        value: `${order.billingAddress?.firstName} ${order.billingAddress?.lastName}`,
+        value: `${orderFromQuery.shippingAddress?.firstName} ${orderFromQuery.shippingAddress?.lastName}`,
       },
       { name: "Email:", value: `${orderFromQuery.userEmail}` },
-      { name: "Company Name:", value: `${order.billingAddress?.companyName}` },
-      { name: "Phone:", value: `${order.billingAddress?.phone}` },
+      { name: "Company Name:", value: `${orderFromQuery.shippingAddress?.companyName}` },
+      { name: "Phone:", value: `${orderFromQuery.shippingAddress?.phone}` },
       {
         name: "Address:",
-        value: `${order.billingAddress?.streetAddress1} 觀塘鴻圖道43號鴻達工業大廈1103 室, ${order.billingAddress?.streetAddress2}`,
+        value: `${orderFromQuery.shippingAddress?.streetAddress1}, ${orderFromQuery.shippingAddress?.streetAddress2}`,
       },
-      { name: "Post Code:", value: `${order.billingAddress?.postalCode}` },
-      { name: "City:", value: `${order.billingAddress?.city}` },
-      { name: "Country/Area:", value: `${order.billingAddress?.country?.country}` },
+      { name: "Post Code:", value: `${orderFromQuery.shippingAddress?.postalCode}` },
+      { name: "City:", value: `${orderFromQuery.shippingAddress?.city}` },
+      { name: "Country/Area:", value: `${orderFromQuery.shippingAddress?.country?.country}` },
     ];
 
     page.drawText("CUSTOMER", secondSectionFirstColumn({ y: height - 380, size: fontSize.lg }));
@@ -954,7 +988,6 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         each.value,
         secondSectionSecondColumn({
           y: height - currentSectionHeight,
-          font: chineseFont,
         })
       );
     });
@@ -978,43 +1011,6 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       `${orderFromQuery?.paymentStatusDisplay}`,
       secondSectionFirstColumn({ y: height - 400, x: secondSctionThirdCellLeft })
     );
-
-    // //seller section
-
-    /*
-     * const sellerSectionHeight = 400;
-     * const sellerSectionDetail: { name: string; value: string }[] = [
-     *   { name: "Company Name:", value: `Liquid Collection` },
-     *   { name: "Company Address:", value: `12 TST` },
-     *   { name: "Company PostCode:", value: `0000` },
-     *   { name: "Company City:", value: `Hong Kong` },
-     *   { name: "Company Country", value: `Hong Kong Island` },
-     * ];
-     */
-
-    /*
-     * page.drawText(
-     *   "SELLER",
-     *   secondSectionFirstColumn({ y: height - 380, x: secondSctionThirdCellLeft, size: fontSize.lg })
-     * );
-     * sellerSectionDetail.forEach((each, index) => {
-     *   const currentSectionHeight = sellerSectionHeight + 10 + index * 20;
-     */
-
-    /*
-     *   page.drawText(
-     *     each.name,
-     *     secondSectionFirstColumn({ y: height - currentSectionHeight, x: secondSctionThirdCellLeft })
-     *   );
-     *   page.drawText(
-     *     each.value,
-     *     secondSectionSecondColumn({
-     *       y: height - currentSectionHeight,
-     *       x: secondSctionThirdCellLeft + 150,
-     *     })
-     *   );
-     * });
-     */
 
     //table section
 
@@ -1045,6 +1041,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       color,
       customLineHeight,
       customLine = false,
+      customTableHeight,
     }: {
       row: number;
       column: number;
@@ -1052,6 +1049,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       color?: RGB | undefined;
       customLineHeight?: number | undefined;
       customLine?: boolean | undefined;
+      customTableHeight?: number | undefined;
     }) => {
       let columnSpacing = 0;
       let columnWidth = 0;
@@ -1086,14 +1084,18 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
 
       let y = 0;
 
+      const tableHeight =
+        typeof customTableHeight === "number" ? customTableHeight : tableSectionHeight;
+
       if (customLineHeight !== undefined) {
+        // y = height - ((tableSectionHeightForCurrentPage) + (row * tableRowSpacing + 20)),
         y =
           height -
-          (tableSectionHeight + row * tableRowSpacing) -
+          (tableHeight + row * tableRowSpacing) -
           customLineHeight * 13 +
           (customLine ? 17 : 0);
       } else {
-        y = height - (tableSectionHeight + row * tableRowSpacing);
+        y = height - (tableHeight + row * tableRowSpacing);
       }
 
       return {
@@ -1133,279 +1135,348 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       );
     });
 
-    orderFromQuery?.lines?.forEach(async (line: any, index: number) => {
-      const row = index + 2;
-      const itemCode = line.variant?.sku ? line?.variant?.sku : "-";
-      const quantity = line?.quantity;
-      // const description = line?.productName; //line?.productName;
-      const description =
-        "Domaine Bruno Desaunay Bissey, Vosne Romanee Les Rouges Vieilles Vignes 1° Cru ";
-      // const description = `<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj<p>skdjf;klsjd;flkjs;lkfjssldkjf;lskjf;lksjflksjdflkdsjfl;<br />ksjf;lsjf;lsjflkjsflkjslfjslkfjlskfjlksjfl;ksjdflksjfl;dksj`; //line?.productName;
-      const descriptionArray = await stringToArray(description, 70);
-      const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
-      const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
-      const subtotal = `${line?.totalPrice?.gross?.amount}`;
-      const unitPrice = line.variant ? `${line?.variant?.pricing?.price?.gross?.amount}` : "-";
-      const tableRowArray = [
-        itemCode,
-        quantity,
-        descriptionArray,
-        vintage,
-        format,
-        unitPrice,
-        subtotal,
-      ];
+    const totalItems = orderFromQuery?.lines?.length;
+    const totalPagesFor25Items = Math.ceil(totalItems / 25);
+    const totalPagesForAllItems =
+      totalPagesFor25Items === 1 && totalItems > 15
+        ? totalPagesFor25Items + 1
+        : totalPagesFor25Items;
 
-      tableRowArray.forEach((each, i) => {
-        const column = i + 1;
+    for (let pageNumber = 0; pageNumber < totalPagesForAllItems; pageNumber++) {
+      const itemsToShow =
+        pageNumber === 0
+          ? orderFromQuery?.lines?.slice(pageNumber * 15, (pageNumber + 1) * 15)
+          : orderFromQuery?.lines?.slice(pageNumber * 25 - 10, (pageNumber + 1) * 25 - 10);
+      const pageForDraw = pageNumber === 0 ? page : pdfDoc.addPage([1000, 1500]);
+      const tableSectionHeightForCurrentPage = pageNumber === 0 ? tableSectionHeight : 0;
 
-        if (Array.isArray(each)) {
-          each.forEach((eachLine, index) => {
-            page.drawText(
-              `${eachLine}`,
-              tableRow({
-                row: row,
-                column: column,
-                size: fontSize.base,
-                customLineHeight: index,
-                customLine: each?.length > 1,
-              })
-            );
-          });
-          page.drawRectangle({
+      itemsToShow.forEach(async (line: any, index: number) => {
+        const row = index + 2;
+        const itemCode = line.variant?.sku ? line?.variant?.sku : "-";
+        const quantity = line?.quantity;
+        const description = line?.productName; //line?.productName;
+        const descriptionArray = await stringToArray(description, 70);
+        const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
+        const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
+        const subtotal = `${line?.totalPrice?.gross?.amount}`;
+        const unitPrice = line.variant ? `${line?.variant?.pricing?.price?.gross?.amount}` : "-";
+        const tableRowArray = [
+          itemCode,
+          quantity,
+          descriptionArray,
+          vintage,
+          format,
+          unitPrice,
+          subtotal,
+        ];
+
+        tableRowArray.forEach((each, i) => {
+          const column = i + 1;
+
+          if (Array.isArray(each)) {
+            each.forEach((eachLine, index) => {
+              pageForDraw.drawText(
+                `${eachLine}`,
+                tableRow({
+                  row: row,
+                  column: column,
+                  size: fontSize.base,
+                  customLineHeight: index,
+                  customLine: each?.length > 1,
+                  customTableHeight: tableSectionHeightForCurrentPage,
+                })
+              );
+            });
+            pageForDraw.drawRectangle({
+              x: cellPadding,
+              y: height - (tableSectionHeightForCurrentPage + (row * tableRowSpacing + 20)),
+              width: tableWidth,
+              height: 1,
+              color: rgb(35 / 255, 38 / 255, 62 / 255),
+            });
+            return;
+          }
+
+          pageForDraw.drawText(
+            `${each}`,
+            tableRow({
+              row: row,
+              column: column,
+              size: fontSize.base,
+              customTableHeight: tableSectionHeightForCurrentPage,
+            })
+          );
+          pageForDraw.drawRectangle({
             x: cellPadding,
-            y: height - (tableSectionHeight + (row * tableRowSpacing + 20)),
+            y: height - (tableSectionHeightForCurrentPage + (row * tableRowSpacing + 20)),
             width: tableWidth,
             height: 1,
             color: rgb(35 / 255, 38 / 255, 62 / 255),
           });
-          return;
-        }
-
-        page.drawText(`${each}`, tableRow({ row: row, column: column, size: fontSize.base }));
-        page.drawRectangle({
-          x: cellPadding,
-          y: height - (tableSectionHeight + (row * tableRowSpacing + 20)),
-          width: tableWidth,
-          height: 1,
-          color: rgb(35 / 255, 38 / 255, 62 / 255),
         });
       });
-    });
 
-    let currentRowToContinue: number = 2 + (orderFromQuery?.lines?.length || 0);
+      if (pageNumber + 1 === totalPagesFor25Items) {
+        let currentRowToContinue: number = 2 + (itemsToShow.length || 0);
 
-    if (orderFromQuery?.shippingMethodName && orderFromQuery.shippingPrice?.gross?.amount) {
-      const tableRowArray = [
-        orderFromQuery.shippingMethodName,
-        "-",
-        "-",
-        "-",
-        "-",
-        "-",
-        `${orderFromQuery.shippingPrice.gross.amount}`,
-      ];
+        if (orderFromQuery?.shippingMethodName && orderFromQuery.shippingPrice?.gross?.amount) {
+          const tableRowArray = [
+            orderFromQuery.shippingMethodName,
+            "-",
+            "-",
+            "-",
+            "-",
+            "-",
+            `${orderFromQuery.shippingPrice.gross.amount}`,
+          ];
 
-      tableRowArray.forEach((each, i) => {
-        const column = i + 1;
+          tableRowArray.forEach((each, i) => {
+            const column = i + 1;
 
-        page.drawText(
-          `${each}`,
-          tableRow({ row: currentRowToContinue, column: column, size: fontSize.base })
-        );
-      });
+            pageForDraw.drawText(
+              `${each}`,
+              tableRow({
+                row: currentRowToContinue,
+                column: column,
+                size: fontSize.base,
+                customTableHeight: tableSectionHeightForCurrentPage,
+              })
+            );
+          });
 
-      currentRowToContinue = currentRowToContinue + 1;
-    }
+          currentRowToContinue = currentRowToContinue + 1;
+        }
 
-    /*
-     * if (orderFromQuery.total?.net) {
-     *   page.drawText(`TOTAL NET`, tableRow({ row: currentRowToContinue, column: 4 }));
-     *   page.drawText(
-     *     `${orderFromQuery.total.net.amount} ${orderFromQuery.total.net.currency}`,
-     *     tableRow({ row: currentRowToContinue, column: 5 })
-     *   );
-     *   currentRowToContinue = currentRowToContinue + 1;
-     * }
-     */
+        pageForDraw.drawRectangle({
+          x: cellPadding,
+          y:
+            height -
+            (tableSectionHeightForCurrentPage + (currentRowToContinue * tableRowSpacing + 20)),
+          width: 900,
+          height: 50,
+          color: rgb(35 / 255, 38 / 255, 62 / 255),
+        });
 
-    /*
-     * if (orderFromQuery.total?.tax) {
-     *   page.drawText(`TOTAL TAX`, tableRow({ row: currentRowToContinue, column: 4 }));
-     *   page.drawText(
-     *     `${orderFromQuery.total.tax.amount} ${orderFromQuery.total.tax.currency}`,
-     *     tableRow({ row: currentRowToContinue, column: 5 })
-     *   );
-     *   currentRowToContinue = currentRowToContinue + 1;
-     * }
-     */
+        if (orderFromQuery.total?.gross) {
+          pageForDraw.drawText(
+            `GRAND TOTAL`,
+            tableRow({
+              row: currentRowToContinue,
+              column: 1,
+              color: rgb(1, 1, 1),
+              customTableHeight: tableSectionHeightForCurrentPage,
+            })
+          );
+          pageForDraw.drawText(
+            `${orderFromQuery.total.gross.currency} ${orderFromQuery.total.gross.amount}`,
+            tableRow({
+              row: currentRowToContinue,
+              column: 8,
+              color: rgb(1, 1, 1),
+              customTableHeight: tableSectionHeightForCurrentPage,
+            })
+          );
+          currentRowToContinue = currentRowToContinue + 1;
+        }
 
-    page.drawRectangle({
-      x: cellPadding,
-      y: height - (tableSectionHeight + (currentRowToContinue * tableRowSpacing + 20)),
-      width: 900,
-      height: 50,
-      color: rgb(35 / 255, 38 / 255, 62 / 255),
-    });
+        if (itemsToShow.length < 5) {
+          //payment deatails section
 
-    if (orderFromQuery.total?.gross) {
-      page.drawText(
-        `GRAND TOTAL`,
-        tableRow({ row: currentRowToContinue, column: 1, color: rgb(1, 1, 1) })
-      );
-      page.drawText(
-        ` ${orderFromQuery.total.gross.currency} ${orderFromQuery.total.gross.amount}`,
-        tableRow({ row: currentRowToContinue, column: 8, color: rgb(1, 1, 1) })
-      );
-      currentRowToContinue = currentRowToContinue + 1;
-    }
+          const paymentSectionHeight =
+            tableSectionHeightForCurrentPage + currentRowToContinue * tableRowSpacing + 50;
 
-    //payment deatails section
-    const paymentSectionHeight = tableSectionHeight + currentRowToContinue * tableRowSpacing + 50;
-    let paymentSectionHeightForFooter = 0;
-    const paymentSectionDetail: { name: string; value: string }[] = [
-      {
-        name: "Bank name:",
-        value: `The Hong Kong And Shanghai Banking Corporation Limited`,
-      },
-      { name: "Bank address:", value: `1 Queen's Road Central, Hong Kong` },
-      { name: "SWIFT code:", value: `HSBCHKHHHKH` },
-      { name: "Account name:", value: `Green Grand Limited` },
-      {
-        name: "Account number:",
-        value: `741 385124 001`,
-      },
-      { name: "FPS ID:", value: `169 418 381` },
-    ];
+          let paymentSectionHeightForFooter = 0;
+          const paymentSectionDetail: { name: string; value: string }[] = [
+            {
+              name: "Bank name:",
+              value: `The Hong Kong And Shanghai Banking Corporation Limited`,
+            },
+            { name: "Bank address:", value: `1 Queen's Road Central, Hong Kong` },
+            { name: "SWIFT code:", value: `HSBCHKHHHKH` },
+            { name: "Account name:", value: `Green Grand Limited` },
+            {
+              name: "Account number:",
+              value: `741 385124 001`,
+            },
+            { name: "FPS ID:", value: `169 418 381` },
+          ];
 
-    page.drawText(
-      "PAYMENT",
-      secondSectionFirstColumn({ y: height - paymentSectionHeight, size: fontSize.lg })
-    );
-    paymentSectionHeightForFooter = 50 + paymentSectionDetail.length * 20;
+          pageForDraw.drawText(
+            "PAYMENT",
+            secondSectionFirstColumn({ y: height - paymentSectionHeight, size: fontSize.lg })
+          );
+          paymentSectionHeightForFooter = 50 + paymentSectionDetail.length * 20;
 
-    paymentSectionDetail.forEach((each, index) => {
-      const currentSectionHeight = paymentSectionHeight + 20 + index * 20;
+          paymentSectionDetail.forEach((each, index) => {
+            const currentSectionHeight = paymentSectionHeight + 20 + index * 20;
 
-      page.drawText(each.name, secondSectionFirstColumn({ y: height - currentSectionHeight }));
-      page.drawText(each.value, secondSectionSecondColumn({ y: height - currentSectionHeight }));
-    });
+            pageForDraw.drawText(
+              each.name,
+              secondSectionFirstColumn({ y: height - currentSectionHeight })
+            );
+            pageForDraw.drawText(
+              each.value,
+              secondSectionSecondColumn({ y: height - currentSectionHeight })
+            );
+          });
+          let footerSectionHeight = paymentSectionHeight + paymentSectionHeightForFooter;
 
-    //footer section
+          pageForDraw.drawText(
+            `TERMS AND CONDITION`,
+            secondSectionFirstColumn({ y: height - footerSectionHeight, size: fontSize.md })
+          );
+          pageForDraw.drawText(
+            "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
+          );
+          pageForDraw.drawText(
+            "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
+          );
+          pageForDraw.drawText(
+            "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
+          );
+          pageForDraw.drawText(
+            "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
+          );
+          pageForDraw.drawText(
+            " All prices are in Hong Kong Dollars or otherwise indicated.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
+          );
 
-    let footerSectionHeight = paymentSectionHeight + paymentSectionHeightForFooter;
+          const footerSectionHeightForBottom = footerSectionHeight + 200;
 
-    if (height - footerSectionHeight <= 300) {
-      const page2 = pdfDoc.addPage([1000, 1500]);
-      const { height } = page2.getSize();
+          pageForDraw.drawText(
+            " A brand of Green Grand Ltd",
+            secondSectionFirstColumn({
+              y: height - footerSectionHeightForBottom - 45,
+              x: cellPadding,
+            }) //y 60
+          );
 
-      footerSectionHeight = 100;
-      //create new pdf page
-      page2.drawText(
-        `TERMS AND CONDITION`,
-        secondSectionFirstColumn({ y: height - footerSectionHeight, size: fontSize.md })
-      );
-      page2.drawText(
-        "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
-      );
-      page2.drawText(
-        "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
-      );
-      page2.drawText(
-        "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
-      );
-      page2.drawText(
-        "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
-      );
-      page2.drawText(
-        " All prices are in Hong Kong Dollars or otherwise indicated.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
-      );
+          pageForDraw.drawText(
+            `#2505B- The Centrium,`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom + 15, x: 440 }) //y 105
+          );
+          pageForDraw.drawText(
+            `60 Wyndham Street- Central`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 430 }) //y 105
+          );
+          pageForDraw.drawText(
+            `HK SAR China`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 460 }) //y 105
+          );
 
-      const footerSectionHeightForBottom = footerSectionHeight + 200;
+          pageForDraw.drawText(
+            `Tel: +852 6466 9196`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 840 })
+          ); //y 60
+          pageForDraw.drawText(
+            `Email: contact@liquidcollectionhk.com`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 760 }) //y 90
+          );
+        } else {
+          const page2 = pdfDoc.addPage([1000, 1500]);
+          const { height } = page2.getSize();
 
-      page2.drawText(
-        " A brand of Green Grand Ltd page2Height",
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: cellPadding }) //y 60
-      );
-      page2.drawText(
-        `#2505B- The Centrium,`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom + 15, x: 440 }) //y 105
-      );
-      page2.drawText(
-        `60 Wyndham Street- Central`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 430 }) //y 105
-      );
-      page2.drawText(
-        `HK SAR China`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 460 }) //y 105
-      );
-      page2.drawText(
-        `Tel: +852 6466 9196`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 840 })
-      ); //y 60
-      page2.drawText(
-        `Email: contact@liquidcollectionhk.com`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 760 }) //y 90
-      );
-    } else {
-      page.drawText(
-        `TERMS AND CONDITION`,
-        secondSectionFirstColumn({ y: height - footerSectionHeight, size: fontSize.md })
-      );
-      page.drawText(
-        "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
-      );
-      page.drawText(
-        "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
-      );
-      page.drawText(
-        "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
-      );
-      page.drawText(
-        "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
-      );
-      page.drawText(
-        " All prices are in Hong Kong Dollars or otherwise indicated.",
-        secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
-      );
+          const paymentSectionHeight = 100;
 
-      const footerSectionHeightForBottom = footerSectionHeight + 200;
+          let paymentSectionHeightForFooter = 0;
+          const paymentSectionDetail: { name: string; value: string }[] = [
+            {
+              name: "Bank name:",
+              value: `The Hong Kong And Shanghai Banking Corporation Limited`,
+            },
+            { name: "Bank address:", value: `1 Queen's Road Central, Hong Kong` },
+            { name: "SWIFT code:", value: `HSBCHKHHHKH` },
+            { name: "Account name:", value: `Green Grand Limited` },
+            {
+              name: "Account number:",
+              value: `741 385124 001`,
+            },
+            { name: "FPS ID:", value: `169 418 381` },
+          ];
 
-      page.drawText(
-        " A brand of Green Grand Ltd page2Height",
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: cellPadding }) //y 60
-      );
+          page2.drawText(
+            "PAYMENT",
+            secondSectionFirstColumn({ y: height - paymentSectionHeight, size: fontSize.lg })
+          );
+          paymentSectionHeightForFooter = 50 + paymentSectionDetail.length * 20;
 
-      page.drawText(
-        `#2505B- The Centrium,`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom + 15, x: 440 }) //y 105
-      );
-      page.drawText(
-        `60 Wyndham Street- Central`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 430 }) //y 105
-      );
-      page.drawText(
-        `HK SAR China`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 460 }) //y 105
-      );
+          paymentSectionDetail.forEach((each, index) => {
+            const currentSectionHeight = paymentSectionHeight + 20 + index * 20;
 
-      page.drawText(
-        `Tel: +852 6466 9196`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 840 })
-      ); //y 60
-      page.drawText(
-        `Email: contact@liquidcollectionhk.com`,
-        secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 760 }) //y 90
-      );
+            page2.drawText(
+              each.name,
+              secondSectionFirstColumn({ y: height - currentSectionHeight })
+            );
+            page2.drawText(
+              each.value,
+              secondSectionSecondColumn({ y: height - currentSectionHeight })
+            );
+          });
+
+          let footerSectionHeight = paymentSectionHeight + paymentSectionHeightForFooter;
+
+          //create new pdf page
+          page2.drawText(
+            `TERMS AND CONDITION`,
+            secondSectionFirstColumn({ y: height - footerSectionHeight, size: fontSize.md })
+          );
+          page2.drawText(
+            "Opened original cases are non-refundable. Opened or damaged bottles are non refundable.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
+          );
+          page2.drawText(
+            "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
+          );
+          page2.drawText(
+            "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
+          );
+          page2.drawText(
+            "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
+          );
+          page2.drawText(
+            " All prices are in Hong Kong Dollars or otherwise indicated.",
+            secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
+          );
+
+          const footerSectionHeightForBottom = footerSectionHeight + 200;
+
+          page2.drawText(
+            " A brand of Green Grand Ltd page2Height",
+            secondSectionFirstColumn({
+              y: height - footerSectionHeightForBottom - 45,
+              x: cellPadding,
+            }) //y 60
+          );
+          page2.drawText(
+            `#2505B- The Centrium,`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom + 15, x: 440 }) //y 105
+          );
+          page2.drawText(
+            `60 Wyndham Street- Central`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 430 }) //y 105
+          );
+          page2.drawText(
+            `HK SAR China`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 460 }) //y 105
+          );
+          page2.drawText(
+            `Tel: +852 6466 9196`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 45, x: 840 })
+          ); //y 60
+          page2.drawText(
+            `Email: contact@liquidcollectionhk.com`,
+            secondSectionFirstColumn({ y: height - footerSectionHeightForBottom - 15, x: 760 }) //y 90
+          );
+        }
+      }
     }
 
     const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
@@ -1413,8 +1484,6 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
     const pdfBytes = await pdfDoc.save();
 
     // return pdf file here.
-    console.log("pdfDataUri", pdfDataUri);
-    console.log("pdfBytes", pdfBytes);
     return { pdfDataUri, pdfBytes };
   }
 }
