@@ -12,7 +12,7 @@ const client = createClient({
 });
 
 const ORDER_QUERY = gql`
-  query OrderDetailForPdfLib($id: ID!) {
+  query OrderDetailForPdfDeliveryNoteLib($id: ID!) {
     order(id: $id) {
       id
       userEmail
