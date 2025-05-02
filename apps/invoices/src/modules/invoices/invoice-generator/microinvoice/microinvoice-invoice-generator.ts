@@ -6,12 +6,12 @@ import {
 } from "../../../../../generated/graphql";
 import { SellerShopConfig } from "../../../app-configuration/schema-v1/app-config-v1";
 import { AddressV2Shape } from "../../../app-configuration/schema-v2/app-config-schema.v2";
-import { createClient, dedupExchange, cacheExchange, fetchExchange, gql } from "urql";
+import { createClient, debugExchange, cacheExchange, fetchExchange, gql } from "urql";
 const Microinvoice = require("microinvoice");
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 const client = createClient({
   url: saleorApiUrl || "",
-  exchanges: [dedupExchange, cacheExchange, fetchExchange],
+  exchanges: [debugExchange, cacheExchange, fetchExchange],
 });
 
 const ORDER_QUERY = gql`
