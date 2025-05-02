@@ -6,10 +6,11 @@ import {
 } from "../../../../../generated/graphql";
 import { SellerShopConfig } from "../../../app-configuration/schema-v1/app-config-v1";
 import { AddressV2Shape } from "../../../app-configuration/schema-v2/app-config-schema.v2";
-import { createClient, dedupExchange, cacheExchange, fetchExchange, gql } from "urql";
+import { createClient, debugExchange, cacheExchange, fetchExchange, gql } from "urql";
 import { PDFDocument, PDFFont, RGB, StandardFonts, rgb } from "pdf-lib";
 import { mockOrder } from "../../../../fixtures/mock-order";
 import fontkit from "@pdf-lib/fontkit";
+import { addDeliveryNotePages, addTestDeliveryNotePages } from "./pdfLibDeliveryNoteGenerator";
 
 // import { input } from "@saleor/macaw-ui/dist/components/SearchInput/SearchInput.css";
 
@@ -17,7 +18,7 @@ const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 
 const client = createClient({
   url: saleorApiUrl || "",
-  exchanges: [dedupExchange, cacheExchange, fetchExchange],
+  exchanges: [debugExchange, cacheExchange, fetchExchange],
 });
 
 const ORDER_QUERY = gql`
@@ -812,9 +813,11 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       }
     }
 
-    const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
+    const { pdfDoc: pdfDocWithDeliveryNote } = await addDeliveryNotePages({ pdfDoc, order: order });
 
-    const pdfBytes = await pdfDoc.save();
+    const pdfDataUri = await pdfDocWithDeliveryNote.saveAsBase64({ dataUri: true });
+
+    const pdfBytes = await pdfDocWithDeliveryNote.save();
 
     // return pdf file here.
     return { pdfDataUri, pdfBytes };
@@ -1482,9 +1485,11 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
       }
     }
 
-    const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
+    const { pdfDoc: pdfDocWithDeliveryNote } = await addTestDeliveryNotePages({ pdfDoc });
 
-    const pdfBytes = await pdfDoc.save();
+    const pdfDataUri = await pdfDocWithDeliveryNote.saveAsBase64({ dataUri: true });
+
+    const pdfBytes = await pdfDocWithDeliveryNote.save();
 
     // return pdf file here.
     return { pdfDataUri, pdfBytes };

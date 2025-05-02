@@ -191,20 +191,40 @@ export const handler: NextWebhookApiHandler<InvoiceRequestedPayloadFragment> = a
   /**
    * TODO -> should generate from generation date or order date?
    */
-  const invoiceName = invoiceNumberGenerator.generateFromOrder(
-    order as OrderPayloadFragment,
-    InvoiceNumberGenerationStrategy.localizedDate("en-US") // todo connect locale -> where from?
-  );
+  /*
+   * const invoiceName = invoiceNumberGenerator.generateFromOrder(
+   *   order as OrderPayloadFragment,
+   *   InvoiceNumberGenerationStrategy.localizedDate("en-US") // todo connect locale -> where from?
+   * );
+   */
 
-  Sentry.addBreadcrumb({
-    message: "Calculated invoice name",
-    data: {
-      invoiceName: invoiceName,
-    },
-    level: "debug",
-  });
+  /*
+   * Sentry.addBreadcrumb({
+   *   message: "Calculated invoice name",
+   *   data: {
+   *     invoiceName: invoiceName,
+   *   },
+   *   level: "debug",
+   * });
+   */
 
-  logger.debug({ invoiceName }, "Generated invoice name");
+  const invoiceString = "LC";
+  const createdDate = new Date(order.created);
+
+  const add0 = (num: string) => {
+    return num?.length < 2 ? `0${num}` : num;
+  };
+
+  const invoiceName =
+    invoiceString +
+    createdDate.getFullYear().toString() +
+    "-" +
+    add0(String(createdDate.getMonth() + 1)) +
+    add0(createdDate.getDate().toString()) +
+    "-" +
+    order.number;
+
+  // logger.debug({ invoiceName }, "Generated invoice name");
 
   try {
     const client = createGraphQLClient({
@@ -270,6 +290,7 @@ export const handler: NextWebhookApiHandler<InvoiceRequestedPayloadFragment> = a
      *     });
      *   });
      */
+
     const PdfInvoiceGenerator = new PdfLibInvoiceGenerator();
     const fileUnit8Array = await PdfInvoiceGenerator.createPdf({
       order,
