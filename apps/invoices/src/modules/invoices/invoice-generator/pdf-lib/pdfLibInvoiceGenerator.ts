@@ -128,6 +128,13 @@ const fetchFont = async (url: string): Promise<Uint8Array> => {
   return new Uint8Array(arrayBuffer);
 };
 
+function thousandSeparator(value: string) {
+  if (!value) return value; // handles null, empty string, undefined
+  if (isNaN(Number(value))) return value; // keep "N/A", "undefined", etc.
+
+  return Number(value).toLocaleString();
+}
+
 export class PdfLibInvoiceGenerator implements InvoiceGenerator {
   constructor(
     private settings = {
@@ -489,8 +496,10 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         const descriptionArray = await stringToArray(description, 70);
         const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
         const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
-        const subtotal = `${line?.totalPrice?.gross?.amount}`;
-        const unitPrice = line.variant ? `${line?.variant?.pricing?.price?.gross?.amount}` : "-";
+        const subtotal = `${thousandSeparator(line?.totalPrice?.gross?.amount)}`;
+        const unitPrice = line.variant
+          ? `${thousandSeparator(line?.variant?.pricing?.price?.gross?.amount)}`
+          : "-";
         const tableRowArray = [
           itemCode,
           quantity,
@@ -511,7 +520,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
                 tableRow({
                   row: row,
                   column: column,
-                  size: fontSize.base,
+                  size: fontSize.xs,
                   customLineHeight: index,
                   customLine: each?.length > 1,
                   customTableHeight: tableSectionHeightForCurrentPage,
@@ -599,7 +608,9 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
             })
           );
           pageForDraw.drawText(
-            `${orderFromQuery.total.gross.currency} ${orderFromQuery.total.gross.amount}`,
+            `${orderFromQuery.total.gross.currency} ${thousandSeparator(
+              orderFromQuery.total.gross.amount
+            )}`,
             tableRow({
               row: currentRowToContinue,
               column: 8,
@@ -1164,8 +1175,10 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
         const descriptionArray = await stringToArray(description, 70);
         const vintage = getAttributeValue(line?.variant?.product?.attributes, "Vintage");
         const format = getAttributeValue(line?.variant?.product?.attributes, "Size");
-        const subtotal = `${line?.totalPrice?.gross?.amount}`;
-        const unitPrice = line.variant ? `${line?.variant?.pricing?.price?.gross?.amount}` : "-";
+        const subtotal = `${thousandSeparator(line?.totalPrice?.gross?.amount)}`;
+        const unitPrice = line.variant
+          ? `${thousandSeparator(line?.variant?.pricing?.price?.gross?.amount)}`
+          : "-";
         const tableRowArray = [
           itemCode,
           quantity,
@@ -1186,7 +1199,7 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
                 tableRow({
                   row: row,
                   column: column,
-                  size: fontSize.base,
+                  size: fontSize.xs,
                   customLineHeight: index,
                   customLine: each?.length > 1,
                   customTableHeight: tableSectionHeightForCurrentPage,
@@ -1274,7 +1287,9 @@ export class PdfLibInvoiceGenerator implements InvoiceGenerator {
             })
           );
           pageForDraw.drawText(
-            `${orderFromQuery.total.gross.currency} ${orderFromQuery.total.gross.amount}`,
+            `${orderFromQuery.total.gross.currency} ${thousandSeparator(
+              orderFromQuery.total.gross.amount
+            )}`,
             tableRow({
               row: currentRowToContinue,
               column: 8,
