@@ -624,23 +624,27 @@ to Kowloon HK$200 & New Territories HK$350)`,
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
         );
         pageForDraw.drawText(
-          "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
+          "Wines, champagnes, or spirits priced above HK$750 per bottle, or aged over 10 years, are non-refundable under all circumstances.",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
         );
         pageForDraw.drawText(
-          "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
+          "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
         );
         pageForDraw.drawText(
-          "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
+          "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
         );
         pageForDraw.drawText(
-          " All prices are in Hong Kong Dollars or otherwise indicated.",
+          "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
         );
+        pageForDraw.drawText(
+          " All prices are in Hong Kong Dollars or otherwise indicated.",
+          secondSectionFirstColumn({ y: height - (footerSectionHeight + 120) })
+        );
 
-        const remarkSectionHeight = footerSectionHeight + 150;
+        const remarkSectionHeight = footerSectionHeight + 170;
 
         pageForDraw.drawText(
           `Remark`,
@@ -735,23 +739,27 @@ to Kowloon HK$200 & New Territories HK$350)`,
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
         );
         page2.drawText(
-          "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
+          "Wines, champagnes, or spirits priced above HK$750 per bottle, or aged over 10 years, are non-refundable under all circumstances.",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
         );
         page2.drawText(
-          "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
+          "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
         );
         page2.drawText(
-          "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
+          "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
         );
         page2.drawText(
-          " All prices are in Hong Kong Dollars or otherwise indicated.",
+          "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
         );
+        page2.drawText(
+          " All prices are in Hong Kong Dollars or otherwise indicated.",
+          secondSectionFirstColumn({ y: height - (footerSectionHeight + 120) })
+        );
 
-        const remarkSectionHeight = footerSectionHeight + 150;
+        const remarkSectionHeight = footerSectionHeight + 170;
 
         page2.drawText(
           `Remark`,
@@ -1308,23 +1316,27 @@ to Kowloon HK$200 & New Territories HK$350)`,
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
         );
         pageForDraw.drawText(
-          "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
+          "Wines, champagnes, or spirits priced above HK$750 per bottle, or aged over 10 years, are non-refundable under all circumstances.",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
         );
         pageForDraw.drawText(
-          "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
+          "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
         );
         pageForDraw.drawText(
-          "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
+          "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
         );
         pageForDraw.drawText(
-          " All prices are in Hong Kong Dollars or otherwise indicated.",
+          "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
         );
+        pageForDraw.drawText(
+          " All prices are in Hong Kong Dollars or otherwise indicated.",
+          secondSectionFirstColumn({ y: height - (footerSectionHeight + 120) })
+        );
 
-        const remarkSectionHeight = footerSectionHeight + 150;
+        const remarkSectionHeight = footerSectionHeight + 170;
 
         pageForDraw.drawText(
           `Remark`,
@@ -1419,23 +1431,27 @@ to Kowloon HK$200 & New Territories HK$350)`,
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 20) })
         );
         page2.drawText(
-          "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
+          "Wines, champagnes, or spirits priced above HK$750 per bottle, or aged over 10 years, are non-refundable under all circumstances.",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 40) })
         );
         page2.drawText(
-          "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
+          "All returns or refunds must be previously approved in writing by the Company. Customers are requested to examine the goods at the time of delivery.",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 60) })
         );
         page2.drawText(
-          "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
+          "If any deficiency and/or breakage is noticed please let our authorized delivery person know at once.",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 80) })
         );
         page2.drawText(
-          " All prices are in Hong Kong Dollars or otherwise indicated.",
+          "No claims can be made once our authorized delivery person is no more in contact with the delivery. ",
           secondSectionFirstColumn({ y: height - (footerSectionHeight + 100) })
         );
+        page2.drawText(
+          " All prices are in Hong Kong Dollars or otherwise indicated.",
+          secondSectionFirstColumn({ y: height - (footerSectionHeight + 120) })
+        );
 
-        const remarkSectionHeight = footerSectionHeight + 150;
+        const remarkSectionHeight = footerSectionHeight + 170;
 
         page2.drawText(
           `Remark`,
