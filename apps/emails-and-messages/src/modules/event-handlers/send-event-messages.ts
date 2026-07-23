@@ -33,6 +33,7 @@ export const sendEventMessages = async ({
   });
 
   logger.debug("Function called");
+  console.log("Function called");
 
   const featureFlagService = new FeatureFlagService({
     client,
@@ -45,6 +46,8 @@ export const sendEventMessages = async ({
     ),
     featureFlagService,
   });
+
+  console.log("Smtp configuration service created");
 
   const sendgridConfigurationService = new SendgridConfigurationService({
     metadataManager: new SendgridPrivateMetadataManager(
@@ -76,11 +79,16 @@ export const sendEventMessages = async ({
 
     if (smtpStatus?.errors.length) {
       logger.error("SMTP errors");
+      console.log("SMTP errors");
       logger.error(smtpStatus?.errors);
+      console.log(smtpStatus?.errors);
     }
+    console.log("SMTP status at line 87");
+    console.log(smtpStatus);
   }
 
   logger.debug("Channel has assigned Sendgrid configuration");
+  console.log("Channel has assigned Sendgrid configuration");
 
   for (const sendgridConfiguration of availableSendgridConfigurations) {
     const sendgridStatus = await sendSendgrid({
@@ -92,7 +100,9 @@ export const sendEventMessages = async ({
 
     if (sendgridStatus?.errors.length) {
       logger.error("Sendgrid errors");
+      console.log("Sendgrid errors at line 98");
       logger.error(sendgridStatus?.errors);
+      console.log(sendgridStatus?.errors);
     }
   }
 };
