@@ -1,0 +1,52 @@
+# POST /api/webhooks/notify
+
+Status: 200
+
+## Request
+
+Started: Jul 23 16:27:53.12 GMT+7
+
+Request ID: pcz4s-1784798873129-cff3922234d2
+
+Path: /api/webhooks/notify
+
+Host: saleor-apps-emails-and-messages.vercel.app
+
+User Agent: python-requests/2.31.0
+
+Received in Hong Kong (hkg1)
+
+### Firewall
+
+Allowed
+
+Routed to Washington, D.C., USA (iad1)
+
+### Function Invocation
+
+Route: / api / webhooks / notify
+
+Runtime: Node.js 20.x
+
+Execution Duration / Maximum: 31.67s / 1m
+
+Memory Used / Maximum: 350 MB / 1024 MB
+
+### External APIs
+
+**External APIs**
+
+| Method | Request | Status | Duration |
+| - | - | - | - |
+| POST | Button: literate-kitten-30681.upstash.io/ | 200 | 21ms |
+| POST | Button: saleor-api-lc-container-app.blackbeach-8a01e5f3.eastasia.azurecontainerapps.io/graphql/ | 200 | 920ms |
+
+Response finished in 32s
+
+## Deployment Information
+
+Deployment ID: dpl_47RCszKmnkyh9wz9JWF9eJZRDQ32
+
+Environment: production
+
+Branch: main

@@ -77,6 +77,7 @@ const logger = createLogger({
 
 const handler: NextWebhookApiHandler<NotifySubscriptionPayload> = async (req, res, context) => {
   logger.debug("Webhook received");
+  console.log("Webhook received");
 
   const { payload, authData } = context;
 
@@ -84,6 +85,7 @@ const handler: NextWebhookApiHandler<NotifySubscriptionPayload> = async (req, re
 
   if (!recipientEmail?.length) {
     logger.error(`The email recipient has not been specified in the event payload.`);
+    console.log("The email recipient has not been specified in the event payload.");
     return res
       .status(200)
       .json({ error: "Email recipient has not been specified in the event payload." });
@@ -94,6 +96,7 @@ const handler: NextWebhookApiHandler<NotifySubscriptionPayload> = async (req, re
   if (!event) {
     // NOTIFY webhook sends multiple events to the same endpoint. The app supports only a subset of them.
     logger.debug(`The type of received notify event (${payload.notify_event}) is not supported.`);
+    console.log(`The type of received notify event (${payload.notify_event}) is not supported.`);
     return res.status(200).json({ message: `${payload.notify_event} event is not supported.` });
   }
 
@@ -111,6 +114,7 @@ const handler: NextWebhookApiHandler<NotifySubscriptionPayload> = async (req, re
     recipientEmail,
   });
 
+  console.log("The event has been handled");
   return res.status(200).json({ message: "The event has been handled" });
 };
 
