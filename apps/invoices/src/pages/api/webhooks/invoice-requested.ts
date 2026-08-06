@@ -14,8 +14,9 @@ import {
 import { MicroinvoiceInvoiceGenerator } from "../../../modules/invoices/invoice-generator/microinvoice/microinvoice-invoice-generator";
 import { hashInvoiceFilename } from "../../../modules/invoices/invoice-file-name/hash-invoice-filename";
 import { resolveTempPdfFileLocation } from "../../../modules/invoices/invoice-file-name/resolve-temp-pdf-file-location";
-import { createGraphQLClient, createLogger } from "@saleor/apps-shared";
+import { createGraphQLClient, createLogger, Logger } from "@saleor/apps-shared";
 import { SALEOR_API_URL_HEADER } from "@saleor/app-sdk/const";
+import { waitUntil } from "@vercel/functions";
 import { GetAppConfigurationV2Service } from "../../../modules/app-configuration/schema-v2/get-app-configuration.v2.service";
 import { ShopInfoFetcher } from "../../../modules/shop-info/shop-info-fetcher";
 import { z } from "zod";
@@ -163,69 +164,19 @@ export const invoiceRequestedWebhook = new SaleorAsyncWebhook<InvoiceRequestedPa
 
 const invoiceNumberGenerator = new InvoiceNumberGenerator();
 
-/**
- * TODO
- * Refactor - extract smaller pieces
- * Test
- * More logs
- * Extract service
- */
-export const handler: NextWebhookApiHandler<InvoiceRequestedPayloadFragment> = async (
-  req,
-  res,
-  context
-) => {
-  const { authData, payload, baseUrl } = context;
-  const logger = createLogger({ domain: authData.saleorApiUrl, url: baseUrl });
-
-  Sentry.configureScope((s) => {
-    s.setTag("saleorApiUrl", authData.saleorApiUrl);
-  });
-
-  const order = payload.order;
-
-  logger.info({ orderId: order.id }, "Received event INVOICE_REQUESTED");
-  logger.debug(order, "Order from payload:");
-
-  const orderId = order.id;
-  /**
-   * TODO -> should generate from generation date or order date?
-   */
-  /*
-   * const invoiceName = invoiceNumberGenerator.generateFromOrder(
-   *   order as OrderPayloadFragment,
-   *   InvoiceNumberGenerationStrategy.localizedDate("en-US") // todo connect locale -> where from?
-   * );
-   */
-
-  /*
-   * Sentry.addBreadcrumb({
-   *   message: "Calculated invoice name",
-   *   data: {
-   *     invoiceName: invoiceName,
-   *   },
-   *   level: "debug",
-   * });
-   */
-
-  const invoiceString = "LC";
-  const createdDate = new Date(order.created);
-
-  const add0 = (num: string) => {
-    return num?.length < 2 ? `0${num}` : num;
-  };
-
-  const invoiceName =
-    invoiceString +
-    createdDate.getFullYear().toString() +
-    "-" +
-    add0(String(createdDate.getMonth() + 1)) +
-    add0(createdDate.getDate().toString()) +
-    "-" +
-    order.number;
-
-  // logger.debug({ invoiceName }, "Generated invoice name");
-
+const generateInvoice = async ({
+  authData,
+  order,
+  invoiceName,
+  orderId,
+  logger,
+}: {
+  authData: { saleorApiUrl: string; token: string };
+  order: OrderPayloadFragment;
+  invoiceName: string;
+  orderId: string;
+  logger: Logger;
+}) => {
   try {
     const client = createGraphQLClient({
       saleorApiUrl: authData.saleorApiUrl,
@@ -260,36 +211,14 @@ export const handler: NextWebhookApiHandler<InvoiceRequestedPayloadFragment> = a
       (await new ShopInfoFetcher(client).fetchShopInfo().then(shopInfoQueryToAddressShape));
 
     if (!address) {
-      // todo disable webhook
-
       Sentry.addBreadcrumb({
         message: "Address not configured",
         level: "debug",
       });
 
-      return res.status(200).end("App not configured");
+      logger.warn("Address not configured, skipping invoice generation");
+      return;
     }
-
-    /*
-     * await new MicroinvoiceInvoiceGenerator()
-     *   .generate({
-     *     order,
-     *     invoiceNumber: invoiceName,
-     *     filename: tempPdfLocation,
-     *     companyAddressData: address,
-     *   })
-     *   .catch((err) => {
-     *     logger.error(err, "Error generating invoice");
-     */
-
-    //     Sentry.captureException(err);
-
-    /*
-     *     return res.status(500).json({
-     *       error: "Error generating invoice",
-     *     });
-     *   });
-     */
 
     const PdfInvoiceGenerator = new PdfLibInvoiceGenerator();
     const fileUnit8Array = await PdfInvoiceGenerator.createPdf({
@@ -330,19 +259,63 @@ export const handler: NextWebhookApiHandler<InvoiceRequestedPayloadFragment> = a
         invoiceName,
       },
     });
+
+    logger.info("Invoice generation completed successfully");
   } catch (e) {
-    logger.error(e);
-
+    logger.error(e, "Error during invoice generation");
     Sentry.captureException(e);
-
-    return res.status(500).json({
-      error: (e as any)?.message ?? "Error",
-    });
   }
+};
 
-  logger.info("Success");
+/**
+ * TODO
+ * Refactor - extract smaller pieces
+ * Test
+ * More logs
+ * Extract service
+ */
+export const handler: NextWebhookApiHandler<InvoiceRequestedPayloadFragment> = async (
+  req,
+  res,
+  context
+) => {
+  const { authData, payload, baseUrl } = context;
+  const logger = createLogger({ domain: authData.saleorApiUrl, url: baseUrl });
 
-  return res.status(200).end();
+  Sentry.configureScope((s) => {
+    s.setTag("saleorApiUrl", authData.saleorApiUrl);
+  });
+
+  const order = payload.order;
+
+  logger.info({ orderId: order.id }, "Received event INVOICE_REQUESTED");
+  logger.debug(order, "Order from payload:");
+
+  const orderId = order.id;
+
+  const invoiceString = "LC";
+  const createdDate = new Date(order.created);
+
+  const add0 = (num: string) => {
+    return num?.length < 2 ? `0${num}` : num;
+  };
+
+  const invoiceName =
+    invoiceString +
+    createdDate.getFullYear().toString() +
+    "-" +
+    add0(String(createdDate.getMonth() + 1)) +
+    add0(createdDate.getDate().toString()) +
+    "-" +
+    order.number;
+
+  /*
+   * Use Vercel waitUntil to keep the function alive after returning 200.
+   * This prevents Saleor from retrying the webhook while the invoice is being generated.
+   */
+  waitUntil(generateInvoice({ authData, order, invoiceName, orderId, logger }));
+
+  return res.status(200).end("Invoice generation started");
 };
 
 export default invoiceRequestedWebhook.createHandler(handler);

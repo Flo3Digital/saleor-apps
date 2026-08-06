@@ -24,6 +24,7 @@
     "@trpc/react-query": "10.34.0",
     "@trpc/server": "10.34.0",
     "@urql/exchange-auth": "^2.1.4",
+    "@vercel/functions": "^1.6.0",
     "@web-std/file": "^3.0.2",
     "clsx": "^1.2.1",
     "eslint": "8.44.0",
