@@ -165,19 +165,20 @@ const invoiceNumberGenerator = new InvoiceNumberGenerator();
 
 /**
  * Inline waitUntil helper.
- * Vercel Functions (Node.js and Edge) inject a global `waitUntil` that extends
- * the request lifetime until the passed Promise settles.  We call it directly
- * so we don’t need to add `@vercel/functions` as a dependency.
+ * Mirrors @vercel/functions: Vercel injects a request context via
+ * Symbol.for("@vercel/request-context").  Calling ctx.waitUntil(promise)
+ * extends the function lifetime until the promise settles.
  */
 const waitUntil = (promise: Promise<unknown>) => {
-  const globalWaitUntil = (globalThis as any).waitUntil;
+  const reqContextSymbol = Symbol.for("@vercel/request-context");
+  const reqContext = (globalThis as any)[reqContextSymbol]?.get?.();
 
-  if (typeof globalWaitUntil === "function") {
-    console.log("[invoice-requested] waitUntil: global waitUntil found, enqueuing background task");
-    globalWaitUntil(promise);
+  if (reqContext && typeof reqContext.waitUntil === "function") {
+    console.log("[invoice-requested] waitUntil: enqueued via @vercel/request-context");
+    reqContext.waitUntil(promise);
   } else {
     console.warn(
-      "[invoice-requested] waitUntil: global waitUntil NOT found. Background task may be terminated early."
+      "[invoice-requested] waitUntil: NO request context found. Background task may be terminated early."
     );
   }
 };
