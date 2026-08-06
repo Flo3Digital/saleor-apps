@@ -16,7 +16,6 @@ import { hashInvoiceFilename } from "../../../modules/invoices/invoice-file-name
 import { resolveTempPdfFileLocation } from "../../../modules/invoices/invoice-file-name/resolve-temp-pdf-file-location";
 import { createGraphQLClient, createLogger, Logger } from "@saleor/apps-shared";
 import { SALEOR_API_URL_HEADER } from "@saleor/app-sdk/const";
-import { waitUntil } from "@vercel/functions";
 import { GetAppConfigurationV2Service } from "../../../modules/app-configuration/schema-v2/get-app-configuration.v2.service";
 import { ShopInfoFetcher } from "../../../modules/shop-info/shop-info-fetcher";
 import { z } from "zod";
@@ -163,6 +162,20 @@ export const invoiceRequestedWebhook = new SaleorAsyncWebhook<InvoiceRequestedPa
 });
 
 const invoiceNumberGenerator = new InvoiceNumberGenerator();
+
+/**
+ * Inline waitUntil helper.
+ * Vercel Functions (Node.js and Edge) inject a global `waitUntil` that extends
+ * the request lifetime until the passed Promise settles.  We call it directly
+ * so we don’t need to add `@vercel/functions` as a dependency.
+ */
+const waitUntil = (promise: Promise<unknown>) => {
+  const globalWaitUntil = (globalThis as any).waitUntil;
+
+  if (typeof globalWaitUntil === "function") {
+    globalWaitUntil(promise);
+  }
+};
 
 const generateInvoice = async ({
   authData,
