@@ -173,7 +173,12 @@ const waitUntil = (promise: Promise<unknown>) => {
   const globalWaitUntil = (globalThis as any).waitUntil;
 
   if (typeof globalWaitUntil === "function") {
+    console.log("[invoice-requested] waitUntil: global waitUntil found, enqueuing background task");
     globalWaitUntil(promise);
+  } else {
+    console.warn(
+      "[invoice-requested] waitUntil: global waitUntil NOT found. Background task may be terminated early."
+    );
   }
 };
 
@@ -190,20 +195,32 @@ const generateInvoice = async ({
   orderId: string;
   logger: Logger;
 }) => {
+  console.log(`[invoice-requested] generateInvoice STARTED for orderId=${orderId}`);
+
   try {
+    console.log(
+      `[invoice-requested] Creating GraphQL client for saleorApiUrl=${authData.saleorApiUrl}`
+    );
     const client = createGraphQLClient({
       saleorApiUrl: authData.saleorApiUrl,
       token: authData.token,
     });
 
+    console.log(`[invoice-requested] GraphQL client created OK`);
+
+    console.log(
+      `[invoice-requested] Calculating hashed invoice name for invoiceName=${invoiceName}, orderId=${orderId}`
+    );
     const hashedInvoiceName = hashInvoiceFilename(invoiceName, orderId);
 
-    logger.debug({ hashedInvoiceName });
+    console.log(`[invoice-requested] hashedInvoiceName=${hashedInvoiceName}`);
 
     const hashedInvoiceFileName = `${hashedInvoiceName}.pdf`;
+
+    console.log(`[invoice-requested] Resolving temp PDF location for ${hashedInvoiceFileName}`);
     const tempPdfLocation = await resolveTempPdfFileLocation(hashedInvoiceFileName);
 
-    logger.debug({ tempPdfLocation }, "Resolved PDF location for temporary files");
+    console.log(`[invoice-requested] tempPdfLocation=${tempPdfLocation}`);
 
     Sentry.addBreadcrumb({
       message: "Calculated invoice file location",
@@ -213,17 +230,26 @@ const generateInvoice = async ({
       level: "debug",
     });
 
+    console.log(`[invoice-requested] Fetching app configuration V2`);
     let appConfigV2 =
       (await new GetAppConfigurationV2Service({
         saleorApiUrl: authData.saleorApiUrl,
         apiClient: client,
       }).getConfiguration()) ?? new AppConfigV2();
 
+    console.log(`[invoice-requested] App configuration fetched OK`);
+
+    console.log(`[invoice-requested] Resolving address for channel=${order.channel.slug}`);
     const address: AddressV2Shape | null =
       appConfigV2.getChannelsOverrides()[order.channel.slug] ??
       (await new ShopInfoFetcher(client).fetchShopInfo().then(shopInfoQueryToAddressShape));
 
+    console.log(`[invoice-requested] Resolved address=${address ? "YES" : "NO"}`);
+
     if (!address) {
+      console.warn(
+        `[invoice-requested] Address not configured for channel=${order.channel.slug}. Skipping invoice.`
+      );
       Sentry.addBreadcrumb({
         message: "Address not configured",
         level: "debug",
@@ -233,6 +259,7 @@ const generateInvoice = async ({
       return;
     }
 
+    console.log(`[invoice-requested] Starting PDF generation for invoice=${invoiceName}`);
     const PdfInvoiceGenerator = new PdfLibInvoiceGenerator();
     const fileUnit8Array = await PdfInvoiceGenerator.createPdf({
       order,
@@ -241,14 +268,20 @@ const generateInvoice = async ({
       companyAddressData: address,
     });
 
+    console.log(
+      `[invoice-requested] PDF generation completed. pdfBytes length=${fileUnit8Array.pdfBytes.length}`
+    );
+
     Sentry.addBreadcrumb({
       message: "Generated invoice file",
       level: "debug",
     });
 
+    console.log(`[invoice-requested] Starting upload to Saleor for ${invoiceName}.pdf`);
     const uploader = new SaleorInvoiceUploader(client);
-
     const uploadedFileUrl = await uploader.upload(fileUnit8Array.pdfBytes, `${invoiceName}.pdf`);
+
+    console.log(`[invoice-requested] Upload completed. uploadedFileUrl=${uploadedFileUrl}`);
 
     Sentry.addBreadcrumb({
       message: "Uploaded file to Saleor",
@@ -258,11 +291,13 @@ const generateInvoice = async ({
     logger.info("Uploaded file to storage, will notify Saleor now");
     logger.debug({ uploadedFileUrl });
 
+    console.log(`[invoice-requested] Notifying Saleor invoice created for orderId=${orderId}`);
     await new InvoiceCreateNotifier(client).notifyInvoiceCreated(
       orderId,
       invoiceName,
       uploadedFileUrl
     );
+    console.log(`[invoice-requested] Saleor notified OK for orderId=${orderId}`);
 
     Sentry.addBreadcrumb({
       message: "Notified Saleor about invoice creation",
@@ -273,8 +308,16 @@ const generateInvoice = async ({
       },
     });
 
+    console.log(`[invoice-requested] generateInvoice SUCCESS for orderId=${orderId}`);
     logger.info("Invoice generation completed successfully");
   } catch (e) {
+    const errorMessage = (e as any)?.message ?? "Unknown error";
+    const errorStack = (e as any)?.stack ?? "";
+
+    console.error(
+      `[invoice-requested] generateInvoice FAILED for orderId=${orderId}: ${errorMessage}`
+    );
+    console.error(`[invoice-requested] Stack trace: ${errorStack}`);
     logger.error(e, "Error during invoice generation");
     Sentry.captureException(e);
   }
@@ -292,7 +335,14 @@ export const handler: NextWebhookApiHandler<InvoiceRequestedPayloadFragment> = a
   res,
   context
 ) => {
+  console.log(`[invoice-requested] Handler STARTED for event INVOICE_REQUESTED`);
+
   const { authData, payload, baseUrl } = context;
+
+  console.log(
+    `[invoice-requested] Context: baseUrl=${baseUrl}, saleorApiUrl=${authData.saleorApiUrl}`
+  );
+
   const logger = createLogger({ domain: authData.saleorApiUrl, url: baseUrl });
 
   Sentry.configureScope((s) => {
@@ -300,6 +350,10 @@ export const handler: NextWebhookApiHandler<InvoiceRequestedPayloadFragment> = a
   });
 
   const order = payload.order;
+
+  console.log(
+    `[invoice-requested] Order from payload: orderId=${order.id}, orderNumber=${order.number}, channel=${order.channel.slug}`
+  );
 
   logger.info({ orderId: order.id }, "Received event INVOICE_REQUESTED");
   logger.debug(order, "Order from payload:");
@@ -322,11 +376,15 @@ export const handler: NextWebhookApiHandler<InvoiceRequestedPayloadFragment> = a
     "-" +
     order.number;
 
+  console.log(`[invoice-requested] Generated invoiceName=${invoiceName} for orderId=${orderId}`);
+
   /*
    * Use Vercel waitUntil to keep the function alive after returning 200.
    * This prevents Saleor from retrying the webhook while the invoice is being generated.
    */
+  console.log(`[invoice-requested] Calling waitUntil for background invoice generation`);
   waitUntil(generateInvoice({ authData, order, invoiceName, orderId, logger }));
+  console.log(`[invoice-requested] waitUntil called, returning 200 to Saleor`);
 
   return res.status(200).end("Invoice generation started");
 };
